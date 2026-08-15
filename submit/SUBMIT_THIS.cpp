@@ -281,7 +281,7 @@ int main() {
     {
         double d1 = col[4].at(1), d64 = col[4].at(64);
         double ratio = (d1 > 1e-9) ? d64 / d1 : 1e9;
-        if (w_tp > w_c && ratio > 0.0 && ratio < 1.25) dgfrac = 0.95;
+        if (w_tp > w_c && ratio > 0.0 && ratio < 1.15) dgfrac = 0.95;
     }
 
     if (const char *e = getenv("A_P12DG")) dgfrac = atof(e);
