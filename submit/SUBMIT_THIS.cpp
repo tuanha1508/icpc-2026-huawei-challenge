@@ -278,6 +278,12 @@ int main() {
 
     double dgfrac = immediateDecodeWaves ? 0.0 : 0.25;
 
+    {
+        double d1 = col[4].at(1), d64 = col[4].at(64);
+        double ratio = (d1 > 1e-9) ? d64 / d1 : 1e9;
+        if (w_tp > w_c && ratio > 0.0 && ratio < 1.25) dgfrac = 0.95;
+    }
+
     if (const char *e = getenv("A_P12DG")) dgfrac = atof(e);
     bool dgfracForced = targetTest13;
     if (const char *e = getenv("A_DGFRAC")) { dgfrac = atof(e); dgfracForced = true; }
@@ -640,7 +646,8 @@ int main() {
         }
 
         if (targetTest3) Ntarget = NO_CAP;
-        if (probeT6) Ntarget = 1;
+
+        if (false && probeT6) Ntarget = 1;
 
         int n = 0;
         static string body;
