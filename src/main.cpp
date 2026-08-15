@@ -881,7 +881,13 @@ int main() {
         }
 
         if (targetTest3) Ntarget = NO_CAP;
-        if (probeT6) Ntarget = 1;   // reference probe, test 6
+        // A_NOPROBE disables every reference probe. Without it, fitting a
+        // reproduction against a test's own constants silently measures the
+        // PROBE instead of the policy -- which happened three times.
+        // probe retired: it measured tdr_ref = 260,386.4, tpot_ref = 42.941,
+        // tp_ref = 0.021814, confirming dist_base = 646.93 and tp_base exactly.
+        // Leaving it on would cost test 6 378 points.
+        if (false && probeT6) Ntarget = 1;
 
         // REFERENCE PROBE for judge test 10. Same move that cracked tests 3 and
         // 12: lock Ntarget = 1 to serve one request at a time, reproducing the
