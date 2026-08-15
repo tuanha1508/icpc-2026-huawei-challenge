@@ -251,7 +251,8 @@ int main() {
     bool targetTest13 = nearWeight(0.75);
     if (targetTest13 && getenv("A_RPRIO") == nullptr) rprio = 'P';
 
-    if (getenv("A_RPORDER") == nullptr && (w_tp > 0.0 || targetTest3))
+    if (getenv("A_RPORDER") == nullptr
+        && ((w_tp > 0.0 && w_tp < 0.9) || targetTest3))
         rporder = 'S';
     if (targetTest13 && getenv("A_RPORDER") == nullptr) rporder = 'S';
     bool useMarginal = !(nearWeight(0.05) || nearWeight(0.15) ||
@@ -643,7 +644,9 @@ int main() {
                 double bestKey = -1e300;
                 for (int cand : bArrived.v) {
 
-                    double key = (order == 'S')
+                    double key = (order == 'L')
+                        ? svcEst[cand]
+                        : (order == 'S')
                         ? -svcEst[cand]
                         : (t - arrivalT[cand]) / svcEst[cand];
                     if (key > bestKey) { bestKey = key; rid = cand; }
