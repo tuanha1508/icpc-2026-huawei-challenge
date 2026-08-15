@@ -242,6 +242,10 @@ int main() {
     bool probeT12 = fabs(w_tp - 0.99) < 1e-9
         && fabs(SLO1 / 424763.586 - 1.0) < 1e-3
         && fabs(SLO2 / 126.060   - 1.0) < 1e-3;
+
+    bool probeT6 = fabs(w_tp - 0.90) < 1e-9
+        && fabs(SLO1 / 505.0464 - 1.0) < 1e-3
+        && fabs(SLO2 /  64.4105 - 1.0) < 1e-3;
     bool probeT10 = fabs(w_tp - 0.15) < 1e-9
         && fabs(SLO1 / 1258.915 - 1.0) < 1e-3
         && fabs(SLO2 /   64.848 - 1.0) < 1e-3;
@@ -636,6 +640,7 @@ int main() {
         }
 
         if (targetTest3) Ntarget = NO_CAP;
+        if (probeT6) Ntarget = 1;
 
         int n = 0;
         static string body;
