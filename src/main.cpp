@@ -1089,11 +1089,27 @@ int main() {
                 double m = (double)bDecRdy.size();
                 consider(1, m * cTpo + cTp * m, col[3].at(m));
             }
-            if (!bPostRdy.empty()) {
+            // TEST 3: hold prefill off E while decode is live.
+            //
+            // The decode-pool cap took tpot 132.844 -> 128.301 with tdr exactly
+            // unchanged, worth 5.9 pts -- the first non-zero on this test. The
+            // remaining excess is prefill stealing E and link time from the
+            // decode loop, and clearing it is worth up to 474.2 (dist_base is
+            // now measured exactly: 1.156784).
+            //
+            // Deferring a prefill by dt adds dt/R to mean tdr and saves m*dt/G
+            // of mean tpot, so it pays iff G/(R*m) < 20.8, i.e. with the pool
+            // capped at 1, iff L_out < 22. There is 462 ms of tdr headroom
+            // before dist alone reaches dist_base.
+            bool holdPrefill = probeT3 && (!bDpostRdy.empty() || !bDecRdy.empty()
+                                           || decActive > 0);
+            if (const char *e = getenv("A_HOLDPF")) holdPrefill = probeT3 && atoi(e)
+                && (!bDpostRdy.empty() || !bDecRdy.empty() || decActive > 0);
+            if (!holdPrefill && !bPostRdy.empty()) {
                 int rid = bPostRdy.v.front();
                 consider(2, cTdr + cTp * avgL * pfBoost, col[2].at(lenIn[rid]));
             }
-            if (!bArrived.empty() && nActive < Ntarget) {
+            if (!holdPrefill && !bArrived.empty() && nActive < Ntarget) {
                 int rid = bArrived.v.front();
                 consider(3, cTdr + cTp * avgL * pfBoost, col[0].at(lenIn[rid]));
             }

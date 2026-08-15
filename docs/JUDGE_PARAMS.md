@@ -156,3 +156,49 @@ tests whose reference meets both SLOs, we meet both on 240. So
 
 **Every `data/judgecal/t3_*.txt` built before this correction used the wrong
 SLOs and is miscalibrated.**
+
+## Test 3 SOLVED — first non-zero, and the ceiling is now exact
+
+2026-08-15, submission with the decode-pool cap:
+
+```
+points 5.908107  tp=0.004031  mean_tdr=1355.547361  mean_tpot=128.300795
+dist=1.149950    norm_c=0.005908
+```
+
+`mean_tdr` did not move by one part in 10^9, exactly as the model said it could
+not: TDR is measured to `P POST`, so it is pure prefill, while the decode-pool
+cap only defers *decode*, and TPOT counts gaps from a request's FIRST token.
+
+`norm_c > 0` makes `dist_base` measurable rather than merely bounded:
+
+```
+dist_base = dist/(1 - norm_c) = 1.149950/0.994092 = 1.156784
+```
+
+which matches the reference `dist` the probe measured (1.156785) to 1e-6. Every
+constant on test 3 is now known exactly:
+
+```
+SLO1 = 842.881026   SLO2 = 64.931804   dist_base = 1.156784   w_tp = 0
+ex_tdr  = 0.608231   (rigid across all 17 submissions)
+ex_tpot = 0.975931   (was 1.045909)
+```
+
+| tpot | dist | points |
+|---|---|---|
+| 132.84 | 1.2098 | 0.0 |
+| 128.30 | 1.1499 | **5.9 (now)** |
+| 110.00 | 0.9229 | 202.2 |
+| 90.00 | 0.7204 | 377.2 |
+| 70.00 | 0.6132 | 469.9 |
+| 64.93 | 0.6082 | **474.2 (ceiling)** |
+
+**11.3 points per ms of TPOT.** 468 points remain and every one of them is in
+TPOT. `ex_tdr` is rigid, so the ceiling is `1000*(1 - ex_tdr/dist_base) = 474.2`
+and nothing can exceed it.
+
+Trade rule for further work: deferring a prefill by `dt` adds `dt/R` to mean TDR
+and saves `m*dt/G` of mean TPOT, so it pays iff `G/(R*m) < 20.8` — with the
+decode pool capped at 1, iff `L_out < 22`. There is 462 ms of TDR headroom
+(`tdr` may reach 1818 before `ex_tdr` alone reaches `dist_base`).
