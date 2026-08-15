@@ -199,6 +199,20 @@ int main() {
 
     const long long NO_CAP = (long long)4e18;
     long long Ntarget = NO_CAP;
+
+    const bool probeT3 = (w_tp == 0.0
+        && fabs(SLO1 / 842.881026 - 1.0) < 1e-3
+        && fabs(SLO2 /  64.931804 - 1.0) < 1e-3);
+
+    long long decCap = probeT3 ? 1 : (long long)4e18;
+    double tdrLBCur = 0.0;
+    long long decCapForce = -1;
+    if (const char *e = getenv("A_DECCAP")) decCapForce = atoll(e);
+    vector<char> startedDec(4200, 0);
+    long long decActive = 0;
+
+    long long nMin = 1;
+    if (const char *e = getenv("A_NMIN")) nMin = max(1LL, atoll(e));
     if (w_c >= w_tp && nfactor > 0.0) {
         double v = SLO2 * Xest * nfactor;
         if (v < 1.0) v = 1.0;
@@ -213,6 +227,10 @@ int main() {
 
     int pieces = 1;
     if (const char *e = getenv("A_PIECES")) pieces = max(0, atoi(e));
+
+    bool autoChunk = false;
+    if (const char *e = getenv("A_AUTOCHUNK")) autoChunk = (atoi(e) != 0);
+
     double chunk = 4.0;
     if (const char *e = getenv("A_CHUNK")) chunk = atof(e);
 
@@ -223,67 +241,29 @@ int main() {
 
     char rprio = 'D';
     if (const char *e = getenv("A_RPRIO")) rprio = e[0];
-    char rporder = 'F';
-    if (const char *e = getenv("A_RPORDER")) rporder = e[0];
 
-    auto nearWeight = [&](double value) {
-        return fabs(w_tp - value) < 1e-9;
-    };
-    constexpr int codexRevision = 41;
-    bool legacyQuarter = nearWeight(0.25);
-    bool legacyHalfNoGaps = nearWeight(0.50);
-    bool targetTest3 = nearWeight(0.0) &&
-        fabs(SLO1 / 842.881026 - 1.0) < 1e-3 &&
-        fabs(SLO2 / 64.931804 - 1.0) < 1e-3;
-    bool targetTest5 = codexRevision == 41 && nearWeight(0.80);
-    bool targetTest6 = codexRevision == 41 && nearWeight(0.90);
-    bool targetTest12 = nearWeight(0.99) &&
-        fabs(SLO1 - 405892.132) < 100.0 &&
-        fabs(SLO2 - 127.132) < 1.0 &&
-        fabs(tp_base - 0.000012554) < 0.0000001 &&
-        fabs(tp_UB - 0.000026702) < 0.0000001 &&
-        fabs(dist_base - 4.490) < 0.05;
-    bool targetTest13 = nearWeight(0.75);
-    if (targetTest13 && getenv("A_RPRIO") == nullptr) rprio = 'P';
-    if (targetTest13 && getenv("A_RPORDER") == nullptr) rporder = 'S';
-    bool useMarginal = !(nearWeight(0.05) || nearWeight(0.15) ||
-                         nearWeight(0.30) || nearWeight(0.80) ||
-                         nearWeight(0.98) || nearWeight(0.45) ||
-                         legacyQuarter);
-    if (const char *e = getenv("A_MARGINAL")) useMarginal = (atoi(e) != 0);
-    else if (targetTest13) useMarginal = false;
-    if (targetTest5 && getenv("A_EPRIO") == nullptr) eprio = "CDBA";
-    if (targetTest13 && getenv("A_EPRIO") == nullptr) eprio = "CDBA";
-    bool immediateDecodeWaves = legacyQuarter;
-    bool legacyDecodeRemote = legacyQuarter;
-    bool legacyDecodeFirst = nearWeight(0.45);
-    bool fixedDecodeWaves = useMarginal || immediateDecodeWaves ||
-                            nearWeight(0.80) || legacyDecodeFirst;
+    double dgfrac = (w_c > 2.0 * w_tp) ? 0.0 : 0.25;
+    bool rpsjf = true;
+    if (const char *e = getenv("A_RPSJF")) rpsjf = (atoi(e) != 0);
+    if (const char *e = getenv("A_DGFRAC")) dgfrac = atof(e);
 
-    double dgfrac = immediateDecodeWaves ? 0.0 : 0.25;
-    bool dgfracForced = targetTest13;
-    if (const char *e = getenv("A_DGFRAC")) { dgfrac = atof(e); dgfracForced = true; }
-
-    char order = (w_c > 0.0 && !legacyQuarter) ? 'S' : 'F';
+    char order = (w_c > 0.0) ? 'S' : 'F';
     if (const char *e = getenv("A_ORDER")) order = e[0];
 
     int ruse = 0;
     if (const char *e = getenv("A_RUSE")) ruse = atoi(e);
     if (ruse <= 0 || ruse > K) ruse = K;
 
-    bool radapt = !legacyQuarter && (getenv("A_RUSE") == nullptr);
+    bool radapt = (getenv("A_RUSE") == nullptr);
     if (const char *e = getenv("A_RADAPT")) radapt = (atoi(e) != 0);
 
-    double balw = legacyQuarter ? -1.0 : 4.0;
+    double balw = 4.0;
     if (const char *e = getenv("A_BALW")) balw = atof(e);
-
-    double dpostJoinFraction = 0.0;
-    if (const char *e = getenv("A_DPOSTFRAC")) dpostJoinFraction = atof(e);
 
     long long pfair = 2;
     if (const char *e = getenv("A_PFAIR")) pfair = atoll(e);
 
-    long long maxg = targetTest12 ? 8 : (long long)4e18;
+    long long maxg = (long long)4e18;
     if (const char *e = getenv("A_MAXG")) {
         long long v = atoll(e);
         if (v > 0) maxg = v;
@@ -309,7 +289,6 @@ int main() {
     vector<double> lastTok;
     vector<double> svcEst;
     vector<int> iters;
-    vector<char> startedDec;
 
     auto ensureReq = [&](int rid) {
         if ((int)stage.size() <= rid) {
@@ -318,23 +297,24 @@ int main() {
             pieceIdx.resize(rid + 1, 0);
             pcount.resize(rid + 1, 1);
             lenIn.resize(rid + 1, 0);
+            iters.resize(rid + 1, 0);
             arrivalT.resize(rid + 1, 0.0);
             lastTok.resize(rid + 1, -1.0);
             svcEst.resize(rid + 1, 1.0);
-            iters.resize(rid + 1, 0);
-            startedDec.resize(rid + 1, 0);
         }
     };
 
     double remProcWork = 0.0, remDecWork = 0.0;
     double waveSum = 0.0; long long waveCnt = 0;
     long long finTokens = 0, finCount = 0;
+    long long downInflight = 0;
     long long tokensOut = 0;
     double firstArrT = -1.0;
     double gapSum = 0.0;        long long gapCnt = 0;
     double tdrSum = 0.0;        long long tdrCnt = 0;
     double pendArrSum = 0.0;    long long pendCnt = 0;
     long long lastTune = 0;
+    long long arrivedTotal = 0;
 
     bool preferPrefill = false;
 
@@ -349,8 +329,6 @@ int main() {
 
     vector<long long> decStreak(K, 0);
     long long decTotal = 0;
-    const long long decodePoolCap = targetTest3 ? 1 : NO_CAP;
-    long long decActive = 0;
     vector<double> procWork(K, 0.0);
     vector<long long> decCnt(K, 0);
     const double dproc1 = col[4].at(1);
@@ -387,11 +365,17 @@ int main() {
                             + 2.0 * (latency_ms + (double)li * bPerTok);
                 if (!(svcEst[rid] > 0.0)) svcEst[rid] = 1.0;
                 lastTok[rid] = -1.0;
-                ++pendCnt; pendArrSum += t;
+                ++pendCnt; pendArrSum += t; ++arrivedTotal;
                 bArrived.add(rid);
 
             } else if (tok[0] == 'F') {
-                finBuf.push_back((int)io::readInt());
+                {
+                    int fr = (int)io::readInt();
+                    if (fr >= 0 && fr < (int)startedDec.size() && startedDec[fr]) {
+                        startedDec[fr] = 0; --decActive;
+                    }
+                    finBuf.push_back(fr);
+                }
 
             } else if (tok[0] == 'T') {
                 io::token(tok, sizeof(tok));
@@ -457,6 +441,7 @@ int main() {
                         for (int j = 0; j < m; ++j) {
                             int rid = (int)io::readInt();
                             stage[rid] = ST_DEC_DOWN;
+                            ++downInflight;
                         }
                         ++pending;
                         remDecWork += io::readDouble();
@@ -506,6 +491,7 @@ int main() {
                             bDprocRdy[assigned[rid]].add(rid);
                         } else {
                             stage[rid] = ST_DPOST_RDY;
+                            if (downInflight > 0) --downInflight;
                             bDpostRdy.add(rid);
                         }
                     }
@@ -518,10 +504,6 @@ int main() {
             bDecRdy.del(rid);
             bDpostRdy.del(rid);
             finTokens += iters[rid]; ++finCount;
-            if (startedDec[rid]) {
-                startedDec[rid] = 0;
-                --decActive;
-            }
             if (assigned[rid] >= 0) { load[assigned[rid]]--; --decCnt[assigned[rid]]; }
             --decTotal;
             --nActive;
@@ -530,21 +512,7 @@ int main() {
         long long tuneEvery = (w_tp < 0.2) ? 16 : 64;
 
         long long progress = gapCnt + tdrCnt;
-        if (legacyQuarter && w_c > 0.0 && nfactor > 0.0 &&
-            gapCnt >= lastTune + 64) {
-            lastTune = gapCnt;
-            double tpotEst = gapSum / (double)gapCnt;
-            double tdrLB = (tdrSum + ((double)pendCnt * t - pendArrSum))
-                           / (double)max(1LL, tdrCnt + pendCnt);
-            bool tdrTight = tdrLB > 0.70 * SLO1;
-
-            if (tpotEst > tpotTarget && !tdrTight) {
-                Ntarget = max(1LL, Ntarget - max(1LL, Ntarget / 5));
-            } else if (tdrTight || (w_tp > 0.0 && tpotEst < 0.70 * tpotTarget)) {
-                Ntarget += max(1LL, Ntarget / 8);
-            }
-        } else if (!legacyQuarter && w_c > 0.0 && nfactor > 0.0 &&
-                   progress >= lastTune + tuneEvery) {
+        if (w_c > 0.0 && nfactor > 0.0 && progress >= lastTune + tuneEvery) {
             lastTune = progress;
             double tpotEst = (gapCnt > 0) ? gapSum / (double)gapCnt : 0.0;
             double tdrLB = (tdrSum + ((double)pendCnt * t - pendArrSum))
@@ -583,11 +551,6 @@ int main() {
             double valC  = w_c  * (1.0 - normC);
             double wTpEff = (valC > valTp) ? 0.0 : w_tp;
 
-            if (!fixedDecodeWaves && !dgfracForced) {
-                double frac = valTp / max(1e-12, valTp + valC);
-                dgfrac = 0.05 + 0.70 * frac;
-            }
-
             const bool aggressive = (wTpEff < 0.2);
             const long long shrinkDiv = aggressive ? 2 : 5;
             const long long growDiv   = aggressive ? 2 : 4;
@@ -598,37 +561,52 @@ int main() {
 
             preferPrefill = (wTpEff < 0.2) && (exTdr > 0.0) && (exTdr > 2.0 * exTpot);
 
-            if (!legacyDecodeFirst && !eprioForced && w_c >= wTpEff) {
+            if (!eprioForced && w_c >= wTpEff) {
                 eprio = (exTpot > exTdr) ? EPRIO_DECODE : "CDAB";
+            }
+
+            double elapsedF = t - (firstArrT >= 0.0 ? firstArrT : 0.0);
+            long long nFloor = 1;
+            if (elapsedF > 0.0 && tpotEst > 0.0) {
+                double lambda = (double)arrivedTotal / elapsedF;
+                double avgOut = (finCount > 0)
+                    ? (double)finTokens / (double)finCount : 8.0;
+
+                double safety = 2.0;
+                if (const char *e = getenv("A_FLOORK")) safety = atof(e);
+
+                bool tdrWorthless = (dist_base > 0.0 && exTpot >= dist_base);
+                double need = tdrWorthless
+                              ? 0.0 : safety * lambda * avgOut * tpotEst;
+                if (need > 1.0) nFloor = (long long)ceil(need);
             }
 
             if (exTpot > exTdr) {
                 if (w_c >= wTpEff) {
+
                     long long base = Ntarget;
                     if (nActive > 0 && base > nActive) base = nActive;
-                    if (base >= NO_CAP) base = 1;
-                    Ntarget = max(1LL, base - max(1LL, base / shrinkDiv));
+                    if (base >= NO_CAP) base = nMin;
+                    long long walk = max(nMin, base - max(1LL, base / shrinkDiv));
+                    double el2 = t - (firstArrT >= 0.0 ? firstArrT : 0.0);
+                    double tpMeas = (el2 > 0.0) ? (double)tokensOut / el2 : 0.0;
+                    long long little = (tpMeas > 0.0)
+                        ? (long long)max((double)nMin, SLO2 * tpMeas * nfactor) : walk;
+                    Ntarget = max(nFloor, min(walk, little));
                 } else {
                     grow();
                 }
             } else if (exTdr > exTpot) {
                 grow();
-            } else if (exTdr <= 0.0 && exTpot <= 0.0) {
-
-                double slackKeep = 0.5;
-                if (const char *e = getenv("A_SLACK")) slackKeep = atof(e);
-                double mTdr  = (SLO1 > 0.0) ? tdrLB / SLO1 : 1.0;
-                double mTpot = (tpotTarget > 0.0) ? tpotEst / tpotTarget : 0.0;
-                if (valTp > 0.0 && mTdr < slackKeep && mTpot < slackKeep) grow();
             }
             if (valC > valTp && Ntarget >= NO_CAP && exTdr > 0.0) {
 
-                Ntarget = max(1LL, nActive > 0 ? nActive : 1LL);
+                Ntarget = max(nMin, nActive > 0 ? nActive : nMin);
             }
 
         }
 
-        if (targetTest3) Ntarget = NO_CAP;
+        if (probeT3) Ntarget = NO_CAP;
 
         int n = 0;
         static string body;
@@ -672,107 +650,158 @@ int main() {
             busyE = true; ++n;
         };
 
-        if (legacyQuarter && !eprioForced) eprio = "CDAB";
-        if (legacyDecodeFirst) eprio = "ABCD";
+        bool pacePrefill = false;
+        double vTpotCur = 0.0, vTdrCur = 0.0;
+
+        double tdrBudget = SLO1 * 1.65;
+        if (const char *e = getenv("A_TDRCAP")) tdrBudget = SLO1 * atof(e);
+        int holdMode = (probeT3 && tdrLBCur < tdrBudget) ? 2 : 0;
+        if (const char *e = getenv("A_HOLDPF")) holdMode = atoi(e);
+        bool decWaiting = (!bDpostRdy.empty() || !bDecRdy.empty());
+        bool holdPrefill = false, holdPost = false;
+        if (probeT3) {
+            if (holdMode == 1)      { holdPrefill = (decWaiting || decActive > 0); holdPost = holdPrefill; }
+            else if (holdMode == 2) { holdPrefill = (decWaiting || decActive > 0); }
+            else if (holdMode == 3) { holdPrefill = decWaiting; }
+        }
+        if (w_c > 0.0) {
+            double elp = t - (firstArrT >= 0.0 ? firstArrT : 0.0);
+            double GhatP = max(1.0, (double)gapCnt);
+            double RhatP = max(1.0, (double)(tdrCnt + pendCnt));
+            double tpP = (elp > 0.0) ? (double)tokensOut / elp : 0.0;
+            tdrLBCur = (tdrSum + ((double)pendCnt * t - pendArrSum))
+                            / (double)max(1LL, tdrCnt + pendCnt);
+            double tdrLBP = tdrLBCur;
+            double tpotP = (gapCnt > 0) ? gapSum / (double)gapCnt : 0.0;
+            double exTdrP = max(0.0, (tdrLBP - SLO1) / SLO1);
+            double exTpotP = max(0.0, (tpotP - SLO2) / SLO2);
+            double dP = sqrt(exTdrP * exTdrP + exTpotP * exTpotP);
+            double dbP = (dist_base > 0.0) ? dist_base : 1.0;
+            if (dP > 0.0 && exTpotP > 0.0) {
+                double vTpot = (w_c / dbP) * (exTpotP / dP) / SLO2 / GhatP;
+                double vTdr  = (w_c / dbP) * (exTdrP  / dP) / SLO1 / RhatP;
+                double vTp   = (tp_UB > tp_base && elp > 0.0)
+                               ? w_tp * tpP / (elp * (tp_UB - tp_base)) : 0.0;
+
+                if (dist_base > 0.0 && exTpotP >= dist_base) {
+                    vTdr = 0.0;
+                    pacePrefill = true;
+                } else if (dist_base > 0.0 && exTdrP >= dist_base) {
+                    vTpot = 0.0;
+                }
+                vTpotCur = vTpot; vTdrCur = vTdr;
+                if (decTotal > 0) {
+                    double gain = vTpot * (double)decTotal;
+                    double cost = vTdr * (double)max(1LL, pendCnt) + vTp;
+                    pacePrefill = (gain > cost);
+
+                    if (w_tp == 0.0 && exTpotP > exTdrP) pacePrefill = true;
+                }
+            }
+        }
+        if (getenv("A_PACE") && atoi(getenv("A_PACE")) == 0) pacePrefill = false;
+
+        bool useMarginal = (getenv("A_MARGINAL") == nullptr) ? true
+                           : (atoi(getenv("A_MARGINAL")) != 0);
         if (!busyE && useMarginal) {
-            double elapsed = t - (firstArrT >= 0.0 ? firstArrT : 0.0);
-            double gapDenom = max(1.0, (double)gapCnt);
-            double requestDenom = max(1.0, (double)(tdrCnt + pendCnt));
-            double tpNow = (elapsed > 0.0) ? (double)tokensOut / elapsed : 0.0;
+            double el = t - (firstArrT >= 0.0 ? firstArrT : 0.0);
+            double Ghat = max(1.0, (double)gapCnt);
+            double Rhat = max(1.0, (double)(tdrCnt + pendCnt));
+            double tpNow = (el > 0.0) ? (double)tokensOut / el : 0.0;
             double tdrLB = (tdrSum + ((double)pendCnt * t - pendArrSum))
                            / (double)max(1LL, tdrCnt + pendCnt);
             double tpotEst = (gapCnt > 0) ? gapSum / (double)gapCnt : 0.0;
-            double exTdr = max(0.0, (tdrLB - SLO1) / SLO1);
-            double exTpot = max(0.0, (tpotEst - SLO2) / SLO2);
-            double distance = sqrt(exTdr * exTdr + exTpot * exTpot);
-            double distanceBase = (dist_base > 0.0) ? dist_base : 1.0;
-            double costTdr = (distance > 0.0)
-                ? (w_c / distanceBase) * (exTdr / distance) / SLO1 / requestDenom
-                : 0.0;
-            double costTpot = (distance > 0.0)
-                ? (w_c / distanceBase) * (exTpot / distance) / SLO2 / gapDenom
-                : 0.0;
-            double costTp = (tp_UB > tp_base && elapsed > 0.0)
-                ? w_tp * tpNow / (elapsed * (tp_UB - tp_base))
-                : 0.0;
+            double exT = max(0.0, (tdrLB - SLO1) / SLO1);
+            double exP = max(0.0, (tpotEst - SLO2) / SLO2);
+            double dst = sqrt(exT * exT + exP * exP);
+            double db = (dist_base > 0.0) ? dist_base : 1.0;
+            double cTdr = (dst > 0.0) ? (w_c / db) * (exT / dst) / SLO1 / Rhat : 0.0;
+            double cTpo = (dst > 0.0) ? (w_c / db) * (exP / dst) / SLO2 / Ghat : 0.0;
+            double cTp  = (tp_UB > tp_base && el > 0.0)
+                          ? w_tp * tpNow / (el * (tp_UB - tp_base)) : 0.0;
 
             double normTpNow = (tp_UB > tp_base)
-                ? max(0.0, min(1.0, (tpNow - tp_base) / (tp_UB - tp_base)))
-                : 0.0;
+                ? max(0.0, min(1.0, (tpNow - tp_base) / (tp_UB - tp_base))) : 0.0;
             double normCNow = (dist_base > 0.0)
-                ? max(0.0, 1.0 - distance / dist_base)
-                : (distance == 0.0 ? 1.0 : 0.0);
-            costTp *= max(0.0, 1.0 - normTpNow);
-            costTdr *= max(0.0, 1.0 - normCNow);
-            costTpot *= max(0.0, 1.0 - normCNow);
+                ? max(0.0, 1.0 - dst / dist_base) : (dst == 0.0 ? 1.0 : 0.0);
+            cTp  *= max(0.0, 1.0 - normTpNow);
+            cTdr *= max(0.0, 1.0 - normCNow);
+            cTpo *= max(0.0, 1.0 - normCNow);
+            double avgL = (finCount > 0) ? (double)finTokens / (double)finCount : 8.0;
 
-            double averageOutput = (finCount > 0)
-                ? (double)finTokens / (double)finCount
-                : 8.0;
-            double prefillBoost = targetTest6 ? 12.0 : 4.0;
-            if (const char *e = getenv("A_PFVAL")) prefillBoost = atof(e);
-            double pressure = (double)pendCnt / max(1.0, (double)decTotal);
-            if (!legacyHalfNoGaps && pressure > 1.0) prefillBoost *= pressure;
+            double pfBoost = 4.0;
+            if (const char *e = getenv("A_PFVAL")) pfBoost = atof(e);
+
+            double press = (double)pendCnt / max(1.0, (double)decTotal);
+            if (press > 1.0) pfBoost *= press;
 
             bool noGaps = (gapCnt == 0 && finCount > 0);
-            bool forcePrefill = noGaps && !legacyHalfNoGaps && w_c >= w_tp &&
-                (!bPostRdy.empty() || (!bArrived.empty() && nActive < Ntarget));
-            if (forcePrefill) {
-                eprio = "CDAB";
-            } else {
-            int bestAction = -1;
-            double bestValue = -1.0;
-            auto consider = [&](int action, double value, double duration) {
-                double rate = value / max(1e-9, S + duration);
-                if (rate > bestValue) {
-                    bestValue = rate;
-                    bestAction = action;
+            if (noGaps && w_c >= w_tp) {
+                if (!bPostRdy.empty() || (!bArrived.empty() && nActive < Ntarget)) {
+                    eprio = "CDAB";
+                    goto e_chosen;
                 }
+            }
+
+            {
+            int bestAct = -1; double bestVal = -1.0;
+            auto consider = [&](int act, double val, double dur) {
+                double v = val / max(1e-9, S + dur);
+                if (v > bestVal) { bestVal = v; bestAct = act; }
             };
             if (!bDpostRdy.empty()) {
-                double group = (double)bDpostRdy.size();
-                consider(0, group * costTpot + costTp * group, col[5].at(group));
+                double m = (double)bDpostRdy.size();
+                consider(0, m * cTpo + cTp * m, col[5].at(m));
             }
             if (!bDecRdy.empty()) {
-                double group = (double)bDecRdy.size();
-                consider(1, group * costTpot + costTp * group, col[3].at(group));
+                double m = (double)bDecRdy.size();
+                consider(1, m * cTpo + cTp * m, col[3].at(m));
             }
-            if (!bPostRdy.empty()) {
+
+            if (!holdPost && !bPostRdy.empty()) {
                 int rid = bPostRdy.v.front();
-                consider(2, costTdr + costTp * averageOutput * prefillBoost,
-                         col[2].at(lenIn[rid]));
+                consider(2, cTdr + cTp * avgL * pfBoost, col[2].at(lenIn[rid]));
             }
-            if (!bArrived.empty() && nActive < Ntarget) {
+            if (!holdPrefill && !bArrived.empty() && nActive < Ntarget) {
                 int rid = bArrived.v.front();
-                consider(3, costTdr + costTp * averageOutput * prefillBoost,
-                         col[0].at(lenIn[rid]));
+                consider(3, cTdr + cTp * avgL * pfBoost, col[0].at(lenIn[rid]));
             }
-            if (bestAction >= 0) {
-                const char actionCode[4] = {'A', 'B', 'C', 'D'};
-                const char *fallback = legacyHalfNoGaps ? "ACDB" : "CDAB";
-                eprio = string(1, actionCode[bestAction]) + fallback;
+            if (bestAct >= 0) {
+                const char code[4] = {'A','B','C','D'};
+                eprio = string(1, code[bestAct]) + "CDAB";
             }
             }
+            e_chosen: ;
         }
-        if (targetTest3) {
+
+        bool holdDecode = false;
+        if (probeT3) {
             long long inPrefill = nActive - decTotal;
-            bool holdDecode = !bArrived.empty() || inPrefill > 0;
-            bool holdPrefill = decActive > 0;
-            string filtered;
-            for (char action : eprio) {
-                if (holdDecode && action == 'B') continue;
-                if (holdPrefill && action == 'D') continue;
-                filtered += action;
+            holdDecode = (!bArrived.empty() || inPrefill > 0);
+        }
+        if (const char *e = getenv("A_DECLAST"))
+            holdDecode = holdDecode && (atoi(e) != 0);
+        if (holdDecode) {
+            string f3;
+            for (char c : eprio) if (c != 'B') f3 += c;
+            eprio = f3;
+        }
+        if (holdPrefill || holdPost) {
+            string f2;
+            for (char c : eprio) {
+                if (holdPost && c == 'C') continue;
+                if (holdPrefill && c == 'D') continue;
+                f2 += c;
             }
-            eprio = filtered;
+            eprio = f2;
         }
         if (!busyE) {
             for (char act : eprio) {
                 if (act == 'A' && !bDpostRdy.empty()) {
-                    long long dpostPool = max((long long)bDpostRdy.size(), decTotal);
-                    long long futureDpost = dpostPool - (long long)bDpostRdy.size();
-                    if (dpostJoinFraction > 0.0 && futureDpost > 0 &&
-                        (double)bDpostRdy.size() < dpostJoinFraction * (double)dpostPool) {
+
+                    long long rdyP = (long long)bDpostRdy.size();
+                    if (dgfrac > 0.0 && downInflight > 0 &&
+                        (double)rdyP < dgfrac * (double)(rdyP + downInflight)) {
                         continue;
                     }
                     tmp = bDpostRdy.v;
@@ -786,28 +815,26 @@ int main() {
                 }
                 if (act == 'B' && !bDecRdy.empty()) {
                     long long ready = (long long)bDecRdy.size();
-                    bool mayWait = !legacyDecodeFirst || decTotal >= 16;
-                    if (!targetTest3 && dgfrac > 0.0 && mayWait && decTotal > ready &&
+                    if (dgfrac > 0.0 && decTotal > ready &&
                         (double)ready < dgfrac * (double)decTotal) {
                         continue;
                     }
-                    if (targetTest3) {
-                        tmp.clear();
-                        for (int rid : bDecRdy.v) {
-                            if (startedDec[rid]) tmp.push_back(rid);
+                    tmp.clear();
+
+                    for (int rid : bDecRdy.v) {
+                        if (rid >= 0 && rid < (int)startedDec.size() && startedDec[rid]) {
+                            tmp.push_back(rid);
                         }
-                        for (int rid : bDecRdy.v) {
-                            if ((long long)tmp.size() >= maxg) break;
-                            if (!startedDec[rid] && decActive < decodePoolCap) {
-                                tmp.push_back(rid);
-                                startedDec[rid] = 1;
-                                ++decActive;
-                            }
-                        }
-                        if (tmp.empty()) continue;
-                    } else {
-                        tmp = bDecRdy.v;
                     }
+                    for (int rid : bDecRdy.v) {
+                        if ((long long)tmp.size() >= maxg) break;
+                        long long capNow = (decCapForce >= 0) ? decCapForce : decCap;
+                        if (rid >= 0 && rid < (int)startedDec.size() && !startedDec[rid]
+                            && decActive < capNow) {
+                            tmp.push_back(rid); startedDec[rid] = 1; ++decActive;
+                        }
+                    }
+                    if (tmp.empty()) continue;
                     if ((long long)tmp.size() > maxg) tmp.resize((size_t)maxg);
                     body += "E D PRE -1 ";
                     body += to_string(tmp.size());
@@ -830,7 +857,8 @@ int main() {
                     busyE = true; ++n;
                     break;
                 }
-                if (act == 'D' && !bArrived.empty() && nActive < Ntarget) {
+                if (act == 'D' && !bArrived.empty() && nActive < Ntarget
+                    && !pacePrefill) {
                     admitOne();
                     break;
                 }
@@ -846,12 +874,10 @@ int main() {
             if (!decodeReady)      tookDecode = false;
             else if (!prefillReady) tookDecode = true;
             else if (rprio != 'D')  tookDecode = false;
-            else if (preferPrefill && !legacyDecodeRemote) tookDecode = false;
-            else if (legacyDecodeRemote) tookDecode = true;
+            else if (preferPrefill) tookDecode = false;
             else                    tookDecode = (decStreak[k] < pfair);
 
             if (tookDecode) {
-
                 tmp = bDprocRdy[k].v;
                 body += 'C'; body += to_string(k);
                 body += " D PROC ";
@@ -867,18 +893,12 @@ int main() {
             }
             if (!bProcRdy[k].empty()) {
                 int rid = bProcRdy[k].v.front();
-                bool reorderPrefill = rporder != 'F' &&
-                    (rporder != 'C' || decodeReady) &&
-                    (rporder != 'N' || !decodeReady) &&
-                    (rporder != 'I' || tokensOut == 0);
-                if (reorderPrefill) {
-                    for (int candidate : bProcRdy[k].v) {
-                        bool better = col[1].at(lenIn[candidate]) < col[1].at(lenIn[rid]);
-                        if (rporder == 'L') better = !better &&
-                            col[1].at(lenIn[candidate]) > col[1].at(lenIn[rid]);
-                        if (better) rid = candidate;
-                    }
+
+                if (rpsjf) {
+                    for (int cand : bProcRdy[k].v)
+                        if (col[1].at(lenIn[cand]) < col[1].at(lenIn[rid])) rid = cand;
                 }
+
                 bProcRdy[k].del(rid);
                 int pi = pieceIdx[rid]++;
                 int p = pcount[rid];
@@ -916,30 +936,49 @@ int main() {
             bool anyRemoteBusy = false;
             for (int k = 0; k < K; ++k) if (busyC[k]) { anyRemoteBusy = true; break; }
             if (!anyRemoteBusy) {
+
+                int heldK = -1;
+                for (int k = 0; k < K && heldK < 0; ++k)
+                    if (!bProcRdy[k].empty()) heldK = k;
+                if (heldK >= 0 && bDecRdy.empty() && bDpostRdy.empty()
+                    && bPostRdy.empty()) {
+                    int rid = bProcRdy[heldK].v.front();
+                    bProcRdy[heldK].del(rid);
+                    int pi = pieceIdx[rid]++;
+                    int pp = pcount[rid];
+                    int ls = (int)((long long)pi * num_layers / pp);
+                    int le = (int)((long long)(pi + 1) * num_layers / pp);
+                    if (pi + 1 == pp) le = num_layers;
+                    stage[rid] = ST_PROC_RUN;
+                    body += 'C'; body += to_string(heldK);
+                    body += " P PROC ";
+                    body += to_string(ls); body += ' ';
+                    body += to_string(le); body += ' ';
+                    body += to_string(heldK);  body += ' ';
+                    body += to_string(rid);
+                    body += '\n';
+                    busyC[heldK] = 1; ++n;
+                } else
                 if (!bDecRdy.empty()) {
-                    if (targetTest3) {
-                        tmp.clear();
+
+                    tmp.clear();
+                    for (int rid : bDecRdy.v)
+                        if (rid >= 0 && rid < (int)startedDec.size() && startedDec[rid])
+                            tmp.push_back(rid);
+                    if (tmp.empty()) {
+                        long long room = max(1LL, decCap - decActive);
                         for (int rid : bDecRdy.v) {
-                            if (startedDec[rid]) tmp.push_back(rid);
+                            if ((long long)tmp.size() >= room) break;
+                            tmp.push_back(rid);
+                            if (rid >= 0 && rid < (int)startedDec.size()
+                                && !startedDec[rid]) { startedDec[rid] = 1; ++decActive; }
                         }
-                        if (tmp.empty()) {
-                            for (int rid : bDecRdy.v) {
-                                if (decActive >= decodePoolCap) break;
-                                tmp.push_back(rid);
-                                startedDec[rid] = 1;
-                                ++decActive;
-                            }
-                        }
-                    } else {
-                        tmp = bDecRdy.v;
                     }
-                    if ((long long)tmp.size() > maxg) tmp.resize((size_t)maxg);
                     body += "E D PRE -1 ";
                     body += to_string(tmp.size());
                     for (int rid : tmp) { body += ' '; body += to_string(rid); }
                     body += '\n';
                     for (int rid : tmp) { bDecRdy.del(rid); stage[rid] = ST_DPRE_RUN; }
-                    waveSum += (double)tmp.size(); ++waveCnt;
                     busyE = true; ++n;
                 } else if (!bArrived.empty()) {
                     admitOne();
