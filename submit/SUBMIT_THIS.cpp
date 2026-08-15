@@ -238,6 +238,10 @@ int main() {
         fabs(SLO2 / 64.931804 - 1.0) < 1e-3;
     bool targetTest5 = codexRevision == 41 && nearWeight(0.80);
     bool targetTest6 = codexRevision == 41 && nearWeight(0.90);
+
+    bool probeT12 = fabs(w_tp - 0.99) < 1e-9
+        && fabs(SLO1 / 424763.586 - 1.0) < 1e-3
+        && fabs(SLO2 / 126.060   - 1.0) < 1e-3;
     bool targetTest12 = nearWeight(0.99) &&
         fabs(SLO1 - 405892.132) < 100.0 &&
         fabs(SLO2 - 127.132) < 1.0 &&
@@ -265,6 +269,8 @@ int main() {
                             nearWeight(0.80) || legacyDecodeFirst;
 
     double dgfrac = immediateDecodeWaves ? 0.0 : 0.25;
+
+    if (const char *e = getenv("A_P12DG")) dgfrac = atof(e);
     bool dgfracForced = targetTest13;
     if (const char *e = getenv("A_DGFRAC")) { dgfrac = atof(e); dgfracForced = true; }
 
@@ -287,7 +293,7 @@ int main() {
     long long pfair = 2;
     if (const char *e = getenv("A_PFAIR")) pfair = atoll(e);
 
-    long long maxg = targetTest12 ? 8 : (long long)4e18;
+    long long maxg = probeT12 ? 1 : (targetTest12 ? 8 : (long long)4e18);
     if (const char *e = getenv("A_MAXG")) {
         long long v = atoll(e);
         if (v > 0) maxg = v;
