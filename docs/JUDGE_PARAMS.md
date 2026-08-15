@@ -56,11 +56,11 @@ forces `w_tp = 0` (strictly, `w_tp <= 1.6e-6` at six printed decimals).
 Recovered constants, confirmed exact by `norm_tp`:
 
 ```
-SLO1 = 913.2032 ms   tp_base = 0.0031190   w_tp = 0
-SLO2 =  63.0576 ms   tp_UB   = 0.0052547   w_c  = 1
-ex_tdr  = 1355.547/913.203 - 1 = 0.4844
-ex_tpot =  132.844/63.058  - 1 = 1.1067    <- dominant
-dist    = sqrt(0.4844^2 + 1.1067^2) = 1.2081
+SLO1 = 842.881026 ms   w_tp = 0        [CORRECTED 2026-08-15, see below]
+SLO2 =  64.931804 ms   w_c  = 1
+ex_tdr  = 1355.547361/842.881026 - 1 = 0.60823
+ex_tpot =  132.844473/ 64.931804 - 1 = 1.04591   <- dominant
+dist    = sqrt(0.60823^2 + 1.04591^2) = 1.209904   (judge: 1.209904, exact)
 ```
 
 Consequences, all measured rather than assumed:
@@ -113,3 +113,46 @@ reference throughput with *no* latency benefit. Real #3 likely has
 heterogeneous `L_in`/`L_out` and bursty arrivals, which the uniform generator
 does not span. **Do not trust `t3_fit.txt` (dist_base forced to 1.21) or any
 reproduction whose `dist_base` is not derived from a simulated reference.**
+
+
+### Correction: test 3's SLOs, and which constants are actually trustworthy
+
+The first recovery gave `SLO1 = 913.203236`, `SLO2 = 63.057576`. **Both wrong.**
+Test 3 has two submissions with an *identical* `mean_tdr` and different
+`mean_tpot`, which is two equations in two unknowns:
+
+```
+v1 : tdr=1355.547361  tpot=134.715540  dist=1.234899
+v5+: tdr=1355.547361  tpot=132.844473  dist=1.209904
+  ->  SLO1 = 842.881026    SLO2 = 64.931804
+```
+
+Both observations then reproduce the judge's `dist` to six decimals.
+
+**Conditioning matters here, and it is counter-intuitive:**
+
+| constant | uncertainty | why |
+|---|---|---|
+| `SLO1` | 0.003% | solved from `dist`, printed to 6 decimals |
+| `SLO2` | 0.001% | same |
+| `tp_base` | **1.2%** | from `tp` differences of 1.7e-5 — two significant figures |
+| `tp_UB` | **0.5%** | same |
+
+`tp_base`/`tp_UB` reproduce `norm_tp` to six decimals, which makes them *look*
+exact, but they are the badly-determined pair. Two diagnostic probes were lost
+to this: the first gated on the wrong SLOs, the second gated `tp_base`/`tp_UB`
+at 1e-6 when they are only good to ~1%. **Key on `SLO1`/`SLO2`.**
+
+Corrected marginals at the current operating point: `d(dist)/d(tdr) = 5.964e-4`
+per ms, `d(dist)/d(tpot) = 1.331e-2` per ms, so **1 ms of TPOT is worth 22.3 ms
+of TDR** (not 33). If TPOT reached `SLO2`, `dist` would fall to `ex_tdr = 0.608`
+and test 3 would pay roughly **497 points** at `dist_base = 1.21`.
+
+Also established: `dist_base = 0` is **impossible** for test 3. It would require
+the reference not to queue (arrival gap >= request lifetime), and then there is
+nothing for us to overlap either. Confirmed empirically -- of 240 generated
+tests whose reference meets both SLOs, we meet both on 240. So
+`dist_base` lies in `(1.046, 1.210]` and test 3 is worth real points.
+
+**Every `data/judgecal/t3_*.txt` built before this correction used the wrong
+SLOs and is miscalibrated.**
