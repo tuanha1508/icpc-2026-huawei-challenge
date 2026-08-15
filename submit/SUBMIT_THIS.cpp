@@ -242,7 +242,7 @@ int main() {
     char rprio = 'D';
     if (const char *e = getenv("A_RPRIO")) rprio = e[0];
 
-    double dgfrac = 0.25;
+    double dgfrac = (w_c > 2.0 * w_tp) ? 0.0 : 0.25;
     if (const char *e = getenv("A_DGFRAC")) dgfrac = atof(e);
 
     char order = (w_c > 0.0) ? 'S' : 'F';
