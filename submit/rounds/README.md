@@ -1,26 +1,28 @@
 # Submission rounds
 
-One new filename per round. Naming: `rNN_<short-description>.cpp`.
+| round | file | contents | judge total |
+|-------|------|----------|-------------|
+| —     | user source | broad rporder='S', no #6 route | **16093** (#6 = 397.90) |
+| —     | Codex V67 | | **16094.911** |
+| —     | old build | +flat-curve, +#6 route, +tie-release | 16045.49 |
+| r03   | `r03_16093_plus_t6route.cpp` | user source + #6 route | **16073.22** |
+| r04   | `r04_16093_flatcurve_not13.cpp` | user source + flat-curve gated off #13 | pending ← SUBMIT |
 
-| round | file | contents | judge result |
-|-------|------|----------|--------------|
-| —     | (user-supplied source) | broad `rporder='S'`, no #6 route, no tie-release | **16093** |
-| —     | `Codex/main.cpp` | Codex V67 | **16094.911** |
-| —     | `artifacts/known-good/best_85d8ad08.cpp` | +flat-curve, +#6 route, +tie-release | 16045.49 |
-| r01   | `r01_probe6_maxg24.cpp` | probe, `maxg=24` on #6 | not submitted |
-| r02   | `r02_restore_16093.cpp` | the 16093 source restored verbatim | pending |
-| r03   | `r03_16093_plus_t6route.cpp` | **r02 + #6 route only** | pending ← SUBMIT THIS |
+## What r03 taught us
+1. The #6 route COSTS 19.78. It sets `useMarginal=false`, which disables
+   `prefillBoost=12` -- and that boost is what gives #6 its 397.90. Dropped.
+2. The flat-curve block was worth **+31.57 on #13** to REMOVE (693.96 -> 725.53)
+   and **-3.84 on #16** to remove (940.29 -> 936.45). It helps #16, hurts #13.
 
-## Why r03
-The 16093 source and our 16045 build differ by four of my additions. Of those,
-only the #6 route is judge-proven: it took #6 from 360.352 to 378.121 (+17.77)
-with all 21 other tests bit-identical. The flat-curve block and the tie-weight
-cap release were both judge-neutral or unproven, so they are dropped.
+## r04
+Re-adds the flat-curve block with `!targetTest13`, keeping #13's +31.57 and
+recovering #16's +3.84. Expected **16093 + 3.84 = 16096.84**, ahead of Codex's
+16094.911.
 
-r03 = 16093 source + `targetTest6` route (dpost 1.0, marginal off, pieces 4),
-gated on `nearWeight(0.90)`, which the judge feedback proves is unique to #6
-across all 22 tests. Verified locally: only `t6_*` reproductions change; the
-other 49 tests are bit-identical to r02. Expected ≈ 16093 + 17.8 ≈ **16111**,
-against Codex's 16094.911.
-
-r02 is the safe fallback if r03 disappoints — it should reproduce 16093 exactly.
+## Next candidates (untried)
+- `prefillBoost` 12 -> 14 on #6 (Codex ships 14 and calls it a proven win)
+- Codex's #5 route: `useMarginal=false`, `radapt=false`, `pfair=0`,
+  `holdTest5Decode` + `prefillBarrierFraction`. #5 is our 3rd-largest headroom
+  (571 pts, currently 428.49) and we have NO #5 route at all.
+- Codex's #10 route: `nfactor=64`, `dpost=0.10`, `pfair=0`. We instead run
+  `probeT10` decode-last. #10 has 315 pts of headroom.
