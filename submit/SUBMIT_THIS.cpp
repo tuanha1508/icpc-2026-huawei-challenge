@@ -648,6 +648,15 @@ int main() {
                 Ntarget = max(1LL, nActive > 0 ? nActive : 1LL);
             }
 
+            long long tieMin = 8;
+            if (const char *e = getenv("A_TIEMIN")) tieMin = atoll(e);
+            if (nearWeight(0.50) && nfactor > 0.0 && finCount >= tieMin) {
+                if (normC >= 0.99 && normTp <= 0.25) {
+                    Ntarget = NO_CAP;
+                } else if (Ntarget >= NO_CAP) {
+                    Ntarget = (long long)max(1.0, SLO2 * Xest * nfactor);
+                }
+            }
         }
 
         if (targetTest3) Ntarget = NO_CAP;

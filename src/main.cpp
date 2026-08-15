@@ -933,6 +933,39 @@ int main() {
                 Ntarget = max(1LL, nActive > 0 ? nActive : 1LL);
             }
             // else dist == 0: the waiting component is already maxed, hold.
+
+            // TIE-WEIGHT CAP RELEASE. The seed above caps concurrency whenever
+            // w_c >= w_tp, and its comment argued that at a tie "there is a lot
+            // to lose and almost nothing to win". The judge run says the
+            // opposite: #1, #2 and #11 all scored EXACTLY 500 with norm_tp
+            // 0.000000 and norm_c 1.0000 -- the cap bought a waiting component
+            // that was already maxed and paid for it with the entire throughput
+            // half. That is 1500 points held behind one branch.
+            //
+            // Releasing it unconditionally is wrong (corpus net -733; large_1
+            // 750 -> 0), so gate on the state that actually distinguishes them,
+            // measured live rather than assumed:
+            //   cal_t22     normC 0.992  normTp 0.172  -> release, 582 -> 816
+            //   slack_probe normC 1.000  normTp 0.072  -> release, 536 -> 605
+            //   single_1    normC 0.705                -> hold (release costs 65)
+            //   over_1/2    normTp 1.000               -> hold, nothing to win
+            //   large_1     w_tp 0.25, not a tie       -> hold (release costs 750)
+            // The tie test matters: large_1 has the same norm_tp 0 / norm_c 1
+            // signature but is 0.25/0.75, where the cap is genuinely paying.
+            //
+            // finCount >= 8 keeps it off the first few requests, where normC is
+            // trivially 1.0 because nothing has been measured yet, and the
+            // re-seed on the else branch lets a test that later starts missing
+            // SLOs take its cap back instead of running uncapped to the end.
+            long long tieMin = 8;
+            if (const char *e = getenv("A_TIEMIN")) tieMin = atoll(e);
+            if (nearWeight(0.50) && nfactor > 0.0 && finCount >= tieMin) {
+                if (normC >= 0.99 && normTp <= 0.25) {
+                    Ntarget = NO_CAP;
+                } else if (Ntarget >= NO_CAP) {
+                    Ntarget = (long long)max(1.0, SLO2 * Xest * nfactor);
+                }
+            }
         }
 
         if (targetTest3) Ntarget = NO_CAP;
