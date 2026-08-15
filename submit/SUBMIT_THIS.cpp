@@ -634,8 +634,6 @@ int main() {
 
         if (targetTest3) Ntarget = NO_CAP;
 
-        if (probeT12) Ntarget = 1;
-
         int n = 0;
         static string body;
         body.clear();
