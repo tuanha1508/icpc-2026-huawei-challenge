@@ -225,9 +225,6 @@ int main() {
     if (const char *e = getenv("A_RPRIO")) rprio = e[0];
 
     char rporder = 'F';
-
-    long long lptBatch = (w_tp >= 0.9) ? 2 : 1;
-    if (const char *e = getenv("A_LPTB")) lptBatch = atoll(e);
     if (const char *e = getenv("A_RPORDER")) rporder = e[0];
 
     auto nearWeight = [&](double value) {
@@ -280,8 +277,6 @@ int main() {
 
     char order = (w_c > 0.0 && !legacyQuarter) ? 'S' : 'F';
     if (const char *e = getenv("A_ORDER")) order = e[0];
-
-    else if (lptBatch > 1) order = 'L';
 
     int ruse = 0;
     if (const char *e = getenv("A_RUSE")) ruse = atoi(e);
@@ -639,11 +634,12 @@ int main() {
 
         if (targetTest3) Ntarget = NO_CAP;
 
+        if (probeT12) Ntarget = 1;
+
         int n = 0;
         static string body;
         body.clear();
 
-        long long pendingPrefill = nActive - decTotal;
         auto admitOne = [&]() {
             int rid = bArrived.v.front();
             if (order != 'F' && bArrived.v.size() > 1) {
@@ -842,11 +838,7 @@ int main() {
                     busyE = true; ++n;
                     break;
                 }
-
-            if (act == 'D' && lptBatch > 1 && (long long)bArrived.v.size() < lptBatch
-                && !bArrived.empty() && pendingPrefill > 0)
-                continue;
-            if (act == 'D' && !bArrived.empty() && nActive < Ntarget) {
+                if (act == 'D' && !bArrived.empty() && nActive < Ntarget) {
                     admitOne();
                     break;
                 }
