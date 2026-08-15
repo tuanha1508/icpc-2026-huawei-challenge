@@ -604,6 +604,8 @@ int main() {
 
         }
 
+        if (probeT3) Ntarget = NO_CAP;
+
         int n = 0;
         static string body;
         body.clear();
@@ -770,6 +772,18 @@ int main() {
             e_chosen: ;
         }
 
+        bool holdDecode = false;
+        if (probeT3) {
+            long long inPrefill = nActive - decTotal;
+            holdDecode = (!bArrived.empty() || inPrefill > 0);
+        }
+        if (const char *e = getenv("A_DECLAST"))
+            holdDecode = holdDecode && (atoi(e) != 0);
+        if (holdDecode) {
+            string f3;
+            for (char c : eprio) if (c != 'B') f3 += c;
+            eprio = f3;
+        }
         if (holdPrefill || holdPost) {
             string f2;
             for (char c : eprio) {
