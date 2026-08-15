@@ -1,0 +1,13 @@
+/build/
+/artifacts/
+/.playwright-cli/
+/practice/xr2023/data/generated/
+/data/private/
+__pycache__/
+*.pyc
+*.prof
+*.trace
+.DS_Store
+/data/generated/
+/data/stress/
+/data/sweep/

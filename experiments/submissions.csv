@@ -1,0 +1,2 @@
+timestamp_utc,submission_id,git_commit,source_sha256,language,parameters,local_score,public_score,verdict,runtime_ms,memory_kib,final_candidate,notes
+

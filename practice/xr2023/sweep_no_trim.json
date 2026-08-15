@@ -1,0 +1,16 @@
+{
+  "command": [
+    "./build/release/xr_solver",
+    "--policy",
+    "{policy}",
+    "--no-trim"
+  ],
+  "grid": {
+    "policy": ["admission-srf"]
+  },
+  "scorer": [
+    "./build/release/xr_scorer",
+    "{input}",
+    "{output}"
+  ]
+}

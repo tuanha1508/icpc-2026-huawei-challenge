@@ -1,0 +1,23 @@
+{
+  "command": [
+    "./build/release/xr_solver",
+    "--policy",
+    "{policy}"
+  ],
+  "grid": {
+    "policy": [
+      "fifo",
+      "edf",
+      "srf",
+      "slack",
+      "admission-srf",
+      "admission-slack",
+      "completion"
+    ]
+  },
+  "scorer": [
+    "./build/release/xr_scorer",
+    "{input}",
+    "{output}"
+  ]
+}

@@ -1,0 +1,17 @@
+seed,profile,frames,oracle_completions,admission_srf_completions,gap,explored_nodes
+1,mixed,5,4,4,0,36
+2,burst,5,2,2,0,35
+3,tight,5,0,0,0,15
+4,interference,5,3,3,0,44
+5,mixed,5,2,2,0,30
+6,burst,5,2,2,0,38
+7,tight,5,1,1,0,23
+8,interference,5,3,3,0,93
+9,mixed,5,4,4,0,36
+10,burst,4,2,2,0,34
+11,tight,5,2,2,0,29
+12,interference,5,2,2,0,58
+13,mixed,5,3,3,0,54
+14,burst,4,2,2,0,36
+15,tight,5,3,3,0,53
+16,interference,5,3,3,0,36

@@ -1,0 +1,1911 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pdf2xml SYSTEM "pdf2xml.dtd">
+
+<pdf2xml producer="poppler" version="26.02.0">
+<page number="1" position="absolute" top="0" left="0" height="1262" width="892">
+	<fontspec id="0" size="14" family="AAAAAA+Verdana" color="#3b5898"/>
+	<fontspec id="1" size="16" family="BAAAAA+HelveticaNeue" color="#212121"/>
+	<fontspec id="2" size="11" family="CAAAAA+HelveticaNeue" color="#212121"/>
+	<fontspec id="3" size="11" family="DAAAAA+HelveticaNeue" color="#212121"/>
+	<fontspec id="4" size="11" family="EAAAAA+HelveticaNeue" color="#212121"/>
+	<fontspec id="5" size="11" family="CAAAAA+HelveticaNeue" color="#ffffff" opacity="0.501961"/>
+	<fontspec id="6" size="11" family="CAAAAA+HelveticaNeue" color="#1c4558"/>
+	<fontspec id="7" size="11" family="CAAAAA+HelveticaNeue" color="#541a8b"/>
+	<fontspec id="8" size="15" family="FAAAAA+HelveticaNeue" color="#ffffff" opacity="0.501961"/>
+	<fontspec id="9" size="15" family="FAAAAA+HelveticaNeue" color="#1c4558"/>
+	<fontspec id="10" size="13" family="GAAAAA+TimesNewRomanPSMT" color="#000000"/>
+	<fontspec id="11" size="12" family="HAAAAA+STIXTwoMath" color="#000000"/>
+	<fontspec id="12" size="13" family="IAAAAA+Times" color="#000000"/>
+	<fontspec id="13" size="13" family="JAAAAA+AppleSymbols" color="#000000"/>
+	<fontspec id="14" size="13" family="HAAAAA+STIXTwoMath" color="#000000"/>
+	<fontspec id="15" size="9" family="KAAAAA+Times" color="#000000"/>
+	<fontspec id="16" size="9" family="LAAAAA+STIXTwoMath" color="#000000"/>
+	<fontspec id="17" size="12" family="MAAAAA+Times" color="#000000"/>
+<image top="102" left="455" width="358" height="116" src="tmp/pdfs/codeforces-reextract/new-1_1.png"/>
+<image top="40" left="41" width="810" height="1181" src="tmp/pdfs/codeforces-reextract/new-1_2.png"/>
+<image top="40" left="41" width="810" height="1181" src="tmp/pdfs/codeforces-reextract/new-1_3.png"/>
+<text top="66" left="248" width="396" height="17" font="0"><b>ICPC 2026 Online Challenge 1 powered by Huawei</b></text>
+<text top="167" left="111" width="296" height="19" font="1">A. Edge–Cloud Collaborative Scheduling</text>
+<text top="193" left="190" width="138" height="13" font="2">15 seconds, 256 megabytes</text>
+<text top="219" left="79" width="348" height="13" font="2">This is an interactive scheduling problem. The &#34;interactor&#34; sends events</text>
+<text top="234" left="79" width="352" height="13" font="2">as they happen; after each event group, you choose ready tasks to start.</text>
+<text top="250" left="79" width="346" height="13" font="2">You never predict future requests. For a ﬁxed test it is deterministic and</text>
+<text top="265" left="79" width="342" height="13" font="2">non-adaptive: the same legal responses produce the same events and</text>
+<text top="280" left="79" width="30" height="13" font="2">score.</text>
+<text top="304" left="79" width="333" height="13" font="3"><b>IMPORTANT: YES, THERE WILL BE A SYSTEM TEST AFTER THE</b></text>
+<text top="320" left="79" width="70" height="13" font="3"><b>CHALLENGE.</b></text>
+<text top="344" left="79" width="150" height="13" font="3"><b>No AI Background Is Needed</b></text>
+<text top="368" left="79" width="312" height="13" font="2">Treat this as jobs moving through computers; no text-generation</text>
+<text top="384" left="79" width="120" height="13" font="2">knowledge is needed. A </text>
+<text top="383" left="199" width="29" height="13" font="3"><b>token</b></text>
+<text top="384" left="228" width="153" height="13" font="2"> is one output unit. Commands </text>
+<text top="383" left="382" width="32" height="13" font="3"><b>P PRE</b></text>
+<text top="384" left="414" width="4" height="13" font="2">/</text>
+<text top="383" left="418" width="7" height="13" font="3"><b>P</b></text>
+<text top="400" left="79" width="32" height="13" font="3"><b>PROC</b></text>
+<text top="400" left="111" width="4" height="13" font="2">/</text>
+<text top="400" left="115" width="40" height="13" font="3"><b>P POST</b></text>
+<text top="400" left="154" width="122" height="13" font="2"> prepare a request once; </text>
+<text top="400" left="276" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="400" left="309" width="4" height="13" font="2">/</text>
+<text top="400" left="313" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="400" left="356" width="4" height="13" font="2">/</text>
+<text top="400" left="359" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="415" left="79" width="182" height="13" font="2">produce one token. Both follow local </text>
+<text top="415" left="275" width="40" height="13" font="2"> remote </text>
+<text top="415" left="328" width="29" height="13" font="2"> local.</text>
+<text top="447" left="84" width="24" height="13" font="2">Term</text>
+<text top="447" left="187" width="42" height="13" font="2">Meaning</text>
+<text top="473" left="84" width="57" height="13" font="2">edge / local</text>
+<text top="473" left="187" width="151" height="13" font="2">the one computer beside users</text>
+<text top="498" left="84" width="71" height="13" font="2">cloud / remote</text>
+<text top="498" left="187" width="135" height="13" font="2">one of   worker computers</text>
+<text top="523" left="84" width="27" height="13" font="2">token</text>
+<text top="523" left="187" width="74" height="13" font="2">one output unit</text>
+<text top="548" left="84" width="232" height="13" font="2">preﬁll / input stage one-time input preparation</text>
+<text top="573" left="84" width="78" height="13" font="2">decode / output</text>
+<text top="590" left="84" width="21" height="13" font="2">step</text>
+<text top="581" left="187" width="174" height="13" font="2">repeated work producing one token</text>
+<text top="615" left="84" width="39" height="13" font="2">uplink / </text>
+<text top="615" left="123" width="15" height="13" font="3"><b>UP</b></text>
+<text top="614" left="187" width="115" height="13" font="2">local-to-remote transfer</text>
+<text top="641" left="84" width="53" height="13" font="2">downlink / </text>
+<text top="641" left="138" width="35" height="13" font="3"><b>DOWN</b></text>
+<text top="641" left="187" width="115" height="13" font="2">remote-to-local transfer</text>
+<text top="666" left="84" width="57" height="13" font="2">FIFO queue</text>
+<text top="666" left="187" width="243" height="13" font="2">ﬁrst transfer queued is the ﬁrst transfer completed</text>
+<text top="691" left="84" width="66" height="13" font="2">batch / group</text>
+<text top="691" left="187" width="184" height="13" font="2">requests combined in one output task</text>
+<text top="716" left="84" width="66" height="13" font="2">chunk / piece</text>
+<text top="716" left="187" width="197" height="13" font="2">a consecutive range of input-stage parts</text>
+<text top="749" left="84" width="52" height="13" font="2">activations</text>
+<text top="741" left="187" width="240" height="13" font="2">transferred request data; its size is deﬁned by the</text>
+<text top="758" left="187" width="40" height="13" font="2">protocol</text>
+<text top="782" left="84" width="69" height="13" font="2">model layers /</text>
+<text top="799" left="84" width="25" height="13" font="2">parts</text>
+<text top="791" left="187" width="160" height="13" font="2">the numbered input-stage range </text>
+<text top="831" left="79" width="141" height="13" font="3"><b>The Problem in One Minute</b></text>
+<text top="856" left="79" width="23" height="13" font="2">One </text>
+<text top="855" left="103" width="78" height="13" font="3"><b>local computer</b></text>
+<text top="856" left="181" width="62" height="13" font="2"> and several </text>
+<text top="855" left="242" width="96" height="13" font="3"><b>remote computers</b></text>
+<text top="856" left="338" width="84" height="13" font="2"> handle requests.</text>
+<text top="870" left="79" width="268" height="13" font="2">Each request ﬁrst prepares its input by making this trip:</text>
+<text top="924" left="79" width="321" height="13" font="2">The same trip is then repeated once per token. The ﬁrst trip is the </text>
+<text top="924" left="400" width="26" height="13" font="3"><b>input</b></text>
+<text top="939" left="79" width="29" height="13" font="3"><b>stage</b></text>
+<text top="940" left="108" width="102" height="13" font="2">; each later trip is an </text>
+<text top="939" left="210" width="59" height="13" font="3"><b>output step</b></text>
+<text top="940" left="269" width="144" height="13" font="2">. Transfers are automatic; you</text>
+<text top="955" left="79" width="190" height="13" font="2">choose ready tasks for free computers.</text>
+<text top="979" left="79" width="230" height="13" font="2">The score rewards output rate and short waits. </text>
+<text top="979" left="309" width="113" height="13" font="3"><b>Time to decode ready</b></text>
+<text top="994" left="79" width="29" height="13" font="3"><b>(TDR)</b></text>
+<text top="995" left="108" width="292" height="13" font="2"> ends when the ﬁrst output step can begin, before a token is</text>
+<text top="1011" left="79" width="53" height="13" font="2">produced. </text>
+<text top="1011" left="132" width="154" height="13" font="3"><b>Time per output token (TPOT)</b></text>
+<text top="1011" left="286" width="126" height="13" font="2"> is the mean gap between</text>
+<text top="1027" left="79" width="97" height="13" font="2">consecutive tokens.</text>
+<text top="1050" left="79" width="92" height="13" font="3"><b>Challenge Format</b></text>
+<text top="1074" left="79" width="344" height="13" font="2">Two worked examples appear at the end of the statement. Test 1 is the</text>
+<text top="1089" left="79" width="341" height="13" font="2">public worked Example 1, tests 2–22 are hidden preliminary tests, and</text>
+<text top="1104" left="79" width="341" height="13" font="2">ﬁnals use a separate frozen set. Per-test scores are reported on the 0–</text>
+<text top="1120" left="79" width="329" height="13" font="2">1000 scale deﬁned below, and the contest system aggregates them</text>
+<text top="1135" left="79" width="243" height="13" font="2">according to the contest rules; no hacks are used.</text>
+<text top="218" left="454" width="32" height="13" font="4"><i>Guide:</i></text>
+<text top="218" left="486" width="296" height="13" font="2"> blue is local, green is the shared two-way link, and orange is</text>
+<text top="233" left="454" width="332" height="13" font="2">remote; computation and transfer may overlap. Figure labels use the</text>
+<text top="248" left="454" width="77" height="13" font="2">glossary above.</text>
+<text top="273" left="454" width="91" height="13" font="3"><b>What You Control</b></text>
+<text top="296" left="454" width="60" height="13" font="2">You choose:</text>
+<text top="323" left="474" width="231" height="13" font="2">which legal task to start on each free computer;</text>
+<text top="340" left="474" width="313" height="13" font="2">the remote computer assigned to a request when scheduling its </text>
+<text top="340" left="786" width="7" height="13" font="3"><b>P</b></text>
+<text top="357" left="474" width="22" height="13" font="3"><b>PRE</b></text>
+<text top="357" left="496" width="3" height="13" font="2">;</text>
+<text top="374" left="474" width="133" height="13" font="2">how to split an input-stage </text>
+<text top="374" left="607" width="42" height="13" font="3"><b>P PROC</b></text>
+<text top="374" left="649" width="153" height="13" font="2"> into ranges of numbered parts;</text>
+<text top="391" left="474" width="18" height="13" font="2">and</text>
+<text top="407" left="474" width="279" height="13" font="2">which ready requests to combine into each output group.</text>
+<text top="433" left="454" width="357" height="13" font="2">Transfers are automatic. For a ﬁrst solution, use one full input-stage piece</text>
+<text top="449" left="454" width="102" height="13" font="2">and groups of size  .</text>
+<text top="473" left="454" width="74" height="13" font="3"><b>System Model</b></text>
+<text top="501" left="474" width="41" height="13" font="2">There is </text>
+<text top="501" left="515" width="100" height="13" font="3"><b>one local computer</b></text>
+<text top="501" left="615" width="24" height="13" font="2"> and </text>
+<text top="501" left="650" width="146" height="13" font="3"><b> identical remote computers</b></text>
+<text top="501" left="796" width="3" height="13" font="2">,</text>
+<text top="518" left="474" width="103" height="13" font="2">numbered   through </text>
+<text top="518" left="606" width="60" height="13" font="2"> and written </text>
+<text top="518" left="667" width="14" height="13" font="3"><b>C0</b></text>
+<text top="518" left="681" width="6" height="13" font="2">, </text>
+<text top="518" left="687" width="14" height="13" font="3"><b>C1</b></text>
+<text top="518" left="701" width="6" height="13" font="2">, </text>
+<text top="518" left="721" width="56" height="13" font="2">. They work</text>
+<text top="534" left="474" width="223" height="13" font="2">independently and may run while data moves.</text>
+<text top="551" left="474" width="321" height="13" font="2">There are   requests in total, but   is not announced. Request ids</text>
+<text top="567" left="474" width="18" height="13" font="2">are </text>
+<text top="567" left="585" width="222" height="13" font="2"> in arrival order. The arrival time of request   is</text>
+<text top="584" left="474" width="100" height="13" font="2">the timestamp of its </text>
+<text top="584" left="573" width="23" height="13" font="3"><b>ARR</b></text>
+<text top="584" left="597" width="199" height="13" font="2"> event. That event reveals its input length</text>
+<text top="601" left="504" width="88" height="13" font="2">; its output length </text>
+<text top="601" left="626" width="113" height="13" font="2"> remains hidden until a </text>
+<text top="601" left="739" width="18" height="13" font="3"><b>FIN</b></text>
+<text top="601" left="757" width="30" height="13" font="2"> event</text>
+<text top="618" left="474" width="129" height="13" font="2">reports that it has ﬁnished.</text>
+<text top="635" left="474" width="171" height="13" font="2">Request   performs one token-free </text>
+<text top="634" left="645" width="58" height="13" font="3"><b>input stage</b></text>
+<text top="635" left="703" width="68" height="13" font="2">, then exactly </text>
+<text top="652" left="474" width="65" height="13" font="3"><b>output steps</b></text>
+<text top="652" left="539" width="240" height="13" font="2">, each producing one token. Thus total generated</text>
+<text top="668" left="474" width="54" height="13" font="2">tokens are </text>
+<text top="668" left="580" width="29" height="13" font="2">, with </text>
+<text top="668" left="666" width="3" height="13" font="2">.</text>
+<text top="685" left="474" width="268" height="13" font="2">You assign each request to one remote computer in its </text>
+<text top="685" left="742" width="32" height="13" font="3"><b>P PRE</b></text>
+<text top="685" left="775" width="26" height="13" font="2"> task.</text>
+<text top="702" left="474" width="325" height="13" font="2">The choice is ﬁxed: all later input stage tasks for that request name</text>
+<text top="719" left="474" width="187" height="13" font="2">the same remote computer, and every </text>
+<text top="718" left="661" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="719" left="704" width="87" height="13" font="2"> containing it runs</text>
+<text top="735" left="474" width="297" height="13" font="2">there. Output-step tasks on the local computer may combine</text>
+<text top="751" left="474" width="205" height="13" font="2">requests from diﬀerent remote computers.</text>
+<text top="768" left="474" width="315" height="13" font="2">Each computer executes at most one task at a time. Once a task</text>
+<text top="784" left="474" width="335" height="13" font="2">starts, it cannot be paused. Separately scheduled input-stage pieces</text>
+<text top="800" left="474" width="169" height="13" font="2">may be alternated with other work.</text>
+<text top="817" left="474" width="77" height="13" font="3"><b>Schedule cost </b></text>
+<text top="817" left="558" width="243" height="13" font="2">: a task assigned at time   with execution duration</text>
+<text top="834" left="491" width="139" height="13" font="2"> occupies its computer over </text>
+<text top="834" left="708" width="83" height="13" font="2">. The cost is paid</text>
+<text top="850" left="474" width="318" height="13" font="2">once per task, including once per input-stage piece and once per</text>
+<text top="866" left="474" width="183" height="13" font="2">output group. Transfers do not pay  .</text>
+<text top="883" left="474" width="131" height="13" font="3"><b>Execution times are ﬁxed</b></text>
+<text top="884" left="605" width="190" height="13" font="2">: task duration depends on its step and</text>
+<text top="900" left="474" width="333" height="13" font="2">group size (and fraction of parts for input-stage pieces), never on the</text>
+<text top="917" left="474" width="263" height="13" font="2">output-token position or saved internal data size. See </text>
+<text top="917" left="737" width="27" height="13" font="3"><b>Input</b></text>
+<text top="917" left="763" width="17" height="13" font="2"> — </text>
+<text top="917" left="780" width="28" height="13" font="3"><b>Task-</b></text>
+<text top="934" left="474" width="56" height="13" font="3"><b>Time Table</b></text>
+<text top="934" left="530" width="223" height="13" font="2">. Finished tasks and transfers are reported as </text>
+<text top="934" left="752" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="934" left="775" width="21" height="13" font="2"> and</text>
+<text top="951" left="474" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="951" left="497" width="3" height="13" font="2">.</text>
+<text top="978" left="454" width="93" height="13" font="3"><b>Request Lifecycle</b></text>
+<text top="1002" left="454" width="354" height="13" font="2">Solid arrows are scheduling dependencies; dashed arrows are automatic</text>
+<text top="1017" left="454" width="46" height="13" font="2">transfers.</text>
+<text top="121" left="103" width="253" height="13" font="5">The problem statement has recently been changed. </text>
+<text top="121" left="103" width="253" height="13" font="6">The problem statement has recently been changed. </text>
+<text top="121" left="356" width="41" height="13" font="5"><a href="new.html#1">View the</a></text>
+<text top="121" left="356" width="41" height="13" font="7"><a href="new.html#1">View the</a></text>
+<text top="137" left="228" width="44" height="13" font="5"><a href="new.html#1">changes.</a></text>
+<text top="136" left="228" width="44" height="13" font="7"><a href="new.html#1">changes.</a></text>
+<text top="115" left="426" width="9" height="18" font="8">×</text>
+<text top="114" left="426" width="9" height="18" font="9">×</text>
+<text top="414" left="261" width="13" height="14" font="10">→</text>
+<text top="414" left="315" width="13" height="14" font="10">→</text>
+<text top="496" left="221" width="9" height="16" font="11">𝐾</text>
+<text top="792" left="347" width="82" height="13" font="12">[0, num_layers)</text>
+<text top="897" left="113" width="78" height="13" font="12">local computer</text>
+<text top="898" left="195" width="14" height="12" font="13">⟶</text>
+<text top="897" left="212" width="89" height="13" font="12">remote computer</text>
+<text top="898" left="305" width="14" height="12" font="13">⟶</text>
+<text top="897" left="323" width="81" height="13" font="12">local computer.</text>
+<text top="449" left="547" width="7" height="13" font="12">1</text>
+<text top="499" left="640" width="9" height="16" font="11">𝐾</text>
+<text top="519" left="526" width="7" height="13" font="12">0</text>
+<text top="517" left="576" width="9" height="16" font="11">𝐾</text>
+<text top="519" left="589" width="17" height="13" font="12">− 1</text>
+<text top="519" left="707" width="13" height="13" font="12">…</text>
+<text top="549" left="522" width="8" height="17" font="14">𝑅</text>
+<text top="549" left="636" width="8" height="17" font="14">𝑅</text>
+<text top="565" left="492" width="4" height="17" font="14">𝑖</text>
+<text top="568" left="499" width="54" height="13" font="12">= 0, 1, … ,</text>
+<text top="565" left="556" width="8" height="17" font="14">𝑅</text>
+<text top="568" left="567" width="17" height="13" font="12">− 1</text>
+<text top="565" left="791" width="4" height="17" font="14">𝑖</text>
+<text top="602" left="491" width="4" height="13" font="12">[</text>
+<text top="599" left="495" width="4" height="17" font="14">𝑖</text>
+<text top="602" left="499" width="4" height="13" font="12">]</text>
+<text top="600" left="474" width="7" height="16" font="11">𝐿</text>
+<text top="607" left="483" width="7" height="9" font="15">in</text>
+<text top="602" left="614" width="4" height="13" font="12">[</text>
+<text top="599" left="618" width="4" height="17" font="14">𝑖</text>
+<text top="602" left="621" width="4" height="13" font="12">]</text>
+<text top="600" left="592" width="7" height="16" font="11">𝐿</text>
+<text top="607" left="601" width="12" height="9" font="15">out</text>
+<text top="633" left="517" width="4" height="17" font="14">𝑖</text>
+<text top="635" left="793" width="4" height="13" font="12">[</text>
+<text top="633" left="797" width="4" height="17" font="14">𝑖</text>
+<text top="635" left="801" width="4" height="13" font="12">]</text>
+<text top="633" left="771" width="7" height="16" font="11">𝐿</text>
+<text top="640" left="780" width="12" height="9" font="15">out</text>
+<text top="669" left="567" width="4" height="13" font="12">[</text>
+<text top="666" left="572" width="4" height="17" font="14">𝑖</text>
+<text top="669" left="575" width="4" height="13" font="12">]</text>
+<text top="669" left="528" width="9" height="13" font="12">∑</text>
+<text top="674" left="539" width="3" height="12" font="16">𝑖</text>
+<text top="667" left="546" width="7" height="16" font="11">𝐿</text>
+<text top="674" left="555" width="12" height="9" font="15">out</text>
+<text top="669" left="631" width="4" height="13" font="12">[</text>
+<text top="666" left="635" width="4" height="17" font="14">𝑖</text>
+<text top="669" left="639" width="26" height="13" font="12">] ≥ 1</text>
+<text top="667" left="609" width="7" height="16" font="11">𝐿</text>
+<text top="674" left="619" width="12" height="9" font="15">out</text>
+<text top="815" left="551" width="7" height="17" font="14">𝑆</text>
+<text top="815" left="680" width="4" height="17" font="14">𝑡</text>
+<text top="834" left="474" width="17" height="13" font="12">dur</text>
+<text top="834" left="630" width="4" height="13" font="12">[</text>
+<text top="832" left="634" width="4" height="17" font="14">𝑡</text>
+<text top="834" left="639" width="3" height="13" font="12">,</text>
+<text top="832" left="647" width="4" height="17" font="14">𝑡</text>
+<text top="834" left="654" width="7" height="13" font="12">+</text>
+<text top="832" left="665" width="7" height="17" font="14">𝑆</text>
+<text top="834" left="676" width="32" height="13" font="12">+ dur]</text>
+<text top="864" left="646" width="7" height="17" font="14">𝑆</text>
+<text top="25" left="36" width="92" height="12" font="17">8/15/26, 12:53 AM</text>
+<text top="25" left="460" width="110" height="12" font="17">Problems - Codeforces</text>
+<text top="1229" left="36" width="227" height="12" font="17">https://codeforces.com/contest/2251/problems#</text>
+<text top="1229" left="841" width="15" height="12" font="17">1/8</text>
+</page>
+<page number="2" position="absolute" top="0" left="0" height="1262" width="892">
+	<fontspec id="18" size="13" family="NAAAAA+HelveticaNeue" color="#212121"/>
+	<fontspec id="19" size="11" family="OAAAAA+AndaleMono" color="#870000"/>
+<image top="42" left="80" width="358" height="201" src="tmp/pdfs/codeforces-reextract/new-2_1.png"/>
+<image top="186" left="455" width="358" height="170" src="tmp/pdfs/codeforces-reextract/new-2_2.png"/>
+<text top="244" left="79" width="32" height="13" font="4"><i>Guide:</i></text>
+<text top="244" left="111" width="67" height="13" font="2"> TDR ends at </text>
+<text top="244" left="178" width="40" height="13" font="3"><b>P POST</b></text>
+<text top="244" left="218" width="57" height="13" font="2">; each later </text>
+<text top="244" left="275" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="244" left="315" width="90" height="13" font="2"> makes one token.</text>
+<text top="268" left="79" width="22" height="13" font="3"><b>PRE</b></text>
+<text top="268" left="102" width="4" height="13" font="2">/</text>
+<text top="268" left="105" width="29" height="13" font="3"><b>POST</b></text>
+<text top="268" left="135" width="120" height="13" font="2"> use the local computer; </text>
+<text top="268" left="255" width="32" height="13" font="3"><b>PROC</b></text>
+<text top="268" left="287" width="131" height="13" font="2"> uses the assigned remote;</text>
+<text top="284" left="79" width="140" height="13" font="2">transfers use the shared link.</text>
+<text top="308" left="79" width="60" height="13" font="3"><b>Input Stage</b></text>
+<text top="332" left="79" width="63" height="13" font="2">Three steps: </text>
+<text top="332" left="142" width="21" height="13" font="3"><b>ﬁrst</b></text>
+<text top="332" left="163" width="34" height="13" font="2"> (local) </text>
+<text top="332" left="211" width="3" height="13" font="2"> </text>
+<text top="332" left="214" width="42" height="13" font="3"><b>process</b></text>
+<text top="332" left="256" width="93" height="13" font="2"> (assigned remote) </text>
+<text top="332" left="362" width="3" height="13" font="2"> </text>
+<text top="332" left="365" width="22" height="13" font="3"><b>ﬁnal</b></text>
+<text top="332" left="387" width="51" height="13" font="2"> (local). An</text>
+<text top="348" left="79" width="171" height="13" font="2">input-stage group has one request.</text>
+<text top="375" left="99" width="32" height="13" font="3"><b>P PRE</b></text>
+<text top="375" left="131" width="230" height="13" font="2"> (local computer). May start after: the request's </text>
+<text top="375" left="362" width="23" height="13" font="3"><b>ARR</b></text>
+<text top="375" left="385" width="33" height="13" font="2"> event.</text>
+<text top="391" left="99" width="306" height="13" font="2">Fixes the remote computer; on completion, the local-to-remote</text>
+<text top="408" left="99" width="335" height="13" font="2">transfer is queued immediately (whether or not that remote computer</text>
+<text top="424" left="99" width="40" height="13" font="2">is busy).</text>
+<text top="441" left="99" width="42" height="13" font="3"><b>P PROC</b></text>
+<text top="441" left="141" width="161" height="13" font="2"> (remote computer) computes all </text>
+<text top="441" left="363" width="52" height="13" font="2"> numbered</text>
+<text top="457" left="99" width="210" height="13" font="2">parts. The simplest choice is one full piece </text>
+<text top="457" left="393" width="24" height="13" font="2">. You</text>
+<text top="474" left="99" width="282" height="13" font="2">may split it so other remote work can run between pieces.</text>
+<text top="491" left="99" width="40" height="13" font="3"><b>P POST</b></text>
+<text top="491" left="139" width="285" height="13" font="2"> (local computer). May start after: the request's input stage</text>
+<text top="508" left="99" width="118" height="13" font="2">remote-to-local transfer </text>
+<text top="508" left="217" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="508" left="240" width="185" height="13" font="2">. Completion makes the request ready</text>
+<text top="525" left="99" width="106" height="13" font="2">for producing output; </text>
+<text top="525" left="205" width="23" height="13" font="3"><b>TDR</b></text>
+<text top="525" left="228" width="153" height="13" font="2"> is measured from arrival to this</text>
+<text top="541" left="99" width="57" height="13" font="2">completion.</text>
+<text top="568" left="79" width="106" height="13" font="3"><b>Exact splitting rules.</b></text>
+<text top="569" left="185" width="199" height="13" font="2"> Each piece is a nonempty integer range </text>
+<text top="569" left="418" width="12" height="13" font="2">: it</text>
+<text top="584" left="79" width="349" height="13" font="2">includes part   and stops before part  . For each request, pieces must</text>
+<text top="600" left="79" width="339" height="13" font="2">be issued in ascending, gap-free order: the ﬁrst starts at  , each later </text>
+<text top="614" left="79" width="213" height="13" font="2">equals the previous  , and the last ends at </text>
+<text top="614" left="353" width="76" height="13" font="2">. Thus there are</text>
+<text top="630" left="79" width="40" height="13" font="2">at most </text>
+<text top="630" left="180" width="119" height="13" font="2"> pieces, and none when </text>
+<text top="630" left="382" width="40" height="13" font="2"> beyond</text>
+<text top="645" left="79" width="335" height="13" font="2">the full piece. The ﬁrst piece waits for the input stage local-to-remote</text>
+<text top="661" left="79" width="40" height="13" font="2">transfer </text>
+<text top="661" left="119" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="661" left="143" width="231" height="13" font="2">; each later piece waits for the previous piece's </text>
+<text top="661" left="374" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="661" left="397" width="18" height="13" font="2">. Its</text>
+<text top="677" left="79" width="51" height="13" font="2">duration is</text>
+<text top="744" left="79" width="337" height="13" font="2">Only the last piece queues the input stage remote-to-local transfer, of</text>
+<text top="760" left="79" width="33" height="13" font="2">length </text>
+<text top="760" left="142" width="264" height="13" font="2">. No transfer occurs between pieces. Any range that is</text>
+<text top="775" left="79" width="312" height="13" font="2">empty, outside the part interval, out of order, or leaves a gap is a</text>
+<text top="790" left="79" width="44" height="13" font="2">violation.</text>
+<text top="814" left="79" width="68" height="13" font="3"><b>Output Steps</b></text>
+<text top="838" left="79" width="198" height="13" font="2">After the input stage, request   performs </text>
+<text top="838" left="312" width="76" height="13" font="2"> output steps in</text>
+<text top="853" left="79" width="307" height="13" font="2">succession: completing iteration  's ﬁnal step readies iteration </text>
+<text top="853" left="413" width="24" height="13" font="2">. The</text>
+<text top="868" left="79" width="339" height="13" font="2">same three steps are used, but multiple requests may be grouped per</text>
+<text top="884" left="79" width="344" height="13" font="2">step. You choose each group independently. Output-step tasks cannot</text>
+<text top="899" left="79" width="118" height="13" font="2">be split into part ranges.</text>
+<text top="926" left="99" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="926" left="132" width="269" height="13" font="2"> (local computer, across remote computers): may group</text>
+<text top="943" left="99" width="308" height="13" font="2">requests assigned to any mix of remote computers — the listed</text>
+<text top="959" left="159" width="276" height="13" font="2"> time depends only on total group size, so across remote</text>
+<text top="975" left="99" width="319" height="13" font="2">computers grouping improves local computer eﬃciency (the task-</text>
+<text top="992" left="99" width="202" height="13" font="2">time table plus the transfer formula is the </text>
+<text top="992" left="301" width="22" height="13" font="3"><b>only</b></text>
+<text top="992" left="322" width="85" height="13" font="2"> eﬃciency model;</text>
+<text top="1009" left="99" width="314" height="13" font="2">nothing else rewards grouping). May start after, for each request:</text>
+<text top="1026" left="99" width="234" height="13" font="2">completion of that request's previous ﬁnal step (</text>
+<text top="1026" left="333" width="40" height="13" font="3"><b>P POST</b></text>
+<text top="1026" left="373" width="52" height="13" font="2"> for its ﬁrst</text>
+<text top="1043" left="99" width="171" height="13" font="2">output step, otherwise its previous </text>
+<text top="1043" left="270" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="1043" left="310" width="123" height="13" font="2">) — and the request must</text>
+<text top="1060" left="99" width="78" height="13" font="2">not be ﬁnished (</text>
+<text top="1060" left="177" width="18" height="13" font="3"><b>FIN</b></text>
+<text top="1060" left="195" width="139" height="13" font="2"> always arrives with the ﬁnal </text>
+<text top="1060" left="334" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="1060" left="374" width="3" height="13" font="2"> </text>
+<text top="1060" left="377" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="1060" left="400" width="18" height="13" font="2">, so</text>
+<text top="1076" left="99" width="326" height="13" font="2">you always know). Completion queues one local-to-remote transfer</text>
+<text top="1093" left="99" width="292" height="13" font="2">per distinct remote computer in the group (len   that remote</text>
+<text top="1109" left="99" width="326" height="13" font="2">computer's member count), enqueued simultaneously in increasing</text>
+<text top="1125" left="99" width="144" height="13" font="2">remote computer index order.</text>
+<text top="1142" left="99" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="1142" left="142" width="282" height="13" font="2"> (remote computer): all members must be assigned to that</text>
+<text top="1159" left="99" width="309" height="13" font="2">remote computer. May start after, for each request: the local-to-</text>
+<text top="1176" left="99" width="77" height="13" font="2">remote transfer </text>
+<text top="1176" left="176" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="1176" left="200" width="235" height="13" font="2"> carrying that member's current-iteration data —</text>
+<text top="1193" left="99" width="95" height="13" font="2">the rule is checked </text>
+<text top="1193" left="194" width="142" height="13" font="3"><b>separately for each request</b></text>
+<text top="1193" left="336" width="75" height="13" font="2">: members may</text>
+<text top="44" left="474" width="98" height="13" font="2">come from diﬀerent </text>
+<text top="43" left="572" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="44" left="605" width="179" height="13" font="2"> groups and diﬀerent local-to-remote</text>
+<text top="60" left="474" width="334" height="13" font="2">transfers. Completion queues one remote-to-local transfer (len   this</text>
+<text top="76" left="474" width="65" height="13" font="2">group's size).</text>
+<text top="93" left="474" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="93" left="514" width="290" height="13" font="2"> (local computer, across remote computers). May start after,</text>
+<text top="111" left="474" width="222" height="13" font="2">for each request: the remote-to-local transfer </text>
+<text top="110" left="696" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="111" left="719" width="64" height="13" font="2"> carrying that</text>
+<text top="128" left="474" width="208" height="13" font="2">member's current-iteration result (diﬀerent </text>
+<text top="127" left="682" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="128" left="724" width="79" height="13" font="2"> groups/remote-</text>
+<text top="144" left="474" width="333" height="13" font="2">to-local transfers are ﬁne). Each member's completion produces one</text>
+<text top="160" left="474" width="30" height="13" font="2">token.</text>
+<text top="356" left="454" width="32" height="13" font="4"><i>Guide:</i></text>
+<text top="356" left="486" width="320" height="13" font="2"> the upper lane splits one input stage into consecutive ranges; the</text>
+<text top="372" left="454" width="215" height="13" font="2">lower lane groups ready requests for output.</text>
+<text top="395" left="454" width="42" height="13" font="2">Groups: </text>
+<text top="395" left="529" width="237" height="13" font="2">, request ids distinct, every member satisfying its</text>
+<text top="411" left="454" width="88" height="13" font="2">predecessor rule; </text>
+<text top="411" left="575" width="212" height="13" font="2"> is always allowed. Only output work is ever</text>
+<text top="426" left="454" width="326" height="13" font="2">grouped — input-stage groups always contain exactly one request.</text>
+<text top="442" left="454" width="172" height="13" font="3"><b>There is no other group-size limit</b></text>
+<text top="442" left="626" width="182" height="13" font="2">: no maximum exists or is announced</text>
+<text top="457" left="454" width="314" height="13" font="2">— any nonempty set of distinct, currently ready requests may be</text>
+<text top="472" left="454" width="331" height="13" font="2">grouped, subject only to the step and remote computer rules above.</text>
+<text top="488" left="454" width="232" height="13" font="2">Order of request ids within a group: see Output.</text>
+<text top="511" left="454" width="31" height="15" font="18"><b>Input</b></text>
+<text top="527" left="454" width="78" height="13" font="3"><b>Protocol Guide</b></text>
+<text top="551" left="454" width="7" height="13" font="3"><b>P</b></text>
+<text top="551" left="461" width="139" height="13" font="2"> is the one-time input stage; </text>
+<text top="551" left="600" width="8" height="13" font="3"><b>D</b></text>
+<text top="551" left="608" width="97" height="13" font="2"> is one output step. </text>
+<text top="551" left="705" width="22" height="13" font="3"><b>PRE</b></text>
+<text top="551" left="728" width="4" height="13" font="2">/</text>
+<text top="551" left="731" width="29" height="13" font="3"><b>POST</b></text>
+<text top="551" left="761" width="44" height="13" font="2"> are local</text>
+<text top="568" left="454" width="50" height="13" font="2">tasks and </text>
+<text top="568" left="504" width="32" height="13" font="3"><b>PROC</b></text>
+<text top="568" left="536" width="108" height="13" font="2"> is remote. Events are </text>
+<text top="568" left="644" width="23" height="13" font="3"><b>ARR</b></text>
+<text top="568" left="667" width="44" height="13" font="2"> (arrival), </text>
+<text top="568" left="711" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="568" left="734" width="60" height="13" font="2"> (task done),</text>
+<text top="583" left="454" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="583" left="478" width="101" height="13" font="2"> (transfer done), and </text>
+<text top="583" left="578" width="18" height="13" font="3"><b>FIN</b></text>
+<text top="583" left="596" width="65" height="13" font="2"> (ﬁnished). In </text>
+<text top="583" left="693" width="95" height="13" font="2">,   is included and </text>
+<text top="599" left="454" width="353" height="13" font="2">excluded. Input arrives interactively: read each whole frame and respond</text>
+<text top="614" left="454" width="347" height="13" font="2">once. Times are real milliseconds; counts, lengths, and ids are integers;</text>
+<text top="629" left="454" width="119" height="13" font="2">ﬁelds use single spaces.</text>
+<text top="653" left="454" width="113" height="13" font="3"><b>Startup Conﬁguration</b></text>
+<text top="677" left="454" width="344" height="13" font="2">The interactor ﬁrst sends two lines (no response expected): the system</text>
+<text top="692" left="454" width="201" height="13" font="2">parameters, then the scoring parameters:</text>
+<text top="742" left="454" width="320" height="12" font="19">K S latency_in_ms bandwidth_gbps bytes_per_token </text>
+<text top="758" left="454" width="65" height="12" font="19">num_layers</text>
+<text top="774" left="454" width="274" height="12" font="19">SLO1 SLO2 tp_UB tp_base dist_base w_tp w_c</text>
+<text top="789" left="464" width="6" height="13" font="2">, </text>
+<text top="789" left="557" width="27" height="13" font="2">, and </text>
+<text top="789" left="645" width="157" height="13" font="2"> are integers; all other values are</text>
+<text top="805" left="454" width="224" height="13" font="2">reals (times in ms, output rates in tokens/ms). </text>
+<text top="805" left="678" width="22" height="13" font="3"><b>SLO</b></text>
+<text top="805" left="700" width="94" height="13" font="2"> stands for service-</text>
+<text top="821" left="454" width="75" height="13" font="2">level objective: </text>
+<text top="821" left="529" width="28" height="13" font="3"><b>SLO1</b></text>
+<text top="821" left="557" width="109" height="13" font="2"> is the TDR target and </text>
+<text top="821" left="666" width="28" height="13" font="3"><b>SLO2</b></text>
+<text top="821" left="694" width="115" height="13" font="2"> is the TPOT target. The</text>
+<text top="837" left="454" width="189" height="13" font="2">other names on the scoring line mean: </text>
+<text top="837" left="643" width="32" height="13" font="3"><b>tp_UB</b></text>
+<text top="837" left="675" width="3" height="13" font="2"> </text>
+<text top="837" left="714" width="6" height="13" font="2">, </text>
+<text top="837" left="720" width="41" height="13" font="3"><b>tp_base</b></text>
+<text top="837" left="761" width="3" height="13" font="2"> </text>
+<text top="837" left="805" width="3" height="13" font="2">,</text>
+<text top="853" left="454" width="50" height="13" font="3"><b>dist_base</b></text>
+<text top="853" left="504" width="3" height="13" font="2"> </text>
+<text top="853" left="556" width="6" height="13" font="2">, </text>
+<text top="853" left="562" width="25" height="13" font="3"><b>w_tp</b></text>
+<text top="853" left="587" width="3" height="13" font="2"> </text>
+<text top="853" left="620" width="6" height="13" font="2">, </text>
+<text top="853" left="626" width="21" height="13" font="3"><b>w_c</b></text>
+<text top="853" left="647" width="3" height="13" font="2"> </text>
+<text top="853" left="677" width="6" height="13" font="2">. </text>
+<text top="853" left="770" width="22" height="13" font="2"> is in</text>
+<text top="869" left="454" width="137" height="13" font="3"><b>gigabits per second (Gb/s)</b></text>
+<text top="870" left="591" width="56" height="13" font="2">. The value </text>
+<text top="870" left="734" width="68" height="13" font="2"> is already the</text>
+<text top="884" left="454" width="351" height="13" font="2">complete data size for one token; do not multiply it by an element width.</text>
+<text top="909" left="454" width="82" height="13" font="3"><b>Communication</b></text>
+<text top="933" left="454" width="66" height="13" font="2">Transfers are </text>
+<text top="933" left="520" width="52" height="13" font="3"><b>automatic</b></text>
+<text top="933" left="572" width="240" height="13" font="2">: the interactor queues them when their triggering</text>
+<text top="949" left="454" width="307" height="13" font="2">computation ﬁnishes; you never output a transfer command. A </text>
+<text top="949" left="761" width="31" height="13" font="3"><b>single</b></text>
+<text top="965" left="454" width="18" height="13" font="3"><b>link</b></text>
+<text top="965" left="472" width="306" height="13" font="2"> connects the local computer and remote computer side and is</text>
+<text top="981" left="454" width="160" height="13" font="2">shared by all remote computers. </text>
+<text top="980" left="614" width="15" height="13" font="3"><b>UP</b></text>
+<text top="981" left="630" width="163" height="13" font="2"> means a local-to-remote transfer</text>
+<text top="997" left="454" width="78" height="13" font="2">(local computer </text>
+<text top="997" left="546" width="117" height="13" font="2"> remote computer), and </text>
+<text top="997" left="663" width="35" height="13" font="3"><b>DOWN</b></text>
+<text top="997" left="698" width="100" height="13" font="2"> means a remote-to-</text>
+<text top="1013" left="454" width="156" height="13" font="2">local transfer (remote computer </text>
+<text top="1013" left="623" width="132" height="13" font="2"> local computer). These are</text>
+<text top="1027" left="454" width="356" height="13" font="2">independent one-at-a-time FIFO queues: transfers ﬁnish in the order they</text>
+<text top="1043" left="454" width="292" height="13" font="2">enter, and both directions may be active simultaneously. For</text>
+<text top="1058" left="454" width="130" height="13" font="2">simultaneous queues, one </text>
+<text top="1058" left="585" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="1058" left="618" width="153" height="13" font="2">'s per-remote transfers enter by</text>
+<text top="1074" left="454" width="335" height="13" font="2">increasing remote index. Otherwise transfers enter in interactor event</text>
+<text top="1090" left="454" width="347" height="13" font="2">order; tasks started together and ﬁnishing together use assignment-line</text>
+<text top="1104" left="454" width="28" height="13" font="2">order.</text>
+<text top="331" left="198" width="13" height="14" font="10">→</text>
+<text top="331" left="348" width="13" height="14" font="10">→</text>
+<text top="442" left="302" width="61" height="13" font="12">num_layers</text>
+<text top="458" left="309" width="84" height="13" font="12">[0, num_layers)</text>
+<text top="569" left="384" width="4" height="13" font="12">[</text>
+<text top="566" left="388" width="9" height="17" font="14">𝑙𝑠</text>
+<text top="569" left="397" width="3" height="13" font="12">,</text>
+<text top="566" left="405" width="9" height="17" font="14">𝑙𝑒</text>
+<text top="569" left="414" width="4" height="13" font="12">)</text>
+<text top="582" left="145" width="9" height="17" font="14">𝑙𝑠</text>
+<text top="582" left="265" width="9" height="17" font="14">𝑙𝑒</text>
+<text top="600" left="355" width="7" height="13" font="12">0</text>
+<text top="598" left="418" width="9" height="17" font="14">𝑙𝑠</text>
+<text top="612" left="177" width="9" height="17" font="14">𝑙𝑒</text>
+<text top="615" left="292" width="61" height="13" font="12">num_layers</text>
+<text top="631" left="119" width="61" height="13" font="12">num_layers</text>
+<text top="631" left="299" width="83" height="13" font="12">num_layers = 1</text>
+<text top="711" left="236" width="77" height="13" font="12">× prefill_proc(</text>
+<text top="711" left="330" width="4" height="13" font="12">[</text>
+<text top="708" left="334" width="4" height="17" font="14">𝑖</text>
+<text top="711" left="338" width="12" height="13" font="12">]).</text>
+<text top="699" left="182" width="9" height="17" font="14">𝑙𝑒</text>
+<text top="702" left="195" width="7" height="13" font="12">−</text>
+<text top="699" left="205" width="9" height="17" font="14">𝑙𝑠</text>
+<text top="720" left="170" width="61" height="13" font="12">num_layers</text>
+<text top="709" left="313" width="7" height="16" font="11">𝐿</text>
+<text top="716" left="322" width="7" height="9" font="15">in</text>
+<text top="760" left="130" width="4" height="13" font="12">[</text>
+<text top="758" left="134" width="4" height="17" font="14">𝑖</text>
+<text top="760" left="138" width="4" height="13" font="12">]</text>
+<text top="758" left="112" width="7" height="16" font="11">𝐿</text>
+<text top="766" left="122" width="7" height="9" font="15">in</text>
+<text top="835" left="224" width="4" height="17" font="14">𝑖</text>
+<text top="838" left="299" width="4" height="13" font="12">[</text>
+<text top="835" left="304" width="4" height="17" font="14">𝑖</text>
+<text top="838" left="307" width="4" height="13" font="12">]</text>
+<text top="836" left="277" width="7" height="16" font="11">𝐿</text>
+<text top="843" left="287" width="12" height="9" font="15">out</text>
+<text top="851" left="240" width="7" height="17" font="14">𝑘</text>
+<text top="851" left="386" width="7" height="17" font="14">𝑘</text>
+<text top="854" left="396" width="17" height="13" font="12">+ 1</text>
+<text top="960" left="99" width="60" height="13" font="12">decode_pre</text>
+<text top="1093" left="325" width="7" height="13" font="12">=</text>
+<text top="61" left="780" width="7" height="13" font="12">=</text>
+<text top="393" left="496" width="11" height="17" font="14">𝑚</text>
+<text top="396" left="511" width="18" height="13" font="12">≥ 1</text>
+<text top="409" left="542" width="11" height="17" font="14">𝑚</text>
+<text top="411" left="556" width="18" height="13" font="12">= 1</text>
+<text top="584" left="661" width="4" height="13" font="12">[</text>
+<text top="581" left="665" width="9" height="17" font="14">𝑙𝑠</text>
+<text top="584" left="674" width="3" height="13" font="12">,</text>
+<text top="581" left="679" width="9" height="17" font="14">𝑙𝑒</text>
+<text top="584" left="688" width="4" height="13" font="12">)</text>
+<text top="581" left="699" width="9" height="17" font="14">𝑙𝑠</text>
+<text top="581" left="788" width="9" height="17" font="14">𝑙𝑒</text>
+<text top="788" left="454" width="9" height="16" font="11">𝐾</text>
+<text top="790" left="470" width="87" height="13" font="12">bytes_per_token</text>
+<text top="790" left="584" width="61" height="13" font="12">num_layers</text>
+<text top="837" left="678" width="7" height="13" font="12">=</text>
+<text top="835" left="689" width="12" height="17" font="14">𝑡𝑝</text>
+<text top="843" left="700" width="13" height="9" font="15">UB</text>
+<text top="837" left="764" width="7" height="13" font="12">=</text>
+<text top="835" left="776" width="12" height="17" font="14">𝑡𝑝</text>
+<text top="843" left="786" width="16" height="9" font="15">base</text>
+<text top="854" left="507" width="7" height="13" font="12">=</text>
+<text top="851" left="518" width="20" height="17" font="14">𝑑𝑖𝑠𝑡</text>
+<text top="859" left="538" width="16" height="9" font="15">base</text>
+<text top="854" left="590" width="7" height="13" font="12">=</text>
+<text top="851" left="601" width="9" height="17" font="14">𝑤</text>
+<text top="859" left="611" width="7" height="9" font="15">tp</text>
+<text top="854" left="650" width="7" height="13" font="12">=</text>
+<text top="851" left="661" width="9" height="17" font="14">𝑤</text>
+<text top="857" left="672" width="4" height="12" font="16">𝑐</text>
+<text top="854" left="683" width="86" height="13" font="12">bandwidth_gbps</text>
+<text top="870" left="647" width="87" height="13" font="12">bytes_per_token</text>
+<text top="996" left="533" width="13" height="14" font="10">→</text>
+<text top="1011" left="610" width="13" height="14" font="10">→</text>
+<text top="25" left="36" width="92" height="12" font="17">8/15/26, 12:53 AM</text>
+<text top="25" left="460" width="110" height="12" font="17">Problems - Codeforces</text>
+<text top="1229" left="36" width="227" height="12" font="17">https://codeforces.com/contest/2251/problems#</text>
+<text top="1229" left="841" width="15" height="12" font="17">2/8</text>
+</page>
+<page number="3" position="absolute" top="0" left="0" height="1262" width="892">
+	<fontspec id="20" size="9" family="PAAAAA+STIXGeneral" color="#000000"/>
+	<fontspec id="21" size="13" family="QAAAAA+AppleSymbols" color="#000000"/>
+<image top="1011" left="80" width="358" height="162" src="tmp/pdfs/codeforces-reextract/new-3_1.png"/>
+<text top="42" left="79" width="63" height="13" font="2">Transfer time</text>
+<text top="59" left="377" width="53" height="13" font="2"> ms, where</text>
+<text top="74" left="267" width="152" height="13" font="2">. The factor   converts bytes to</text>
+<text top="90" left="79" width="218" height="13" font="2">bits. For an input-stage transfer of request  , </text>
+<text top="90" left="359" width="77" height="13" font="2">; for output, use</text>
+<text top="104" left="79" width="354" height="13" font="2">the per-remote computer local-to-remote transfer and per-group remote-</text>
+<text top="120" left="79" width="258" height="13" font="2">to-local transfer sizes deﬁned in Legend. Guaranteed</text>
+<text top="135" left="178" width="204" height="13" font="2">: every transfer takes strictly positive time.</text>
+<text top="159" left="79" width="84" height="13" font="3"><b>Task-Time Table</b></text>
+<text top="183" left="79" width="344" height="13" font="2">Before requests arrive, the judge gives you a table telling you how long</text>
+<text top="198" left="79" width="350" height="13" font="2">tasks take, in milliseconds. You only read this table; you do not measure</text>
+<text top="213" left="79" width="324" height="13" font="2">the times yourself. Read an integer  , then   rows of 7 values; no</text>
+<text top="229" left="79" width="107" height="13" font="2">response is expected:</text>
+<text top="277" left="79" width="346" height="12" font="19">batch_size  prefill_pre  prefill_proc  prefill_post  </text>
+<text top="294" left="79" width="235" height="12" font="19">decode_pre  decode_proc  decode_post</text>
+<text top="310" left="79" width="26" height="13" font="2">Here </text>
+<text top="309" left="105" width="55" height="13" font="3"><b>batch_size</b></text>
+<text top="310" left="161" width="264" height="13" font="2"> means the number of requests grouped into one task.</text>
+<text top="326" left="79" width="110" height="13" font="2">The names containing </text>
+<text top="326" left="190" width="29" height="13" font="3"><b>preﬁll</b></text>
+<text top="326" left="219" width="192" height="13" font="2"> refer to the input stage, and the names</text>
+<text top="342" left="79" width="54" height="13" font="2">containing </text>
+<text top="341" left="133" width="39" height="13" font="3"><b>decode</b></text>
+<text top="342" left="172" width="255" height="13" font="2"> refer to output steps. These ﬁxed names come from</text>
+<text top="357" left="79" width="349" height="13" font="2">the protocol; no AI knowledge is required. The values help you compare</text>
+<text top="373" left="79" width="350" height="13" font="2">scheduling choices. You must read all rows, but a ﬁrst correct scheduler</text>
+<text top="387" left="79" width="341" height="13" font="2">does not need to use the values at all; a more advanced scheduler will</text>
+<text top="403" left="79" width="347" height="13" font="2">use the complete task-time table, including values between listed rows.</text>
+<text top="427" left="79" width="55" height="13" font="3"><b>batch_size</b></text>
+<text top="427" left="135" width="39" height="13" font="2"> means </text>
+<text top="427" left="191" width="246" height="13" font="2"> for the three input stage columns (one request per</text>
+<text top="442" left="79" width="349" height="13" font="2">input stage group) and member count for the three output columns. The</text>
+<text top="458" left="79" width="55" height="13" font="3"><b>batch_size</b></text>
+<text top="458" left="135" width="188" height="13" font="2"> values are distinct positive integers in </text>
+<text top="458" left="369" width="42" height="13" font="2">. A listed</text>
+<text top="474" left="79" width="352" height="13" font="2">output-step group size may exceed the test's  ; such a row only deﬁnes</text>
+<text top="489" left="79" width="348" height="13" font="2">the task-time table and does not make that group size schedulable. Not</text>
+<text top="505" left="79" width="280" height="13" font="2">every step is listed at every group size; a missing value is </text>
+<text top="505" left="359" width="10" height="13" font="3"><b>-1</b></text>
+<text top="505" left="370" width="52" height="13" font="2">. Rows are</text>
+<text top="520" left="79" width="145" height="13" font="2">given in no guaranteed order. </text>
+<text top="520" left="224" width="54" height="13" font="3"><b>Guarantee</b></text>
+<text top="520" left="278" width="152" height="13" font="2">: every step column contains at</text>
+<text top="536" left="79" width="137" height="13" font="2">least one non-missing entry.</text>
+<text top="560" left="79" width="96" height="13" font="2">All listed values are </text>
+<text top="560" left="176" width="251" height="13" font="3"><b>execution durations excluding the schedule cost</b></text>
+<text top="576" left="87" width="81" height="13" font="2">, exactly like the </text>
+<text top="576" left="168" width="17" height="13" font="3"><b>dur</b></text>
+<text top="576" left="186" width="68" height="13" font="2"> ﬁeld of every </text>
+<text top="576" left="254" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="576" left="277" width="126" height="13" font="2">: the total time for which a</text>
+<text top="591" left="79" width="190" height="13" font="2">computer is busy with a task is always </text>
+<text top="591" left="308" width="121" height="13" font="2"> (see System Model). For</text>
+<text top="607" left="79" width="334" height="13" font="2">each step, sort the available rows by group size. If the needed size is</text>
+<text top="622" left="79" width="348" height="13" font="2">listed, use its time. If it lies between two listed sizes, draw a straight line</text>
+<text top="637" left="79" width="339" height="13" font="2">between their times and use the value on that line. Below the smallest</text>
+<text top="653" left="79" width="357" height="13" font="2">size, use the ﬁrst time; above the largest size, use the last time. The result</text>
+<text top="668" left="79" width="289" height="13" font="2">is the same on every remote computer and never changes. </text>
+<text top="668" left="368" width="54" height="13" font="3"><b>Guarantee</b></text>
+<text top="668" left="422" width="3" height="13" font="2">:</text>
+<text top="684" left="79" width="348" height="13" font="2">every resulting legal task duration is strictly positive. Here   is the test's</text>
+<text top="699" left="79" width="204" height="13" font="2">total request count (see Constraints);   is </text>
+<text top="699" left="283" width="78" height="13" font="3"><b>not announced</b></text>
+<text top="699" left="361" width="52" height="13" font="2"> during the</text>
+<text top="715" left="79" width="340" height="13" font="2">interaction and is not a separate group-size limit. No maximum output</text>
+<text top="730" left="79" width="337" height="13" font="2">group size exists beyond the number of currently ready requests. The</text>
+<text top="746" left="79" width="239" height="13" font="2">duration of every completed task is echoed in its </text>
+<text top="746" left="319" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="746" left="341" width="11" height="13" font="2">'s </text>
+<text top="746" left="353" width="17" height="13" font="3"><b>dur</b></text>
+<text top="746" left="370" width="26" height="13" font="2"> ﬁeld.</text>
+<text top="770" left="79" width="136" height="13" font="3"><b>Event Frames (Your Turns)</b></text>
+<text top="793" left="79" width="329" height="13" font="2">The interactor sends a frame whenever one or more events occur. A</text>
+<text top="810" left="79" width="174" height="13" font="2">frame contains: one timestamp line </text>
+<text top="809" left="253" width="4" height="13" font="3"><b>t</b></text>
+<text top="810" left="257" width="108" height="13" font="2">, one event-count line </text>
+<text top="809" left="365" width="6" height="13" font="3"><b>e</b></text>
+<text top="810" left="372" width="66" height="13" font="2">, then   event</text>
+<text top="825" left="79" width="305" height="13" font="2">lines. Always read the whole frame before deciding what to do.</text>
+<text top="849" left="79" width="334" height="13" font="2">The frame timestamp is its event time, printed with 9 decimal places;</text>
+<text top="863" left="79" width="347" height="13" font="2">printed timestamps are nondecreasing, while the internal event times of</text>
+<text top="879" left="79" width="343" height="13" font="2">consecutive frames are strictly increasing. Only events with exactly the</text>
+<text top="894" left="79" width="347" height="13" font="2">same internal timestamp are coalesced. A later event is never moved to</text>
+<text top="909" left="79" width="319" height="13" font="2">an earlier frame, and line order carries no scheduling priority. Your</text>
+<text top="926" left="79" width="332" height="13" font="2">response may use any event in the frame: every resource freed by a </text>
+<text top="925" left="411" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="941" left="79" width="251" height="13" font="2">is free, even if that event is the last line. Guarantee: </text>
+<text top="941" left="330" width="18" height="13" font="3"><b>FIN</b></text>
+<text top="941" left="348" width="78" height="13" font="2"> appears beside</text>
+<text top="957" left="79" width="18" height="13" font="2">the </text>
+<text top="957" left="98" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="957" left="120" width="291" height="13" font="2"> of that request's ﬁnal output ﬁnal step. After reading such a</text>
+<text top="972" left="79" width="341" height="13" font="2">frame, the request is ﬁnished and must not appear in your response to</text>
+<text top="988" left="79" width="158" height="13" font="2">that frame or any later response.</text>
+<text top="1173" left="79" width="32" height="13" font="4"><i>Guide:</i></text>
+<text top="1173" left="111" width="307" height="13" font="2"> read the whole event frame, update state, then print one count</text>
+<text top="1188" left="79" width="175" height="13" font="2">and exactly that many assignments.</text>
+<text top="43" left="474" width="63" height="13" font="3"><b>ARR &lt;rid&gt; &lt;</b></text>
+<text top="43" left="566" width="7" height="13" font="3"><b>&gt;</b></text>
+<text top="44" left="573" width="56" height="13" font="2"> — request </text>
+<text top="44" left="665" width="141" height="13" font="2"> arrived; its arrival time is this</text>
+<text top="60" left="474" width="105" height="13" font="2">frame's timestamp  ; </text>
+<text top="60" left="609" width="74" height="13" font="2"> is given, while </text>
+<text top="60" left="717" width="61" height="13" font="2"> is unknown.</text>
+<text top="77" left="474" width="173" height="13" font="3"><b>TDN &lt;server&gt; &lt;task_spec&gt; &lt;dur&gt;</b></text>
+<text top="77" left="647" width="137" height="13" font="2"> — a task completed and its</text>
+<text top="94" left="474" width="92" height="13" font="2">server is now free. </text>
+<text top="94" left="565" width="53" height="13" font="3"><b>task_spec</b></text>
+<text top="94" left="618" width="74" height="13" font="2"> is echoed in a </text>
+<text top="94" left="692" width="107" height="13" font="3"><b>canonical equivalent</b></text>
+<text top="111" left="474" width="24" height="13" font="3"><b>form</b></text>
+<text top="111" left="498" width="294" height="13" font="2">: integers use ordinary decimal notation and ﬁelds use single</text>
+<text top="128" left="474" width="41" height="13" font="2">spaces; </text>
+<text top="128" left="515" width="17" height="13" font="3"><b>dur</b></text>
+<text top="128" left="532" width="129" height="13" font="2"> is the execution duration, </text>
+<text top="128" left="661" width="50" height="13" font="3"><b>excluding</b></text>
+<text top="128" left="711" width="83" height="13" font="2">  , printed with 9</text>
+<text top="145" left="474" width="142" height="13" font="2">digits after the decimal point.</text>
+<text top="162" left="474" width="310" height="13" font="3"><b>XDN &lt;UP|DOWN&gt; &lt;remote&gt; &lt;size&gt; &lt;PRE|DEC&gt; &lt;m&gt; &lt;rid...&gt;</b></text>
+<text top="162" left="784" width="23" height="13" font="2"> — a</text>
+<text top="179" left="474" width="199" height="13" font="2">transfer completed (its data has arrived). </text>
+<text top="179" left="673" width="21" height="13" font="3"><b>size</b></text>
+<text top="179" left="694" width="25" height="13" font="2"> is in </text>
+<text top="179" left="719" width="28" height="13" font="3"><b>bytes</b></text>
+<text top="179" left="747" width="6" height="13" font="2"> (</text>
+<text top="196" left="601" width="9" height="13" font="2">); </text>
+<text top="196" left="610" width="22" height="13" font="3"><b>PRE</b></text>
+<text top="196" left="632" width="4" height="13" font="2">/</text>
+<text top="196" left="636" width="23" height="13" font="3"><b>DEC</b></text>
+<text top="196" left="659" width="119" height="13" font="2"> marks an input-stage or</text>
+<text top="212" left="474" width="322" height="13" font="2">output-step transfer; per-remote computer transfers each produce</text>
+<text top="230" left="474" width="48" height="13" font="2">their own </text>
+<text top="229" left="522" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="230" left="545" width="82" height="13" font="2">; for input stage, </text>
+<text top="229" left="628" width="10" height="13" font="3"><b>m</b></text>
+<text top="230" left="637" width="3" height="13" font="2"> </text>
+<text top="230" left="659" width="27" height="13" font="2">. The </text>
+<text top="229" left="686" width="10" height="13" font="3"><b>m</b></text>
+<text top="230" left="696" width="104" height="13" font="2"> request ids listed are</text>
+<text top="246" left="474" width="304" height="13" font="2">exactly the requests whose data the transfer carries: the single</text>
+<text top="262" left="474" width="310" height="13" font="2">request for input stage; that remote computer's members of the</text>
+<text top="279" left="474" width="49" height="13" font="2">triggering </text>
+<text top="279" left="523" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="279" left="556" width="231" height="13" font="2"> for an output-step local-to-remote transfer; the</text>
+<text top="296" left="474" width="129" height="13" font="2">members of the triggering </text>
+<text top="296" left="603" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="296" left="645" width="164" height="13" font="2"> group for an output-step remote-</text>
+<text top="313" left="474" width="79" height="13" font="2">to-local transfer.</text>
+<text top="330" left="474" width="48" height="13" font="3"><b>FIN &lt;rid&gt;</b></text>
+<text top="330" left="521" width="281" height="13" font="2"> — the request ﬁnished all output steps (its last token was</text>
+<text top="346" left="474" width="325" height="13" font="2">just produced). It must not appear in any task you assign from now</text>
+<text top="363" left="474" width="15" height="13" font="2">on.</text>
+<text top="389" left="454" width="46" height="13" font="3"><b>&lt;server&gt;</b></text>
+<text top="390" left="500" width="13" height="13" font="2">   </text>
+<text top="389" left="513" width="7" height="13" font="3"><b>E</b></text>
+<text top="390" left="520" width="97" height="13" font="2"> (local computer) or </text>
+<text top="389" left="617" width="14" height="13" font="3"><b>Ck</b></text>
+<text top="390" left="631" width="109" height="13" font="2"> (remote computer  ); </text>
+<text top="389" left="740" width="23" height="13" font="3"><b>&lt;m&gt;</b></text>
+<text top="390" left="763" width="29" height="13" font="2"> is the</text>
+<text top="405" left="454" width="280" height="13" font="2">number of request ids that follow. request ids are integers</text>
+<text top="420" left="528" width="193" height="13" font="2">, assigned in arrival order, never reused.</text>
+<text top="444" left="454" width="60" height="13" font="3"><b>Constraints</b></text>
+<text top="471" left="527" width="6" height="13" font="2">; </text>
+<text top="471" left="604" width="6" height="13" font="2">; </text>
+<text top="471" left="703" width="6" height="13" font="2">; </text>
+<text top="471" left="800" width="3" height="13" font="2">;</text>
+<text top="489" left="578" width="46" height="13" font="2"> per test; </text>
+<text top="489" left="735" width="3" height="13" font="2">;</text>
+<text top="505" left="547" width="3" height="13" font="2">.</text>
+<text top="521" left="531" width="6" height="13" font="2">; </text>
+<text top="521" left="687" width="3" height="13" font="2">;</text>
+<text top="538" left="640" width="6" height="13" font="2">; </text>
+<text top="538" left="788" width="3" height="13" font="2">.</text>
+<text top="555" left="620" width="6" height="13" font="2">; </text>
+<text top="555" left="754" width="3" height="13" font="2">;</text>
+<text top="573" left="572" width="27" height="13" font="2">; and </text>
+<text top="573" left="668" width="3" height="13" font="2">.</text>
+<text top="589" left="474" width="194" height="13" font="2">Every non-missing task-table entry is in </text>
+<text top="589" left="730" width="60" height="13" font="2"> ms. System</text>
+<text top="605" left="474" width="323" height="13" font="2">reals, task times, timestamps, and durations use 9 decimal places.</text>
+<text top="622" left="474" width="198" height="13" font="2">Arrival timestamps are nondecreasing in </text>
+<text top="622" left="712" width="80" height="13" font="2"> ms. Completion</text>
+<text top="639" left="474" width="98" height="13" font="2">frames may exceed </text>
+<text top="639" left="591" width="216" height="13" font="2">, but the validator guarantees a conservative</text>
+<text top="657" left="474" width="78" height="13" font="2">upper bound of </text>
+<text top="657" left="575" width="203" height="13" font="2"> ms even if every legal task and transfer is</text>
+<text top="673" left="474" width="274" height="13" font="2">serialized; all timestamps are nonnegative ﬁnite doubles.</text>
+<text top="690" left="474" width="228" height="13" font="3"><b>You never need to predict event timestamps</b></text>
+<text top="690" left="702" width="101" height="13" font="2"> to keep the protocol</text>
+<text top="707" left="474" width="281" height="13" font="2">correct: every completion is announced by the interactor (</text>
+<text top="707" left="754" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="707" left="777" width="4" height="13" font="2">/</text>
+<text top="707" left="781" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="707" left="804" width="3" height="13" font="2">)</text>
+<text top="723" left="474" width="337" height="13" font="2">with its timestamp and duration, so a purely reactive scheduler needs</text>
+<text top="740" left="474" width="333" height="13" font="2">no arithmetic on future times. If you simulate ahead for planning, use</text>
+<text top="756" left="474" width="335" height="13" font="2">ordinary double-precision arithmetic with the piecewise-linear lookup</text>
+<text top="772" left="474" width="134" height="13" font="2">and transfer formula above.</text>
+<text top="790" left="474" width="41" height="13" font="2">At most </text>
+<text top="790" left="552" width="142" height="13" font="2"> frames per test; use fast I/O.</text>
+<text top="806" left="474" width="117" height="13" font="2">Degenerate values (e.g. </text>
+<text top="806" left="622" width="6" height="13" font="2">, </text>
+<text top="806" left="711" width="89" height="13" font="2">) occur and simply</text>
+<text top="822" left="474" width="180" height="13" font="2">disable the corresponding mechanic.</text>
+<text top="848" left="454" width="41" height="15" font="18"><b>Output</b></text>
+<text top="864" left="454" width="216" height="13" font="2">After every frame (one turn), print a count   (</text>
+<text top="864" left="744" width="65" height="13" font="2">), followed by</text>
+<text top="880" left="461" width="349" height="13" font="2"> assignments. For readability the examples put one assignment on each</text>
+<text top="894" left="454" width="345" height="13" font="2">line, but the parser accepts arbitrary whitespace between tokens. Each</text>
+<text top="911" left="454" width="123" height="13" font="2">assignment has the form </text>
+<text top="910" left="577" width="114" height="13" font="3"><b>&lt;server&gt; &lt;task_spec&gt;</b></text>
+<text top="911" left="692" width="111" height="13" font="2">. It starts one task on a</text>
+<text top="926" left="454" width="341" height="13" font="2">computer that is currently free. The command words shown below are</text>
+<text top="941" left="454" width="344" height="13" font="2">ﬁxed output syntax; copy them exactly. Integer tokens use the ordinary</text>
+<text top="957" left="454" width="352" height="13" font="2">signed-decimal syntax accepted by C++ conversion (an optional leading</text>
+<text top="972" left="454" width="7" height="13" font="3"><b>+</b></text>
+<text top="972" left="461" width="311" height="13" font="2"> and leading zeros are accepted); echoed integers are canonical</text>
+<text top="988" left="454" width="304" height="13" font="2">decimal. Thus a response containing no assignments is simply</text>
+<text top="1036" left="454" width="7" height="12" font="19">0</text>
+<text top="1051" left="454" width="349" height="13" font="2">For a ﬁrst scheduler, most responses may contain only zero or one task.</text>
+<text top="1067" left="454" width="347" height="13" font="2">Unmentioned resources stay idle. You may leave any free computer idle</text>
+<text top="1083" left="454" width="352" height="13" font="2">even when one or more legal tasks are available. Waiting can be a useful</text>
+<text top="1097" left="454" width="342" height="13" font="2">grouping choice, but do not create the stuck state with no future event</text>
+<text top="1114" left="454" width="63" height="13" font="2">described in </text>
+<text top="1113" left="517" width="56" height="13" font="3"><b>Interaction</b></text>
+<text top="1114" left="573" width="201" height="13" font="2">. Every frame is a scheduling opportunity,</text>
+<text top="1128" left="454" width="340" height="13" font="2">including frames containing only transfers or arrivals. After reading the</text>
+<text top="1144" left="454" width="335" height="13" font="2">whole frame, you may use any predecessor or free resource reported</text>
+<text top="1160" left="454" width="70" height="13" font="2">anywhere in it.</text>
+<text top="60" left="79" width="271" height="13" font="12">= latency_in_ms + 8 data_bytes/(bandwidth_gbps ×</text>
+<text top="60" left="372" width="4" height="13" font="12">)</text>
+<text top="60" left="354" width="13" height="13" font="12">10</text>
+<text top="57" left="367" width="5" height="9" font="15">6</text>
+<text top="75" left="79" width="187" height="13" font="12">data_bytes = len × bytes_per_token</text>
+<text top="75" left="326" width="7" height="13" font="12">8</text>
+<text top="87" left="288" width="4" height="17" font="14">𝑖</text>
+<text top="90" left="298" width="27" height="13" font="12">len =</text>
+<text top="90" left="346" width="4" height="13" font="12">[</text>
+<text top="87" left="351" width="4" height="17" font="14">𝑖</text>
+<text top="90" left="354" width="4" height="13" font="12">]</text>
+<text top="88" left="329" width="7" height="16" font="11">𝐿</text>
+<text top="95" left="338" width="7" height="9" font="15">in</text>
+<text top="136" left="79" width="98" height="13" font="12">latency_in_ms &gt; 0</text>
+<text top="212" left="252" width="9" height="16" font="11">𝑁</text>
+<text top="212" left="292" width="9" height="16" font="11">𝑁</text>
+<text top="426" left="173" width="7" height="16" font="11">𝐿</text>
+<text top="433" left="183" width="7" height="9" font="15">in</text>
+<text top="459" left="323" width="47" height="13" font="12">[1, 4096]</text>
+<text top="472" left="303" width="8" height="17" font="14">𝑅</text>
+<text top="574" left="79" width="7" height="17" font="14">𝑆</text>
+<text top="589" left="269" width="7" height="17" font="14">𝑆</text>
+<text top="592" left="280" width="28" height="13" font="12">+ dur</text>
+<text top="681" left="361" width="8" height="17" font="14">𝑅</text>
+<text top="698" left="262" width="8" height="17" font="14">𝑅</text>
+<text top="807" left="402" width="6" height="17" font="14">𝑒</text>
+<text top="44" left="553" width="4" height="13" font="12">[</text>
+<text top="42" left="558" width="4" height="17" font="14">𝑖</text>
+<text top="44" left="561" width="4" height="13" font="12">]</text>
+<text top="42" left="536" width="7" height="16" font="11">𝐿</text>
+<text top="49" left="546" width="7" height="9" font="15">in</text>
+<text top="42" left="629" width="4" height="17" font="14">𝑖</text>
+<text top="44" left="637" width="7" height="13" font="12">=</text>
+<text top="45" left="648" width="17" height="12" font="20"><b>𝐫𝐢𝐝</b></text>
+<text top="58" left="568" width="4" height="17" font="14">𝑡</text>
+<text top="61" left="596" width="4" height="13" font="12">[</text>
+<text top="58" left="600" width="4" height="17" font="14">𝑖</text>
+<text top="61" left="604" width="4" height="13" font="12">]</text>
+<text top="59" left="579" width="7" height="16" font="11">𝐿</text>
+<text top="66" left="588" width="7" height="9" font="15">in</text>
+<text top="61" left="704" width="4" height="13" font="12">[</text>
+<text top="58" left="709" width="4" height="17" font="14">𝑖</text>
+<text top="61" left="712" width="4" height="13" font="12">]</text>
+<text top="59" left="683" width="7" height="16" font="11">𝐿</text>
+<text top="66" left="692" width="12" height="9" font="15">out</text>
+<text top="126" left="714" width="7" height="17" font="14">𝑆</text>
+<text top="197" left="474" width="127" height="13" font="12">= len × bytes_per_token</text>
+<text top="230" left="641" width="18" height="13" font="12">= 1</text>
+<text top="390" left="503" width="7" height="13" font="12">=</text>
+<text top="388" left="724" width="7" height="17" font="14">𝑘</text>
+<text top="421" left="454" width="43" height="13" font="12">0, 1, … ,</text>
+<text top="418" left="500" width="8" height="17" font="14">𝑅</text>
+<text top="421" left="511" width="17" height="13" font="12">− 1</text>
+<text top="472" left="474" width="18" height="13" font="12">1 ≤</text>
+<text top="470" left="495" width="9" height="16" font="11">𝐾</text>
+<text top="472" left="509" width="42" height="13" font="12">≤ 8 1 ≤</text>
+<text top="469" left="555" width="8" height="17" font="14">𝑅</text>
+<text top="472" left="567" width="61" height="13" font="12">≤ 2000 1 ≤</text>
+<text top="472" left="649" width="4" height="13" font="12">[</text>
+<text top="469" left="653" width="4" height="17" font="14">𝑖</text>
+<text top="472" left="657" width="45" height="13" font="12">] ≤ 4096</text>
+<text top="470" left="632" width="7" height="16" font="11">𝐿</text>
+<text top="477" left="641" width="7" height="9" font="15">in</text>
+<text top="472" left="709" width="18" height="13" font="12">1 ≤</text>
+<text top="472" left="752" width="4" height="13" font="12">[</text>
+<text top="469" left="757" width="4" height="17" font="14">𝑖</text>
+<text top="472" left="760" width="39" height="13" font="12">] ≤ 512</text>
+<text top="470" left="731" width="7" height="16" font="11">𝐿</text>
+<text top="477" left="740" width="12" height="9" font="15">out</text>
+<text top="489" left="513" width="4" height="13" font="12">[</text>
+<text top="486" left="518" width="4" height="17" font="14">𝑖</text>
+<text top="489" left="521" width="26" height="13" font="12">] ≤ 2</text>
+<text top="490" left="550" width="6" height="12" font="21">⋅</text>
+<text top="489" left="474" width="9" height="13" font="12">∑</text>
+<text top="494" left="485" width="3" height="12" font="16">𝑖</text>
+<text top="487" left="492" width="7" height="16" font="11">𝐿</text>
+<text top="494" left="501" width="12" height="9" font="15">out</text>
+<text top="489" left="559" width="13" height="13" font="12">10</text>
+<text top="486" left="573" width="5" height="9" font="15">5</text>
+<text top="489" left="624" width="111" height="13" font="12">1 ≤ num_layers ≤ 64</text>
+<text top="505" left="474" width="18" height="13" font="12">2 ≤</text>
+<text top="503" left="495" width="9" height="16" font="11">𝑁</text>
+<text top="505" left="509" width="37" height="13" font="12">≤ 4096</text>
+<text top="522" left="474" width="18" height="13" font="12">1 ≤</text>
+<text top="519" left="495" width="7" height="17" font="14">𝑆</text>
+<text top="522" left="507" width="179" height="13" font="12">≤ 10 0.001 ≤ latency_in_ms ≤ 50</text>
+<text top="539" left="474" width="308" height="13" font="12">0.001 ≤ bandwidth_gbps ≤ 100 1 ≤ bytes_per_token ≤ 10</text>
+<text top="536" left="782" width="5" height="9" font="15">6</text>
+<text top="556" left="474" width="141" height="13" font="12">0.001 ≤ SLO1, SLO2 ≤ 10</text>
+<text top="553" left="614" width="5" height="9" font="15">9</text>
+<text top="556" left="626" width="18" height="13" font="12">0 ≤</text>
+<text top="553" left="648" width="4" height="17" font="14">𝑡</text>
+<text top="556" left="676" width="3" height="13" font="12">,</text>
+<text top="553" left="682" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="556" left="724" width="7" height="13" font="12">≤</text>
+<text top="553" left="652" width="8" height="17" font="14">𝑝</text>
+<text top="561" left="659" width="16" height="9" font="15">base</text>
+<text top="553" left="698" width="4" height="17" font="14">𝑡</text>
+<text top="561" left="702" width="16" height="9" font="15">base</text>
+<text top="556" left="735" width="13" height="13" font="12">10</text>
+<text top="553" left="748" width="5" height="9" font="15">9</text>
+<text top="573" left="503" width="7" height="13" font="12">≤</text>
+<text top="570" left="514" width="4" height="17" font="14">𝑡</text>
+<text top="573" left="542" width="7" height="13" font="12">≤</text>
+<text top="573" left="474" width="13" height="13" font="12">10</text>
+<text top="570" left="487" width="10" height="9" font="15">−9</text>
+<text top="570" left="518" width="8" height="17" font="14">𝑝</text>
+<text top="578" left="524" width="13" height="9" font="15">UB</text>
+<text top="573" left="553" width="13" height="13" font="12">10</text>
+<text top="571" left="567" width="5" height="9" font="15">9</text>
+<text top="570" left="600" width="4" height="17" font="14">𝑡</text>
+<text top="573" left="628" width="7" height="13" font="12">&gt;</text>
+<text top="570" left="640" width="4" height="17" font="14">𝑡</text>
+<text top="570" left="604" width="8" height="17" font="14">𝑝</text>
+<text top="578" left="610" width="13" height="9" font="15">UB</text>
+<text top="570" left="644" width="8" height="17" font="14">𝑝</text>
+<text top="578" left="650" width="16" height="9" font="15">base</text>
+<text top="590" left="668" width="37" height="13" font="12">[0.001,</text>
+<text top="590" left="726" width="4" height="13" font="12">]</text>
+<text top="590" left="707" width="13" height="13" font="12">10</text>
+<text top="588" left="721" width="5" height="9" font="15">4</text>
+<text top="623" left="672" width="14" height="13" font="12">[0,</text>
+<text top="623" left="707" width="4" height="13" font="12">]</text>
+<text top="623" left="688" width="13" height="13" font="12">10</text>
+<text top="620" left="701" width="5" height="9" font="15">9</text>
+<text top="640" left="572" width="13" height="13" font="12">10</text>
+<text top="637" left="585" width="5" height="9" font="15">9</text>
+<text top="657" left="552" width="13" height="13" font="12">10</text>
+<text top="654" left="565" width="9" height="9" font="15">12</text>
+<text top="790" left="515" width="7" height="13" font="12">2</text>
+<text top="791" left="524" width="6" height="12" font="21">⋅</text>
+<text top="790" left="533" width="13" height="13" font="12">10</text>
+<text top="787" left="547" width="5" height="9" font="15">6</text>
+<text top="804" left="591" width="9" height="16" font="11">𝐾</text>
+<text top="806" left="604" width="107" height="13" font="12">= 1 num_layers = 1</text>
+<text top="862" left="657" width="7" height="17" font="14">𝑛</text>
+<text top="865" left="670" width="18" height="13" font="12">0 ≤</text>
+<text top="862" left="692" width="7" height="17" font="14">𝑛</text>
+<text top="865" left="703" width="7" height="13" font="12">≤</text>
+<text top="863" left="714" width="9" height="16" font="11">𝐾</text>
+<text top="865" left="727" width="17" height="13" font="12">+ 1</text>
+<text top="877" left="454" width="7" height="17" font="14">𝑛</text>
+<text top="25" left="36" width="92" height="12" font="17">8/15/26, 12:53 AM</text>
+<text top="25" left="460" width="110" height="12" font="17">Problems - Codeforces</text>
+<text top="1229" left="36" width="227" height="12" font="17">https://codeforces.com/contest/2251/problems#</text>
+<text top="1229" left="841" width="15" height="12" font="17">3/8</text>
+</page>
+<page number="4" position="absolute" top="0" left="0" height="1262" width="892">
+<text top="42" left="79" width="314" height="13" font="2">When deciding whether a task is legal, ask three questions: Is its</text>
+<text top="58" left="79" width="345" height="13" font="2">computer free? Has every required predecessor event arrived? Is every</text>
+<text top="72" left="79" width="314" height="13" font="2">request in the task at exactly this step and not already in ﬂight or</text>
+<text top="88" left="79" width="268" height="13" font="2">ﬁnished? The tables below make these checks precise.</text>
+<text top="111" left="79" width="340" height="13" font="2">All assignments in one response begin simultaneously at timestamp  .</text>
+<text top="126" left="79" width="339" height="13" font="2">One cannot depend on another assignment from that same response.</text>
+<text top="142" left="79" width="335" height="13" font="2">Assign at most one task to each resource; it becomes free again only</text>
+<text top="158" left="79" width="44" height="13" font="2">when its </text>
+<text top="158" left="123" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="158" left="146" width="184" height="13" font="2"> arrives. The six legal task shapes are:</text>
+<text top="190" left="84" width="21" height="13" font="2">step</text>
+<text top="190" left="164" width="53" height="13" font="3"><b>task_spec</b></text>
+<text top="190" left="288" width="31" height="13" font="2">Server</text>
+<text top="217" left="84" width="54" height="13" font="2">input stage</text>
+<text top="233" left="84" width="42" height="13" font="2">ﬁrst step</text>
+<text top="217" left="164" width="85" height="13" font="3"><b>P PRE &lt;remote&gt;</b></text>
+<text top="234" left="164" width="27" height="13" font="3"><b>&lt;rid&gt;</b></text>
+<text top="217" left="288" width="142" height="13" font="2">local computer (also ﬁxes the</text>
+<text top="233" left="288" width="87" height="13" font="2">remote computer)</text>
+<text top="261" left="84" width="54" height="13" font="2">input stage</text>
+<text top="277" left="84" width="39" height="13" font="2">process</text>
+<text top="260" left="164" width="92" height="13" font="3"><b>P PROC &lt;ls&gt; &lt;le&gt;</b></text>
+<text top="278" left="164" width="80" height="13" font="3"><b>&lt;remote&gt; &lt;rid&gt;</b></text>
+<text top="269" left="288" width="106" height="13" font="2">that remote computer</text>
+<text top="304" left="84" width="54" height="13" font="2">input stage</text>
+<text top="321" left="84" width="44" height="13" font="2">ﬁnal step</text>
+<text top="304" left="164" width="93" height="13" font="3"><b>P POST &lt;remote&gt;</b></text>
+<text top="321" left="164" width="27" height="13" font="3"><b>&lt;rid&gt;</b></text>
+<text top="313" left="288" width="73" height="13" font="2">local computer</text>
+<text top="348" left="84" width="53" height="13" font="2">output ﬁrst</text>
+<text top="364" left="84" width="21" height="13" font="2">step</text>
+<text top="356" left="164" width="112" height="13" font="3"><b>D PRE -1 &lt;m&gt; &lt;rid...&gt;</b></text>
+<text top="348" left="288" width="111" height="13" font="2">local computer (across</text>
+<text top="364" left="288" width="92" height="13" font="2">remote computers)</text>
+<text top="391" left="84" width="32" height="13" font="2">output</text>
+<text top="407" left="84" width="39" height="13" font="2">process</text>
+<text top="390" left="164" width="96" height="13" font="3"><b>D PROC &lt;remote&gt;</b></text>
+<text top="407" left="164" width="62" height="13" font="3"><b>&lt;m&gt; &lt;rid...&gt;</b></text>
+<text top="398" left="288" width="106" height="13" font="2">that remote computer</text>
+<text top="434" left="84" width="55" height="13" font="2">output ﬁnal</text>
+<text top="450" left="84" width="21" height="13" font="2">step</text>
+<text top="434" left="164" width="80" height="13" font="3"><b>D POST -1 &lt;m&gt;</b></text>
+<text top="451" left="164" width="36" height="13" font="3"><b>&lt;rid...&gt;</b></text>
+<text top="434" left="288" width="111" height="13" font="2">local computer (across</text>
+<text top="450" left="288" width="92" height="13" font="2">remote computers)</text>
+<text top="484" left="79" width="19" height="13" font="2">For </text>
+<text top="484" left="99" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="484" left="132" width="4" height="13" font="2">/</text>
+<text top="484" left="135" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="484" left="176" width="24" height="13" font="2">, the </text>
+<text top="484" left="200" width="10" height="13" font="3"><b>-1</b></text>
+<text top="484" left="211" width="216" height="13" font="2"> marks a group spanning remote computers;</text>
+<text top="499" left="79" width="16" height="13" font="2">for </text>
+<text top="499" left="95" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="499" left="138" width="171" height="13" font="2">, all members must be assigned to </text>
+<text top="499" left="309" width="50" height="13" font="3"><b>&lt;remote&gt;</b></text>
+<text top="499" left="359" width="18" height="13" font="2">. In </text>
+<text top="499" left="377" width="32" height="13" font="3"><b>P PRE</b></text>
+<text top="499" left="409" width="3" height="13" font="2">,</text>
+<text top="515" left="79" width="50" height="13" font="3"><b>&lt;remote&gt;</b></text>
+<text top="516" left="129" width="57" height="13" font="2"> must be in </text>
+<text top="516" left="219" width="18" height="13" font="2">; in </text>
+<text top="515" left="237" width="42" height="13" font="3"><b>P PROC</b></text>
+<text top="516" left="279" width="24" height="13" font="2"> and </text>
+<text top="515" left="303" width="40" height="13" font="3"><b>P POST</b></text>
+<text top="516" left="343" width="6" height="13" font="2">, </text>
+<text top="515" left="349" width="50" height="13" font="3"><b>&lt;remote&gt;</b></text>
+<text top="516" left="399" width="27" height="13" font="2"> must</text>
+<text top="530" left="79" width="328" height="13" font="2">equal the request's assigned remote computer — anything else is a</text>
+<text top="547" left="79" width="49" height="13" font="2">violation. (</text>
+<text top="547" left="129" width="40" height="13" font="3"><b>P POST</b></text>
+<text top="547" left="168" width="180" height="13" font="2"> itself runs on the local computer: its </text>
+<text top="547" left="348" width="50" height="13" font="3"><b>&lt;remote&gt;</b></text>
+<text top="547" left="398" width="23" height="13" font="2"> ﬁeld</text>
+<text top="562" left="79" width="354" height="13" font="2">carries no scheduling meaning and is purely a consistency check against</text>
+<text top="577" left="79" width="344" height="13" font="2">the request's ﬁxed assignment.) Iteration indices are never transmitted:</text>
+<text top="593" left="79" width="350" height="13" font="2">each request's steps are strictly sequential, so your own bookkeeping is</text>
+<text top="607" left="79" width="331" height="13" font="2">the sole — and suﬃcient — source of truth for which iteration a task</text>
+<text top="623" left="79" width="54" height="13" font="2">belongs to.</text>
+<text top="647" left="79" width="21" height="13" font="2">The </text>
+<text top="647" left="101" width="28" height="13" font="3"><b>order</b></text>
+<text top="647" left="128" width="297" height="13" font="2"> of request ids within a group has no semantic eﬀect: legality,</text>
+<text top="663" left="79" width="346" height="13" font="2">durations, transfer sizes, and all subsequent events depend only on the</text>
+<text top="678" left="79" width="64" height="13" font="2">member set (</text>
+<text top="678" left="143" width="83" height="13" font="3"><b>D PRE -1 3 4 7 9</b></text>
+<text top="678" left="226" width="24" height="13" font="2"> and </text>
+<text top="678" left="251" width="83" height="13" font="3"><b>D PRE -1 3 9 4 7</b></text>
+<text top="678" left="334" width="85" height="13" font="2"> denote the same</text>
+<text top="695" left="79" width="168" height="13" font="2">task). Order is preserved on echo: </text>
+<text top="694" left="247" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="695" left="270" width="127" height="13" font="2"> repeats the same ﬁelds in</text>
+<text top="710" left="79" width="262" height="13" font="2">canonical decimal form with single spaces, and every </text>
+<text top="710" left="342" width="23" height="13" font="3"><b>XDN</b></text>
+<text top="710" left="365" width="36" height="13" font="2"> lists its</text>
+<text top="726" left="79" width="315" height="13" font="2">request ids in the order of the triggering task's speciﬁcation — a </text>
+<text top="726" left="394" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="742" left="79" width="339" height="13" font="2">group spanning remote computers has per-remote computer local-to-</text>
+<text top="757" left="79" width="354" height="13" font="2">remote transfer lists that remote computer's members as a subsequence</text>
+<text top="773" left="79" width="37" height="13" font="2">of your </text>
+<text top="773" left="116" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="773" left="150" width="256" height="13" font="2"> line, an output-step remote-to-local transfer lists the</text>
+<text top="789" left="79" width="49" height="13" font="2">triggering </text>
+<text top="788" left="129" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="789" left="171" width="98" height="13" font="2"> group in your order.</text>
+<text top="813" left="79" width="117" height="13" font="3"><b>Dependency Summary</b></text>
+<text top="837" left="79" width="342" height="13" font="2">Each task is listed separately so its predecessor and completion eﬀect</text>
+<text top="852" left="79" width="328" height="13" font="2">are easy to scan. For a group, the predecessor rule applies to every</text>
+<text top="867" left="79" width="42" height="13" font="2">member.</text>
+<text top="894" left="99" width="32" height="13" font="3"><b>P PRE</b></text>
+<text top="894" left="131" width="17" height="13" font="2"> — </text>
+<text top="894" left="148" width="37" height="13" font="3"><b>Server:</b></text>
+<text top="894" left="185" width="81" height="13" font="2"> local computer. </text>
+<text top="894" left="266" width="49" height="13" font="3"><b>Requires:</b></text>
+<text top="894" left="315" width="91" height="13" font="2"> the request's ARR</text>
+<text top="912" left="99" width="33" height="13" font="2">event. </text>
+<text top="911" left="132" width="59" height="13" font="3"><b>Completes:</b></text>
+<text top="912" left="191" width="239" height="13" font="2"> ﬁxes the request's remote computer and queues</text>
+<text top="928" left="99" width="190" height="13" font="2">its input-stage local-to-remote transfer.</text>
+<text top="945" left="99" width="73" height="13" font="3"><b>P PROC piece</b></text>
+<text top="945" left="172" width="17" height="13" font="2"> — </text>
+<text top="945" left="189" width="37" height="13" font="3"><b>Server:</b></text>
+<text top="945" left="226" width="157" height="13" font="2"> the assigned remote computer. </text>
+<text top="945" left="383" width="49" height="13" font="3"><b>Requires:</b></text>
+<text top="961" left="99" width="317" height="13" font="2">for the ﬁrst piece, the input-stage local-to-remote XDN; for a later</text>
+<text top="978" left="99" width="161" height="13" font="2">piece, the previous piece's TDN. </text>
+<text top="978" left="260" width="59" height="13" font="3"><b>Completes:</b></text>
+<text top="978" left="319" width="97" height="13" font="2"> only the last piece (</text>
+<text top="995" left="184" width="239" height="13" font="2">) queues the input-stage remote-to-local transfer.</text>
+<text top="1012" left="99" width="40" height="13" font="3"><b>P POST</b></text>
+<text top="1012" left="139" width="17" height="13" font="2"> — </text>
+<text top="1012" left="156" width="37" height="13" font="3"><b>Server:</b></text>
+<text top="1012" left="192" width="81" height="13" font="2"> local computer. </text>
+<text top="1012" left="273" width="49" height="13" font="3"><b>Requires:</b></text>
+<text top="1012" left="322" width="98" height="13" font="2"> the request's input-</text>
+<text top="1029" left="99" width="136" height="13" font="2">stage remote-to-local XDN. </text>
+<text top="1029" left="235" width="59" height="13" font="3"><b>Completes:</b></text>
+<text top="1029" left="294" width="129" height="13" font="2"> stops TDR and makes the</text>
+<text top="1045" left="99" width="120" height="13" font="2">request ready for output.</text>
+<text top="1062" left="99" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="1062" left="132" width="17" height="13" font="2"> — </text>
+<text top="1062" left="149" width="37" height="13" font="3"><b>Server:</b></text>
+<text top="1062" left="186" width="81" height="13" font="2"> local computer. </text>
+<text top="1062" left="267" width="49" height="13" font="3"><b>Requires:</b></text>
+<text top="1062" left="316" width="78" height="13" font="2"> each member's</text>
+<text top="1079" left="99" width="319" height="13" font="2">previous ﬁnal-step TDN (P POST or its previous D POST), and the</text>
+<text top="1096" left="99" width="145" height="13" font="2">request must not be ﬁnished. </text>
+<text top="1096" left="244" width="59" height="13" font="3"><b>Completes:</b></text>
+<text top="1096" left="303" width="104" height="13" font="2"> queues one local-to-</text>
+<text top="1112" left="99" width="317" height="13" font="2">remote transfer per remote computer represented in the group, in</text>
+<text top="1128" left="99" width="170" height="13" font="2">increasing remote-computer index.</text>
+<text top="1145" left="99" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="1146" left="142" width="17" height="13" font="2"> — </text>
+<text top="1145" left="159" width="37" height="13" font="3"><b>Server:</b></text>
+<text top="1146" left="195" width="157" height="13" font="2"> the assigned remote computer. </text>
+<text top="1145" left="352" width="49" height="13" font="3"><b>Requires:</b></text>
+<text top="1146" left="402" width="18" height="13" font="2"> the</text>
+<text top="1162" left="99" width="329" height="13" font="2">local-to-remote XDN carrying each member's current-iteration data.</text>
+<text top="1179" left="99" width="59" height="13" font="3"><b>Completes:</b></text>
+<text top="1179" left="158" width="275" height="13" font="2"> queues one remote-to-local transfer whose length is the</text>
+<text top="1195" left="99" width="53" height="13" font="2">group size.</text>
+<text top="43" left="474" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="44" left="514" width="17" height="13" font="2"> — </text>
+<text top="43" left="531" width="37" height="13" font="3"><b>Server:</b></text>
+<text top="44" left="568" width="81" height="13" font="2"> local computer. </text>
+<text top="43" left="649" width="49" height="13" font="3"><b>Requires:</b></text>
+<text top="44" left="698" width="96" height="13" font="2"> the remote-to-local</text>
+<text top="61" left="474" width="259" height="13" font="2">XDN carrying each member's current-iteration result. </text>
+<text top="61" left="733" width="59" height="13" font="3"><b>Completes:</b></text>
+<text top="77" left="474" width="233" height="13" font="2">produces one token per member; after iteration </text>
+<text top="77" left="741" width="52" height="13" font="2">, produces</text>
+<text top="93" left="474" width="20" height="13" font="2">FIN.</text>
+<text top="120" left="454" width="65" height="15" font="18"><b>Interaction</b></text>
+<text top="136" left="454" width="217" height="13" font="2">Each test is a separate run of your program. </text>
+<text top="136" left="671" width="124" height="13" font="3"><b>Flush the output stream</b></text>
+<text top="152" left="454" width="109" height="13" font="3"><b>after every response.</b></text>
+<text top="153" left="563" width="62" height="13" font="2"> In C++, use </text>
+<text top="152" left="626" width="63" height="13" font="3"><b>cout « ﬂush;</b></text>
+<text top="153" left="688" width="83" height="13" font="2"> after printing the</text>
+<text top="168" left="454" width="178" height="13" font="2">complete response; we recommend </text>
+<text top="168" left="632" width="138" height="13" font="3"><b>ios::sync_with_stdio(false);</b></text>
+<text top="184" left="454" width="74" height="13" font="3"><b>cin.tie(nullptr);</b></text>
+<text top="184" left="528" width="142" height="13" font="2"> for fast input. In Python, call </text>
+<text top="184" left="671" width="89" height="13" font="3"><b>sys.stdout.ﬂush()</b></text>
+<text top="184" left="759" width="25" height="13" font="2"> after</text>
+<text top="201" left="454" width="190" height="13" font="2">printing the complete response (or use </text>
+<text top="201" left="645" width="100" height="13" font="3"><b>print(..., ﬂush=True)</b></text>
+<text top="201" left="745" width="53" height="13" font="2"> for its ﬁnal</text>
+<text top="216" left="454" width="23" height="13" font="2">line).</text>
+<text top="239" left="454" width="271" height="13" font="2">The interaction proceeds: startup conﬁguration (2 lines) </text>
+<text top="239" left="739" width="53" height="13" font="2"> Task-Time</text>
+<text top="255" left="454" width="31" height="13" font="2">Table (</text>
+<text top="255" left="516" width="31" height="13" font="2"> lines) </text>
+<text top="255" left="561" width="74" height="13" font="2"> repeat  frame </text>
+<text top="255" left="649" width="82" height="13" font="2"> your response  </text>
+<text top="255" left="744" width="3" height="13" font="2"> </text>
+<text top="255" left="747" width="23" height="13" font="3"><b>END</b></text>
+<text top="255" left="770" width="28" height="13" font="2">. Your</text>
+<text top="271" left="454" width="331" height="13" font="2">ﬁrst response follows the ﬁrst frame. The whole program follows this</text>
+<text top="286" left="454" width="24" height="13" font="2">loop:</text>
+<text top="335" left="454" width="340" height="12" font="19">read the 2 parameter lines, then N and the N warmup </text>
+<text top="351" left="454" width="26" height="12" font="19">rows</text>
+<text top="368" left="454" width="33" height="12" font="19">loop:</text>
+<text top="384" left="454" width="242" height="12" font="19">    read one line; if it is END: exit</text>
+<text top="400" left="454" width="346" height="12" font="19">    parse it as timestamp t; read event count e from </text>
+<text top="417" left="454" width="85" height="12" font="19">the next line</text>
+<text top="433" left="454" width="170" height="12" font="19">    read the e event lines</text>
+<text top="449" left="454" width="301" height="12" font="19">    update your state (completions, arrivals, </text>
+<text top="466" left="454" width="105" height="12" font="19">transfers, FINs)</text>
+<text top="482" left="454" width="340" height="12" font="19">    choose assignments for currently free resources </text>
+<text top="498" left="454" width="98" height="12" font="19">(possibly none)</text>
+<text top="515" left="454" width="294" height="12" font="19">    print n and the n assignment lines; flush</text>
+<text top="530" left="454" width="329" height="13" font="2">For a simple implementation, store one state per request. Its path is</text>
+<text top="578" left="454" width="346" height="12" font="19">ARR -&gt; P PRE -&gt; input stage UP -&gt; P PROC piece(s) -&gt; </text>
+<text top="595" left="454" width="170" height="12" font="19">input stage DOWN -&gt; P POST</text>
+<text top="611" left="454" width="353" height="12" font="19">    -&gt; D PRE -&gt; output UP -&gt; D PROC -&gt; output DOWN -&gt; </text>
+<text top="627" left="454" width="39" height="12" font="19">D POST</text>
+<text top="644" left="454" width="229" height="12" font="19">    -&gt; either FIN or the next D PRE</text>
+<text top="659" left="454" width="327" height="13" font="2">Move a request to its next state only when the corresponding event</text>
+<text top="674" left="454" width="343" height="13" font="2">appears in a frame. Mark a computer busy when you assign it and free</text>
+<text top="691" left="454" width="67" height="13" font="2">only when its </text>
+<text top="690" left="521" width="23" height="13" font="3"><b>TDN</b></text>
+<text top="691" left="544" width="264" height="13" font="2"> appears. Tracking these states is enough for a correct</text>
+<text top="705" left="454" width="282" height="13" font="2">solution. You do not need to predict when tasks will ﬁnish.</text>
+<text top="729" left="454" width="178" height="13" font="3"><b>You act only when a frame arrives.</b></text>
+<text top="730" left="632" width="147" height="13" font="2"> There is no timer or self-wake</text>
+<text top="745" left="454" width="339" height="13" font="2">mechanism: you cannot ask to be woken at a chosen future time, and</text>
+<text top="760" left="454" width="354" height="13" font="2">you cannot deliberately idle a computer until an arbitrary moment. A task</text>
+<text top="775" left="454" width="358" height="13" font="2">can only be assigned in response to a frame, at that frame's timestamp. If</text>
+<text top="791" left="454" width="288" height="13" font="2">you delay an action, you must wait for a future event frame.</text>
+<text top="815" left="454" width="212" height="13" font="3"><b>Mistakes That Give Zero Points on a Test</b></text>
+<text top="838" left="454" width="339" height="13" font="2">The following errors score   on the test. A legal but slow choice is still</text>
+<text top="853" left="454" width="150" height="13" font="2">valid; it only lowers your score.</text>
+<text top="880" left="474" width="333" height="13" font="2">Assigning a task to a busy computer, or two tasks to one resource in</text>
+<text top="897" left="474" width="88" height="13" font="2">a single response.</text>
+<text top="913" left="474" width="318" height="13" font="2">Assigning a task before all of its required earlier events have been</text>
+<text top="929" left="474" width="331" height="13" font="2">delivered. This includes referencing a rid that has not arrived and re-</text>
+<text top="946" left="474" width="125" height="13" font="2">issuing a completed step.</text>
+<text top="962" left="474" width="335" height="13" font="2">Including a request that is already part of an in-ﬂight task, or that has</text>
+<text top="979" left="474" width="82" height="13" font="2">already ﬁnished (</text>
+<text top="979" left="556" width="18" height="13" font="3"><b>FIN</b></text>
+<text top="979" left="574" width="6" height="13" font="2">).</text>
+<text top="996" left="474" width="125" height="13" font="2">Wrong remote computer: </text>
+<text top="996" left="599" width="42" height="13" font="3"><b>P PROC</b></text>
+<text top="996" left="641" width="4" height="13" font="2">/</text>
+<text top="996" left="644" width="40" height="13" font="3"><b>P POST</b></text>
+<text top="996" left="684" width="119" height="13" font="2"> with a remote computer</text>
+<text top="1013" left="474" width="256" height="13" font="2">other than the request's assigned remote computer; </text>
+<text top="1013" left="729" width="32" height="13" font="3"><b>P PRE</b></text>
+<text top="1013" left="762" width="32" height="13" font="2"> with a</text>
+<text top="1031" left="474" width="126" height="13" font="2">remote computer outside </text>
+<text top="1031" left="630" width="15" height="13" font="2">; a </text>
+<text top="1030" left="645" width="43" height="13" font="3"><b>D PROC</b></text>
+<text top="1031" left="688" width="112" height="13" font="2"> member assigned to a</text>
+<text top="1047" left="474" width="129" height="13" font="2">diﬀerent remote computer.</text>
+<text top="1063" left="474" width="100" height="13" font="2">Illegal piece: empty (</text>
+<text top="1063" left="607" width="48" height="13" font="2">), outside </text>
+<text top="1063" left="737" width="35" height="13" font="2">, or not</text>
+<text top="1079" left="474" width="119" height="13" font="2">ascending and gap-free.</text>
+<text top="1096" left="474" width="90" height="13" font="2">Malformed group: </text>
+<text top="1096" left="597" width="121" height="13" font="2"> or duplicate request ids.</text>
+<text top="1112" left="474" width="160" height="13" font="2">Malformed or unparsable output.</text>
+<text top="1128" left="474" width="313" height="13" font="2">Reaching a stuck state with unﬁnished requests and no possible</text>
+<text top="1145" left="474" width="119" height="13" font="2">future event (see below).</text>
+<text top="1161" left="474" width="175" height="13" font="2">Exceeding the time or memory limit.</text>
+<text top="1188" left="454" width="135" height="13" font="3"><b>Errors and stream closure</b></text>
+<text top="109" left="411" width="4" height="17" font="14">𝑡</text>
+<text top="516" left="186" width="14" height="13" font="12">[0,</text>
+<text top="514" left="205" width="9" height="16" font="11">𝐾</text>
+<text top="516" left="215" width="4" height="13" font="12">)</text>
+<text top="993" left="99" width="9" height="17" font="14">𝑙𝑒</text>
+<text top="995" left="112" width="72" height="13" font="12">= num_layers</text>
+<text top="78" left="728" width="4" height="13" font="12">[</text>
+<text top="75" left="733" width="4" height="17" font="14">𝑖</text>
+<text top="78" left="736" width="4" height="13" font="12">]</text>
+<text top="76" left="707" width="7" height="16" font="11">𝐿</text>
+<text top="83" left="716" width="12" height="9" font="15">out</text>
+<text top="238" left="725" width="13" height="14" font="10">→</text>
+<text top="254" left="486" width="9" height="16" font="11">𝑁</text>
+<text top="256" left="499" width="17" height="13" font="12">+ 1</text>
+<text top="254" left="547" width="13" height="14" font="10">→</text>
+<text top="256" left="598" width="6" height="13" font="12">{</text>
+<text top="254" left="635" width="13" height="14" font="10">→</text>
+<text top="256" left="721" width="6" height="13" font="12">}</text>
+<text top="254" left="730" width="13" height="14" font="10">→</text>
+<text top="839" left="583" width="7" height="13" font="12">0</text>
+<text top="1031" left="600" width="14" height="13" font="12">[0,</text>
+<text top="1029" left="616" width="9" height="16" font="11">𝐾</text>
+<text top="1031" left="625" width="4" height="13" font="12">)</text>
+<text top="1061" left="574" width="9" height="17" font="14">𝑙𝑠</text>
+<text top="1064" left="586" width="7" height="13" font="12">=</text>
+<text top="1061" left="597" width="9" height="17" font="14">𝑙𝑒</text>
+<text top="1064" left="655" width="82" height="13" font="12">[0, num_layers]</text>
+<text top="1094" left="564" width="11" height="17" font="14">𝑚</text>
+<text top="1096" left="578" width="18" height="13" font="12">&lt; 1</text>
+<text top="25" left="36" width="92" height="12" font="17">8/15/26, 12:53 AM</text>
+<text top="25" left="460" width="110" height="12" font="17">Problems - Codeforces</text>
+<text top="1229" left="36" width="227" height="12" font="17">https://codeforces.com/contest/2251/problems#</text>
+<text top="1229" left="841" width="15" height="12" font="17">4/8</text>
+</page>
+<page number="5" position="absolute" top="0" left="0" height="1262" width="892">
+	<fontspec id="22" size="18" family="RAAAAA+STIXSizeOneSym" color="#000000"/>
+	<fontspec id="23" size="13" family="SAAAAA+STSongti-SC" color="#000000"/>
+	<fontspec id="24" size="7" family="TAAAAA+Times" color="#000000"/>
+	<fontspec id="25" size="24" family="UAAAAA+STIXSizeTwoSym" color="#000000"/>
+	<fontspec id="26" size="24" family="VAAAAA+STIXSizeOneSym" color="#000000"/>
+<image top="245" left="455" width="358" height="157" src="tmp/pdfs/codeforces-reextract/new-5_1.png"/>
+<text top="43" left="79" width="149" height="13" font="2">The interactor never produces </text>
+<text top="43" left="229" width="10" height="13" font="3"><b>-1</b></text>
+<text top="43" left="239" width="189" height="13" font="2"> as a failure response. This is unrelated</text>
+<text top="59" left="79" width="86" height="13" font="2">to the mandatory </text>
+<text top="59" left="166" width="10" height="13" font="3"><b>-1</b></text>
+<text top="59" left="176" width="164" height="13" font="2"> marker in participant commands </text>
+<text top="59" left="340" width="33" height="13" font="3"><b>D PRE</b></text>
+<text top="59" left="373" width="24" height="13" font="2"> and </text>
+<text top="59" left="398" width="8" height="13" font="3"><b>D</b></text>
+<text top="75" left="79" width="29" height="13" font="3"><b>POST</b></text>
+<text top="75" left="109" width="327" height="13" font="2">. On a protocol violation or malformed response it simply stops: the</text>
+<text top="90" left="79" width="351" height="13" font="2">test scores   and no further frames are sent. If reading input ever fails or</text>
+<text top="105" left="79" width="335" height="13" font="2">reaches end-of-ﬁle, exit immediately with exit code   — do not block</text>
+<text top="121" left="79" width="351" height="13" font="2">waiting for more input and do not crash; the verdict is determined by the</text>
+<text top="136" left="79" width="155" height="13" font="2">interactor, not by your exit path.</text>
+<text top="160" left="79" width="71" height="13" font="3"><b>Getting Stuck</b></text>
+<text top="184" left="79" width="340" height="13" font="2">If unﬁnished requests remain but no task, transfer, or future arrival can</text>
+<text top="198" left="79" width="343" height="13" font="2">create another event, the run is stuck. The interactor detects this stuck</text>
+<text top="214" left="79" width="348" height="13" font="2">state, terminates, and assigns   to the test. While future arrivals remain,</text>
+<text top="230" left="79" width="335" height="13" font="2">responding with   assignments is safe because time advances to the</text>
+<text top="244" left="79" width="352" height="13" font="2">next arrival. Delaying a request hurts the score; permanently abandoning</text>
+<text top="260" left="79" width="139" height="13" font="2">it can cause this stuck state.</text>
+<text top="284" left="79" width="61" height="13" font="3"><b>Termination</b></text>
+<text top="308" left="79" width="260" height="13" font="2">When all requests have ﬁnished, the interactor sends </text>
+<text top="308" left="339" width="23" height="13" font="3"><b>END</b></text>
+<text top="308" left="362" width="66" height="13" font="2"> (a single line,</text>
+<text top="324" left="79" width="339" height="13" font="2">in place of the next frame's header) after reading your response to the</text>
+<text top="338" left="79" width="136" height="13" font="2">ﬁnal frame. Read it and exit.</text>
+<text top="362" left="79" width="354" height="13" font="2">The total number of requests   is not announced in advance and there is</text>
+<text top="377" left="79" width="351" height="13" font="2">no &#34;no more arrivals&#34; signal — you cannot distinguish a lull from the end</text>
+<text top="392" left="79" width="313" height="13" font="2">of the stream. This is intentional; plan your grouping accordingly.</text>
+<text top="415" left="79" width="46" height="15" font="18"><b>Scoring</b></text>
+<text top="432" left="79" width="338" height="13" font="2">You do not need to calculate the score to write a valid scheduler. First</text>
+<text top="447" left="79" width="339" height="13" font="2">make a scheduler that ﬁnishes every request legally. Read the formula</text>
+<text top="462" left="79" width="338" height="13" font="2">only when you are ready to improve its score. It balances two intuitive</text>
+<text top="478" left="79" width="29" height="13" font="2">goals:</text>
+<text top="505" left="99" width="59" height="13" font="3"><b>Output rate</b></text>
+<text top="505" left="158" width="269" height="13" font="2">: ﬁnish more output tokens per millisecond of simulated</text>
+<text top="521" left="99" width="24" height="13" font="2">time.</text>
+<text top="538" left="99" width="63" height="13" font="3"><b>waiting time</b></text>
+<text top="538" left="162" width="256" height="13" font="2">: make requests ready for output promptly and avoid</text>
+<text top="555" left="99" width="181" height="13" font="2">long gaps between produced tokens.</text>
+<text top="581" left="79" width="178" height="13" font="2">Each goal becomes a component in </text>
+<text top="581" left="285" width="68" height="13" font="2">. The weights </text>
+<text top="581" left="371" width="24" height="13" font="2"> and </text>
+<text top="581" left="411" width="20" height="13" font="2"> say</text>
+<text top="597" left="79" width="357" height="13" font="2">how much that test values each goal, and the ﬁnal score is their weighted</text>
+<text top="612" left="79" width="53" height="13" font="2">sum times </text>
+<text top="612" left="159" width="3" height="13" font="2">.</text>
+<text top="635" left="79" width="129" height="13" font="2">The exact guarantees are: </text>
+<text top="635" left="270" width="6" height="13" font="2">; </text>
+<text top="635" left="345" width="6" height="13" font="2">; </text>
+<text top="635" left="404" width="3" height="13" font="2">;</text>
+<text top="651" left="133" width="6" height="13" font="2">; </text>
+<text top="651" left="207" width="6" height="13" font="2">; </text>
+<text top="651" left="273" width="140" height="13" font="2">. Either weight may be  , but</text>
+<text top="666" left="79" width="317" height="13" font="2">every request must still be completed and every input/output rule</text>
+<text top="681" left="79" width="343" height="13" font="2">obeyed. The following formula turns a value into a number from   to  :</text>
+<text top="738" left="79" width="25" height="13" font="2">(  at </text>
+<text top="738" left="127" width="28" height="13" font="2">,   at </text>
+<text top="738" left="185" width="93" height="13" font="2">, clamped outside).</text>
+<text top="762" left="79" width="131" height="13" font="3"><b>Output-Rate Component.</b></text>
+<text top="762" left="211" width="3" height="13" font="2"> </text>
+<text top="778" left="79" width="347" height="13" font="2">tokens/ms, where total elapsed time   (the latest ﬁnal-token production</text>
+<text top="793" left="79" width="347" height="13" font="2">time over all requests)   (the earliest request arrival time), in ms. Output</text>
+<text top="808" left="79" width="80" height="13" font="2">rate component </text>
+<text top="808" left="293" width="56" height="13" font="2">. The value </text>
+<text top="808" left="378" width="36" height="13" font="2"> comes</text>
+<text top="823" left="79" width="270" height="13" font="2">from a ﬁxed one-request-at-a-time reference schedule; </text>
+<text top="823" left="374" width="26" height="13" font="2"> is an</text>
+<text top="838" left="79" width="342" height="13" font="2">estimated high rate. At or below the baseline the component is  ; at or</text>
+<text top="854" left="79" width="332" height="13" font="2">above the upper bound it is  ; between them it grows linearly. These</text>
+<text top="869" left="79" width="352" height="13" font="2">values set scoring and are not promises about any solution in the testing</text>
+<text top="884" left="79" width="15" height="13" font="2">kit.</text>
+<text top="908" left="79" width="136" height="13" font="3"><b>Waiting-Time Component.</b></text>
+<text top="908" left="215" width="201" height="13" font="2"> The input gives two waiting-time targets.</text>
+<text top="924" left="79" width="28" height="13" font="3"><b>SLO1</b></text>
+<text top="924" left="107" width="324" height="13" font="2"> is the target average wait until a request is ready for its ﬁrst output</text>
+<text top="940" left="79" width="340" height="13" font="2">step (time to decode ready, TDR). No token has been produced at this</text>
+<text top="956" left="79" width="31" height="13" font="2">point. </text>
+<text top="956" left="110" width="28" height="13" font="3"><b>SLO2</b></text>
+<text top="956" left="138" width="268" height="13" font="2"> is the target mean gap between consecutive produced</text>
+<text top="971" left="79" width="129" height="13" font="2">tokens (TPOT). The letters </text>
+<text top="971" left="209" width="22" height="13" font="3"><b>SLO</b></text>
+<text top="971" left="231" width="206" height="13" font="2"> are only part of the ﬁxed input names. For</text>
+<text top="987" left="79" width="64" height="13" font="2">request  , let </text>
+<text top="987" left="258" width="165" height="13" font="2"> be its token production times, i.e.</text>
+<text top="1003" left="79" width="167" height="13" font="2">the completion times of its output </text>
+<text top="1002" left="246" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="1003" left="286" width="32" height="13" font="2"> tasks.</text>
+<text top="1030" left="114" width="303" height="13" font="2">   mean over all requests of (input stage ﬁnal step completion </text>
+<text top="1046" left="99" width="35" height="13" font="2">arrival).</text>
+<text top="1062" left="120" width="56" height="13" font="2">   mean of </text>
+<text top="1062" left="221" width="187" height="13" font="2"> over all consecutive output gaps of all</text>
+<text top="1079" left="99" width="84" height="13" font="2">requests pooled (</text>
+<text top="1079" left="260" width="82" height="13" font="2">). A request with </text>
+<text top="1095" left="99" width="259" height="13" font="2">contributes no gaps. If no request contributes a gap, </text>
+<text top="1095" left="378" width="50" height="13" font="2"> is deﬁned</text>
+<text top="1111" left="99" width="24" height="13" font="2">as  .</text>
+<text top="42" left="454" width="121" height="13" font="2">waiting-time component </text>
+<text top="42" left="708" width="62" height="13" font="2"> — the same</text>
+<text top="58" left="454" width="259" height="13" font="2">conversion with lower values treated as better: lower </text>
+<text top="58" left="732" width="66" height="13" font="2"> is better,   at</text>
+<text top="72" left="495" width="305" height="13" font="2">,   at the reference scheduler's amount above the waiting-time</text>
+<text top="88" left="454" width="37" height="13" font="2">targets </text>
+<text top="88" left="528" width="270" height="13" font="2">. Written out directly (the form easiest to implement and</text>
+<text top="103" left="454" width="32" height="13" font="2">verify):</text>
+<text top="192" left="454" width="122" height="13" font="3"><b>Important special case:</b></text>
+<text top="192" left="576" width="12" height="13" font="2"> if </text>
+<text top="192" left="647" width="154" height="13" font="2">, the waiting-time component is</text>
+<text top="208" left="454" width="346" height="13" font="2">either   or  . It is   only when both mean-waiting-time targets are met (</text>
+<text top="223" left="495" width="90" height="13" font="2">), and   otherwise.</text>
+<text top="403" left="454" width="74" height="13" font="4"><i>Diagram guide:</i></text>
+<text top="403" left="528" width="269" height="13" font="2"> the upper branch rewards higher output rate; the lower</text>
+<text top="419" left="454" width="351" height="13" font="2">branch rewards smaller normalized TDR/TPOT target violations. The two</text>
+<text top="433" left="481" width="259" height="13" font="2"> components are weighted, added, and multiplied by </text>
+<text top="433" left="767" width="3" height="13" font="2">.</text>
+<text top="496" left="454" width="218" height="13" font="2">Thus each completed test awards a score in </text>
+<text top="496" left="719" width="6" height="13" font="2">. </text>
+<text top="496" left="725" width="45" height="13" font="3"><b>Verdicts.</b></text>
+<text top="496" left="770" width="10" height="13" font="2"> A</text>
+<text top="512" left="454" width="328" height="13" font="2">completed interaction scores as above. A protocol error, malformed</text>
+<text top="527" left="454" width="345" height="13" font="2">output, stuck state with no future event, or exceeding the time/memory</text>
+<text top="542" left="454" width="348" height="13" font="2">limit scores   on that test; other tests are unaﬀected. No partial credit is</text>
+<text top="558" left="454" width="150" height="13" font="2">awarded for an unﬁnished test.</text>
+<text top="582" left="454" width="109" height="13" font="3"><b>Contest aggregation.</b></text>
+<text top="582" left="564" width="244" height="13" font="2"> The 22 preliminary tests provide feedback and do</text>
+<text top="597" left="454" width="349" height="13" font="2">not contribute to the ﬁnal ranking. The ﬁnal score is the arithmetic mean</text>
+<text top="612" left="454" width="352" height="13" font="2">of the 20 frozen ﬁnal-test scores. Ranking uses that mean before display</text>
+<text top="628" left="454" width="353" height="13" font="2">rounding; the displayed score is rounded to three digits after the decimal</text>
+<text top="642" left="454" width="223" height="13" font="2">point. Therefore a known per-test vector of  , </text>
+<text top="642" left="697" width="27" height="13" font="2">, and </text>
+<text top="642" left="751" width="29" height="13" font="2">-point</text>
+<text top="658" left="454" width="319" height="13" font="2">outcomes contributes exactly those values before averaging. This</text>
+<text top="673" left="454" width="145" height="13" font="2">problem is not open to hacks.</text>
+<text top="91" left="136" width="7" height="13" font="12">0</text>
+<text top="106" left="330" width="7" height="13" font="12">0</text>
+<text top="215" left="228" width="7" height="13" font="12">0</text>
+<text top="230" left="160" width="7" height="13" font="12">0</text>
+<text top="360" left="223" width="8" height="17" font="14">𝑅</text>
+<text top="582" left="257" width="27" height="13" font="12">[0, 1]</text>
+<text top="579" left="353" width="9" height="17" font="14">𝑤</text>
+<text top="587" left="363" width="7" height="9" font="15">tp</text>
+<text top="579" left="396" width="9" height="17" font="14">𝑤</text>
+<text top="585" left="406" width="4" height="12" font="16">𝑐</text>
+<text top="613" left="133" width="26" height="13" font="12">1000</text>
+<text top="636" left="227" width="3" height="13" font="12">,</text>
+<text top="636" left="252" width="18" height="13" font="12">≥ 0</text>
+<text top="633" left="209" width="9" height="17" font="14">𝑤</text>
+<text top="641" left="219" width="7" height="9" font="15">tp</text>
+<text top="633" left="233" width="9" height="17" font="14">𝑤</text>
+<text top="639" left="243" width="4" height="12" font="16">𝑐</text>
+<text top="636" left="297" width="7" height="13" font="12">+</text>
+<text top="636" left="327" width="18" height="13" font="12">= 1</text>
+<text top="633" left="276" width="9" height="17" font="14">𝑤</text>
+<text top="641" left="286" width="7" height="9" font="15">tp</text>
+<text top="633" left="308" width="9" height="17" font="14">𝑤</text>
+<text top="639" left="318" width="4" height="12" font="16">𝑐</text>
+<text top="636" left="351" width="53" height="13" font="12">SLO1 &gt; 0</text>
+<text top="652" left="79" width="53" height="13" font="12">SLO2 &gt; 0</text>
+<text top="649" left="139" width="4" height="17" font="14">𝑡</text>
+<text top="652" left="167" width="7" height="13" font="12">&gt;</text>
+<text top="649" left="178" width="4" height="17" font="14">𝑡</text>
+<text top="649" left="143" width="8" height="17" font="14">𝑝</text>
+<text top="657" left="149" width="13" height="9" font="15">UB</text>
+<text top="649" left="183" width="8" height="17" font="14">𝑝</text>
+<text top="657" left="189" width="16" height="9" font="15">base</text>
+<text top="649" left="213" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="652" left="255" width="18" height="13" font="12">≥ 0</text>
+<text top="649" left="229" width="4" height="17" font="14">𝑡</text>
+<text top="657" left="233" width="16" height="9" font="15">base</text>
+<text top="652" left="384" width="7" height="13" font="12">0</text>
+<text top="682" left="390" width="7" height="13" font="12">0</text>
+<text top="682" left="412" width="7" height="13" font="12">1</text>
+<text top="708" left="79" width="33" height="17" font="14">𝖼𝗅𝖺𝗆𝗉</text>
+<text top="711" left="112" width="4" height="13" font="12">(</text>
+<text top="708" left="117" width="7" height="17" font="14">𝑥</text>
+<text top="711" left="124" width="111" height="13" font="12">; base, target) = max</text>
+<text top="707" left="235" width="7" height="23" font="22">(</text>
+<text top="711" left="242" width="35" height="13" font="12">0, min</text>
+<text top="707" left="277" width="7" height="23" font="22">(</text>
+<text top="711" left="284" width="19" height="13" font="12">1, (</text>
+<text top="708" left="303" width="7" height="17" font="14">𝑥</text>
+<text top="711" left="313" width="117" height="13" font="12">− base)/(target − base)</text>
+<text top="707" left="430" width="13" height="23" font="22">))</text>
+<text top="739" left="82" width="7" height="13" font="12">0</text>
+<text top="739" left="104" width="36" height="13" font="12">base 1</text>
+<text top="739" left="155" width="30" height="13" font="12">target</text>
+<text top="763" left="214" width="21" height="13" font="12">tp =</text>
+<text top="763" left="279" width="4" height="13" font="12">[</text>
+<text top="760" left="283" width="4" height="17" font="14">𝑖</text>
+<text top="763" left="287" width="105" height="13" font="12">] / total elapsed time</text>
+<text top="763" left="239" width="9" height="13" font="12">∑</text>
+<text top="768" left="251" width="3" height="12" font="16">𝑖</text>
+<text top="761" left="257" width="7" height="16" font="11">𝐿</text>
+<text top="768" left="266" width="12" height="9" font="15">out</text>
+<text top="778" left="259" width="7" height="13" font="12">=</text>
+<text top="793" left="189" width="7" height="13" font="12">−</text>
+<text top="809" left="160" width="7" height="13" font="12">=</text>
+<text top="806" left="171" width="33" height="17" font="14">𝖼𝗅𝖺𝗆𝗉</text>
+<text top="809" left="204" width="18" height="13" font="12">(tp;</text>
+<text top="806" left="227" width="4" height="17" font="14">𝑡</text>
+<text top="809" left="255" width="3" height="13" font="12">,</text>
+<text top="806" left="263" width="4" height="17" font="14">𝑡</text>
+<text top="809" left="288" width="4" height="13" font="12">)</text>
+<text top="806" left="231" width="8" height="17" font="14">𝑝</text>
+<text top="814" left="237" width="16" height="9" font="15">base</text>
+<text top="806" left="268" width="8" height="17" font="14">𝑝</text>
+<text top="814" left="274" width="13" height="9" font="15">UB</text>
+<text top="806" left="349" width="12" height="17" font="14">𝑡𝑝</text>
+<text top="814" left="360" width="16" height="9" font="15">base</text>
+<text top="821" left="349" width="12" height="17" font="14">𝑡𝑝</text>
+<text top="829" left="360" width="13" height="9" font="15">UB</text>
+<text top="839" left="387" width="7" height="13" font="12">0</text>
+<text top="855" left="216" width="7" height="13" font="12">1</text>
+<text top="985" left="119" width="4" height="17" font="14">𝑖</text>
+<text top="988" left="159" width="7" height="13" font="12">&lt;</text>
+<text top="988" left="186" width="7" height="13" font="12">&lt;</text>
+<text top="984" left="197" width="13" height="18" font="23">…</text>
+<text top="988" left="214" width="7" height="13" font="12">&lt;</text>
+<text top="985" left="144" width="6" height="17" font="14">𝑒</text>
+<text top="993" left="149" width="5" height="9" font="15">1</text>
+<text top="985" left="170" width="6" height="17" font="14">𝑒</text>
+<text top="993" left="176" width="5" height="9" font="15">2</text>
+<text top="985" left="226" width="6" height="17" font="14">𝑒</text>
+<text top="993" left="247" width="3" height="9" font="15">[</text>
+<text top="991" left="250" width="3" height="12" font="16">𝑖</text>
+<text top="993" left="252" width="3" height="9" font="15">]</text>
+<text top="991" left="231" width="5" height="11" font="16">𝐿</text>
+<text top="996" left="237" width="8" height="7" font="24">out</text>
+<text top="1030" left="99" width="25" height="13" font="12">tdr =</text>
+<text top="1030" left="417" width="7" height="13" font="12">−</text>
+<text top="1063" left="99" width="31" height="13" font="12">tpot =</text>
+<text top="1063" left="200" width="7" height="13" font="12">−</text>
+<text top="1060" left="175" width="6" height="17" font="14">𝑒</text>
+<text top="1066" left="181" width="4" height="12" font="16">𝑗</text>
+<text top="1068" left="185" width="10" height="9" font="15">+1</text>
+<text top="1060" left="210" width="6" height="17" font="14">𝑒</text>
+<text top="1066" left="216" width="4" height="12" font="16">𝑗</text>
+<text top="1079" left="183" width="18" height="13" font="12">1 ≤</text>
+<text top="1077" left="205" width="6" height="17" font="14">𝑗</text>
+<text top="1079" left="215" width="7" height="13" font="12">&lt;</text>
+<text top="1079" left="248" width="4" height="13" font="12">[</text>
+<text top="1077" left="252" width="4" height="17" font="14">𝑖</text>
+<text top="1079" left="256" width="4" height="13" font="12">]</text>
+<text top="1077" left="226" width="7" height="16" font="11">𝐿</text>
+<text top="1084" left="235" width="12" height="9" font="15">out</text>
+<text top="1079" left="363" width="4" height="13" font="12">[</text>
+<text top="1077" left="368" width="4" height="17" font="14">𝑖</text>
+<text top="1079" left="371" width="26" height="13" font="12">] = 1</text>
+<text top="1077" left="342" width="7" height="16" font="11">𝐿</text>
+<text top="1084" left="351" width="12" height="9" font="15">out</text>
+<text top="1096" left="357" width="20" height="13" font="12">tpot</text>
+<text top="1112" left="113" width="7" height="13" font="12">0</text>
+<text top="1146" left="80" width="93" height="13" font="12">excess_tdr = max</text>
+<text top="1138" left="172" width="8" height="31" font="25">(</text>
+<text top="1146" left="180" width="10" height="13" font="12">0,</text>
+<text top="1138" left="261" width="8" height="31" font="25">)</text>
+<text top="1146" left="269" width="3" height="13" font="12">,</text>
+<text top="1146" left="289" width="99" height="13" font="12">excess_tpot = max</text>
+<text top="1138" left="388" width="8" height="31" font="25">(</text>
+<text top="1146" left="396" width="10" height="13" font="12">0,</text>
+<text top="1138" left="482" width="8" height="31" font="25">)</text>
+<text top="1146" left="490" width="3" height="13" font="12">,</text>
+<text top="1138" left="197" width="59" height="13" font="12">tdr − SLO1</text>
+<text top="1155" left="212" width="31" height="13" font="12">SLO1</text>
+<text top="1137" left="413" width="65" height="13" font="12">tpot − SLO2</text>
+<text top="1155" left="430" width="31" height="13" font="12">SLO2</text>
+<text top="1184" left="162" width="30" height="13" font="12">dist =</text>
+<text top="1184" left="352" width="3" height="13" font="12">.</text>
+<text top="1184" left="274" width="7" height="13" font="12">+</text>
+<text top="1184" left="210" width="55" height="13" font="12">excess_tdr</text>
+<text top="1182" left="265" width="5" height="9" font="15">2</text>
+<text top="1184" left="284" width="61" height="13" font="12">excess_tpot</text>
+<text top="1182" left="345" width="5" height="9" font="15">2</text>
+<text top="1177" left="210" width="4" height="14" font="10">‾</text>
+<text top="1177" left="345" width="4" height="14" font="10">‾</text>
+<text top="1177" left="215" width="129" height="14" font="10">‾‾‾ ‾‾‾ ‾‾‾‾ ‾‾‾ ‾‾‾‾ ‾‾‾ ‾‾‾</text>
+<text top="1175" left="196" width="14" height="32" font="26">√</text>
+<text top="43" left="576" width="7" height="13" font="12">=</text>
+<text top="40" left="587" width="33" height="17" font="14">𝖼𝗅𝖺𝗆𝗉</text>
+<text top="43" left="620" width="27" height="13" font="12">(dist;</text>
+<text top="40" left="651" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="43" left="689" width="19" height="13" font="12">, 0)</text>
+<text top="40" left="667" width="4" height="17" font="14">𝑡</text>
+<text top="48" left="671" width="16" height="9" font="15">base</text>
+<text top="58" left="713" width="19" height="13" font="12">dist</text>
+<text top="58" left="779" width="7" height="13" font="12">1</text>
+<text top="73" left="454" width="53" height="13" font="12">dist = 0 0</text>
+<text top="86" left="491" width="20" height="17" font="14">𝑑𝑖𝑠𝑡</text>
+<text top="94" left="511" width="16" height="9" font="15">base</text>
+<text top="148" left="454" width="143" height="13" font="12">waiting-time component =</text>
+<text top="116" left="605" width="8" height="32" font="26">⎧</text>
+<text top="152" left="605" width="8" height="32" font="26">⎩</text>
+<text top="134" left="605" width="8" height="41" font="26">⎨⎪⎪</text>
+<text top="131" left="616" width="22" height="13" font="12">max</text>
+<text top="127" left="639" width="7" height="23" font="22">(</text>
+<text top="131" left="645" width="59" height="13" font="12">0, 1 − dist/</text>
+<text top="129" left="704" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="127" left="742" width="7" height="23" font="22">)</text>
+<text top="129" left="720" width="4" height="17" font="14">𝑡</text>
+<text top="137" left="724" width="16" height="9" font="15">base</text>
+<text top="151" left="616" width="7" height="13" font="12">1</text>
+<text top="166" left="616" width="7" height="13" font="12">0</text>
+<text top="131" left="766" width="11" height="13" font="12">if </text>
+<text top="129" left="777" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="131" left="818" width="21" height="13" font="12">&gt; 0,</text>
+<text top="129" left="793" width="4" height="17" font="14">𝑡</text>
+<text top="137" left="797" width="16" height="9" font="15">base</text>
+<text top="151" left="766" width="11" height="13" font="12">if </text>
+<text top="148" left="777" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="151" left="818" width="33" height="13" font="12">= 0 an</text>
+<text top="148" left="793" width="4" height="17" font="14">𝑡</text>
+<text top="156" left="797" width="16" height="9" font="15">base</text>
+<text top="166" left="766" width="11" height="13" font="12">if </text>
+<text top="164" left="777" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="166" left="818" width="33" height="13" font="12">= 0 an</text>
+<text top="164" left="793" width="4" height="17" font="14">𝑡</text>
+<text top="172" left="797" width="16" height="9" font="15">base</text>
+<text top="190" left="587" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="193" left="629" width="18" height="13" font="12">= 0</text>
+<text top="190" left="603" width="4" height="17" font="14">𝑡</text>
+<text top="198" left="607" width="16" height="9" font="15">base</text>
+<text top="208" left="484" width="7" height="13" font="12">0</text>
+<text top="208" left="507" width="7" height="13" font="12">1</text>
+<text top="208" left="540" width="7" height="13" font="12">1</text>
+<text top="223" left="454" width="41" height="13" font="12">dist = 0</text>
+<text top="223" left="525" width="7" height="13" font="12">0</text>
+<text top="434" left="454" width="27" height="13" font="12">[0, 1]</text>
+<text top="434" left="741" width="26" height="13" font="12">1000</text>
+<text top="454" left="454" width="92" height="17" font="14">𝖭𝗈𝗋𝗆𝖺𝗅𝗂𝗓𝖾𝖽𝖲𝖼𝗈𝗋𝖾</text>
+<text top="457" left="550" width="7" height="13" font="12">=</text>
+<text top="458" left="583" width="6" height="12" font="21">⋅</text>
+<text top="454" left="592" width="33" height="17" font="14">𝖼𝗅𝖺𝗆𝗉</text>
+<text top="457" left="625" width="18" height="13" font="12">(tp;</text>
+<text top="454" left="648" width="4" height="17" font="14">𝑡</text>
+<text top="457" left="677" width="3" height="13" font="12">,</text>
+<text top="454" left="685" width="4" height="17" font="14">𝑡</text>
+<text top="457" left="709" width="15" height="13" font="12">) +</text>
+<text top="458" left="745" width="6" height="12" font="21">⋅</text>
+<text top="454" left="754" width="33" height="17" font="14">𝖼𝗅𝖺𝗆𝗉</text>
+<text top="457" left="787" width="27" height="13" font="12">(dist;</text>
+<text top="454" left="819" width="16" height="17" font="14">𝑑𝑖𝑠</text>
+<text top="454" left="562" width="9" height="17" font="14">𝑤</text>
+<text top="462" left="572" width="7" height="9" font="15">tp</text>
+<text top="454" left="653" width="8" height="17" font="14">𝑝</text>
+<text top="462" left="659" width="16" height="9" font="15">base</text>
+<text top="454" left="689" width="8" height="17" font="14">𝑝</text>
+<text top="462" left="695" width="13" height="9" font="15">UB</text>
+<text top="454" left="727" width="9" height="17" font="14">𝑤</text>
+<text top="460" left="738" width="4" height="12" font="16">𝑐</text>
+<text top="454" left="835" width="4" height="17" font="14">𝑡</text>
+<text top="462" left="839" width="12" height="9" font="15">bas</text>
+<text top="470" left="454" width="30" height="17" font="14">𝖲𝖼𝗈𝗋𝖾</text>
+<text top="473" left="488" width="37" height="13" font="12">= 1000</text>
+<text top="474" left="529" width="6" height="12" font="21">⋅</text>
+<text top="470" left="538" width="92" height="17" font="14">𝖭𝗈𝗋𝗆𝖺𝗅𝗂𝗓𝖾𝖽𝖲𝖼𝗈𝗋𝖾</text>
+<text top="473" left="630" width="3" height="13" font="12">.</text>
+<text top="497" left="672" width="47" height="13" font="12">[0, 1000]</text>
+<text top="543" left="512" width="7" height="13" font="12">0</text>
+<text top="643" left="665" width="32" height="13" font="12">0 500</text>
+<text top="643" left="724" width="26" height="13" font="12">1000</text>
+<text top="25" left="36" width="92" height="12" font="17">8/15/26, 12:53 AM</text>
+<text top="25" left="460" width="110" height="12" font="17">Problems - Codeforces</text>
+<text top="1229" left="36" width="227" height="12" font="17">https://codeforces.com/contest/2251/problems#</text>
+<text top="1229" left="841" width="15" height="12" font="17">5/8</text>
+</page>
+<page number="6" position="absolute" top="0" left="0" height="1262" width="892">
+	<fontspec id="27" size="12" family="WAAAAA+AndaleMono" color="#212121"/>
+	<fontspec id="28" size="10" family="XAAAAA+AndaleMono" color="#870000"/>
+<text top="46" left="83" width="38" height="15" font="27">input</text>
+<text top="68" left="83" width="270" height="11" font="28">1 1.000000000 2.000000000 1.000000000 125000 4</text>
+<text top="79" left="83" width="294" height="11" font="28">30.000000000 15.000000000 0.062500000 0.022222222 </text>
+<text top="92" left="83" width="206" height="11" font="28">0.000000000 0.500000000 0.500000000</text>
+<text top="104" left="83" width="6" height="11" font="28">2</text>
+<text top="117" left="83" width="300" height="11" font="28">1 3.000000000 10.000000000 2.000000000 1.000000000 </text>
+<text top="128" left="83" width="135" height="11" font="28">4.000000000 1.000000000</text>
+<text top="141" left="83" width="300" height="11" font="28">4 3.000000000 10.000000000 2.000000000 1.000000000 </text>
+<text top="153" left="83" width="135" height="11" font="28">4.000000000 1.000000000</text>
+<text top="166" left="83" width="65" height="11" font="28">0.000000000</text>
+<text top="177" left="83" width="6" height="11" font="28">1</text>
+<text top="190" left="83" width="41" height="11" font="28">ARR 0 4</text>
+<text top="202" left="83" width="65" height="11" font="28">4.000000000</text>
+<text top="215" left="83" width="6" height="11" font="28">1</text>
+<text top="226" left="83" width="159" height="11" font="28">TDN E P PRE 0 0 3.000000000</text>
+<text top="239" left="83" width="71" height="11" font="28">10.000000000</text>
+<text top="251" left="83" width="6" height="11" font="28">1</text>
+<text top="264" left="83" width="135" height="11" font="28">XDN UP 0 500000 PRE 1 0</text>
+<text top="275" left="83" width="71" height="11" font="28">21.000000000</text>
+<text top="288" left="83" width="6" height="11" font="28">1</text>
+<text top="300" left="83" width="200" height="11" font="28">TDN C0 P PROC 0 4 0 0 10.000000000</text>
+<text top="313" left="83" width="71" height="11" font="28">27.000000000</text>
+<text top="324" left="83" width="6" height="11" font="28">1</text>
+<text top="337" left="83" width="147" height="11" font="28">XDN DOWN 0 500000 PRE 1 0</text>
+<text top="349" left="83" width="71" height="11" font="28">30.000000000</text>
+<text top="362" left="83" width="6" height="11" font="28">1</text>
+<text top="373" left="83" width="165" height="11" font="28">TDN E P POST 0 0 2.000000000</text>
+<text top="386" left="83" width="71" height="11" font="28">32.000000000</text>
+<text top="398" left="83" width="6" height="11" font="28">1</text>
+<text top="411" left="83" width="176" height="11" font="28">TDN E D PRE -1 1 0 1.000000000</text>
+<text top="422" left="83" width="71" height="11" font="28">35.000000000</text>
+<text top="435" left="83" width="6" height="11" font="28">1</text>
+<text top="447" left="83" width="135" height="11" font="28">XDN UP 0 125000 DEC 1 0</text>
+<text top="460" left="83" width="71" height="11" font="28">40.000000000</text>
+<text top="471" left="83" width="6" height="11" font="28">1</text>
+<text top="484" left="83" width="182" height="11" font="28">TDN C0 D PROC 0 1 0 4.000000000</text>
+<text top="496" left="83" width="71" height="11" font="28">43.000000000</text>
+<text top="509" left="83" width="6" height="11" font="28">1</text>
+<text top="520" left="83" width="147" height="11" font="28">XDN DOWN 0 125000 DEC 1 0</text>
+<text top="533" left="83" width="71" height="11" font="28">45.000000000</text>
+<text top="545" left="83" width="6" height="11" font="28">2</text>
+<text top="558" left="83" width="182" height="11" font="28">TDN E D POST -1 1 0 1.000000000</text>
+<text top="569" left="83" width="29" height="11" font="28">FIN 0</text>
+<text top="582" left="83" width="18" height="11" font="28">END</text>
+<text top="846" left="79" width="51" height="13" font="3"><b>Examples</b></text>
+<text top="870" left="79" width="344" height="13" font="2">If interactive problems are new to you, begin with Example 1 and focus</text>
+<text top="885" left="79" width="349" height="13" font="2">on the repeating pattern: read a complete frame on the left, update your</text>
+<text top="900" left="79" width="306" height="13" font="2">state, then print one complete response on the right. The exact</text>
+<text top="915" left="79" width="332" height="13" font="2">timestamps are consequences of the supplied costs; your scheduler</text>
+<text top="931" left="79" width="342" height="13" font="2">never has to predict them. The transcript below shows the participant-</text>
+<text top="946" left="79" width="350" height="13" font="2">side input and output directly; output responses contain no timestamps.</text>
+<text top="969" left="79" width="91" height="13" font="2">The examples use </text>
+<text top="969" left="193" width="6" height="13" font="2">, </text>
+<text top="969" left="290" width="6" height="13" font="2">, </text>
+<text top="969" left="396" width="24" height="13" font="2">, and</text>
+<text top="985" left="213" width="186" height="13" font="2">. Because bandwidth is in gigabits per</text>
+<text top="1001" left="79" width="173" height="13" font="2">second, a one-token transfer takes </text>
+<text top="1001" left="375" width="51" height="13" font="2"> ms. Every</text>
+<text top="1017" left="79" width="357" height="13" font="2">table has the interactor's input on the left and your complete response on</text>
+<text top="1032" left="79" width="327" height="13" font="2">the right. Each protocol line occupies its own table row. A response</text>
+<text top="1047" left="79" width="163" height="13" font="2">begins with its assignment count.</text>
+<text top="1071" left="79" width="186" height="13" font="3"><b>Example 1: one request, end to end.</b></text>
+<text top="1095" left="79" width="26" height="13" font="2">Here </text>
+<text top="1095" left="129" width="6" height="13" font="2">, </text>
+<text top="1095" left="210" width="75" height="13" font="2">, request   has </text>
+<text top="1095" left="340" width="24" height="13" font="2"> and </text>
+<text top="1095" left="424" width="3" height="13" font="2">,</text>
+<text top="1110" left="79" width="198" height="13" font="2">and the relevant execution durations are </text>
+<text top="1110" left="315" width="113" height="13" font="2"> ms for input stage and</text>
+<text top="1125" left="110" width="298" height="13" font="2"> ms for output. The scheduler uses one full input-stage piece.</text>
+<text top="1158" left="84" width="51" height="13" font="3"><b>Interactor</b></text>
+<text top="1158" left="288" width="74" height="13" font="3"><b>Your response</b></text>
+<text top="48" left="459" width="64" height="13" font="3"><b>0.000000000</b></text>
+<text top="48" left="663" width="6" height="13" font="3"><b>1</b></text>
+<text top="74" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="74" left="663" width="61" height="13" font="3"><b>E P PRE 0 0</b></text>
+<text top="99" left="459" width="41" height="13" font="3"><b>ARR 0 4</b></text>
+<text top="144" left="459" width="64" height="13" font="3"><b>4.000000000</b></text>
+<text top="144" left="663" width="6" height="13" font="3"><b>0</b></text>
+<text top="169" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="195" left="459" width="153" height="13" font="3"><b>TDN E P PRE 0 0 3.000000000</b></text>
+<text top="239" left="459" width="70" height="13" font="3"><b>10.000000000</b></text>
+<text top="239" left="663" width="6" height="13" font="3"><b>1</b></text>
+<text top="265" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="265" left="663" width="95" height="13" font="3"><b>C0 P PROC 0 4 0 0</b></text>
+<text top="291" left="459" width="134" height="13" font="3"><b>XDN UP 0 500000 PRE 1 0</b></text>
+<text top="334" left="459" width="70" height="13" font="3"><b>21.000000000</b></text>
+<text top="334" left="663" width="6" height="13" font="3"><b>0</b></text>
+<text top="361" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="386" left="459" width="194" height="13" font="3"><b>TDN C0 P PROC 0 4 0 0 10.000000000</b></text>
+<text top="430" left="459" width="70" height="13" font="3"><b>27.000000000</b></text>
+<text top="430" left="663" width="6" height="13" font="3"><b>1</b></text>
+<text top="456" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="456" left="663" width="68" height="13" font="3"><b>E P POST 0 0</b></text>
+<text top="482" left="459" width="153" height="13" font="3"><b>XDN DOWN 0 500000 PRE 1 0</b></text>
+<text top="526" left="459" width="70" height="13" font="3"><b>30.000000000</b></text>
+<text top="526" left="663" width="6" height="13" font="3"><b>1</b></text>
+<text top="551" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="551" left="663" width="75" height="13" font="3"><b>E D PRE -1 1 0</b></text>
+<text top="578" left="459" width="160" height="13" font="3"><b>TDN E P POST 0 0 2.000000000</b></text>
+<text top="621" left="459" width="70" height="13" font="3"><b>32.000000000</b></text>
+<text top="621" left="663" width="6" height="13" font="3"><b>0</b></text>
+<text top="647" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="673" left="459" width="167" height="13" font="3"><b>TDN E D PRE -1 1 0 1.000000000</b></text>
+<text top="717" left="459" width="70" height="13" font="3"><b>35.000000000</b></text>
+<text top="717" left="663" width="6" height="13" font="3"><b>1</b></text>
+<text top="743" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="743" left="663" width="87" height="13" font="3"><b>C0 D PROC 0 1 0</b></text>
+<text top="769" left="459" width="135" height="13" font="3"><b>XDN UP 0 125000 DEC 1 0</b></text>
+<text top="813" left="459" width="70" height="13" font="3"><b>40.000000000</b></text>
+<text top="813" left="663" width="6" height="13" font="3"><b>0</b></text>
+<text top="838" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="864" left="459" width="180" height="13" font="3"><b>TDN C0 D PROC 0 1 0 4.000000000</b></text>
+<text top="908" left="459" width="70" height="13" font="3"><b>43.000000000</b></text>
+<text top="908" left="663" width="6" height="13" font="3"><b>1</b></text>
+<text top="934" left="459" width="6" height="13" font="3"><b>1</b></text>
+<text top="934" left="663" width="82" height="13" font="3"><b>E D POST -1 1 0</b></text>
+<text top="959" left="459" width="154" height="13" font="3"><b>XDN DOWN 0 125000 DEC 1 0</b></text>
+<text top="1004" left="459" width="70" height="13" font="3"><b>45.000000000</b></text>
+<text top="1004" left="663" width="6" height="13" font="3"><b>0</b></text>
+<text top="1029" left="459" width="6" height="13" font="3"><b>2</b></text>
+<text top="1055" left="459" width="175" height="13" font="3"><b>TDN E D POST -1 1 0 1.000000000</b></text>
+<text top="1082" left="459" width="27" height="13" font="3"><b>FIN 0</b></text>
+<text top="1125" left="459" width="23" height="13" font="3"><b>END</b></text>
+<text top="1125" left="663" width="17" height="13" font="2">exit</text>
+<text top="1157" left="454" width="193" height="13" font="2">The input-stage ﬁnal step completes at </text>
+<text top="1157" left="683" width="121" height="13" font="2">, so this request's TDR is</text>
+<text top="1172" left="468" width="165" height="13" font="2"> ms. Its only token is produced at </text>
+<text top="1172" left="669" width="51" height="13" font="2">. Because </text>
+<text top="1172" left="780" width="12" height="13" font="2">, it</text>
+<text top="1188" left="454" width="126" height="13" font="2">contributes no TPOT gap.</text>
+<text top="601" left="83" width="46" height="15" font="27">output</text>
+<text top="623" left="83" width="6" height="11" font="28">1</text>
+<text top="635" left="83" width="65" height="11" font="28">E P PRE 0 0</text>
+<text top="647" left="83" width="6" height="11" font="28">0</text>
+<text top="659" left="83" width="6" height="11" font="28">1</text>
+<text top="672" left="83" width="100" height="11" font="28">C0 P PROC 0 4 0 0</text>
+<text top="684" left="83" width="6" height="11" font="28">0</text>
+<text top="696" left="83" width="6" height="11" font="28">1</text>
+<text top="708" left="83" width="71" height="11" font="28">E P POST 0 0</text>
+<text top="721" left="83" width="6" height="11" font="28">1</text>
+<text top="733" left="83" width="82" height="11" font="28">E D PRE -1 1 0</text>
+<text top="745" left="83" width="6" height="11" font="28">0</text>
+<text top="757" left="83" width="6" height="11" font="28">1</text>
+<text top="770" left="83" width="88" height="11" font="28">C0 D PROC 0 1 0</text>
+<text top="782" left="83" width="6" height="11" font="28">0</text>
+<text top="794" left="83" width="6" height="11" font="28">1</text>
+<text top="806" left="83" width="88" height="11" font="28">E D POST -1 1 0</text>
+<text top="819" left="83" width="6" height="11" font="28">0</text>
+<text top="967" left="171" width="7" height="17" font="14">𝑆</text>
+<text top="970" left="178" width="218" height="13" font="12">=1 latency_in_ms=2 bandwidth_gbps=1</text>
+<text top="985" left="79" width="133" height="13" font="12">bytes_per_token=125000</text>
+<text top="1002" left="252" width="27" height="13" font="12">2 + 8</text>
+<text top="1003" left="282" width="6" height="12" font="21">⋅</text>
+<text top="1002" left="291" width="43" height="13" font="12">125000/</text>
+<text top="1002" left="356" width="18" height="13" font="12">= 3</text>
+<text top="1002" left="334" width="13" height="13" font="12">10</text>
+<text top="1000" left="347" width="5" height="9" font="15">6</text>
+<text top="1094" left="105" width="9" height="16" font="11">𝐾</text>
+<text top="1096" left="115" width="95" height="13" font="12">=1 num_layers=4</text>
+<text top="1096" left="256" width="7" height="13" font="12">0</text>
+<text top="1096" left="303" width="37" height="13" font="12">[0] = 4</text>
+<text top="1094" left="285" width="7" height="16" font="11">𝐿</text>
+<text top="1101" left="295" width="7" height="9" font="15">in</text>
+<text top="1096" left="386" width="37" height="13" font="12">[0] = 1</text>
+<text top="1094" left="364" width="7" height="16" font="11">𝐿</text>
+<text top="1101" left="374" width="12" height="9" font="15">out</text>
+<text top="1110" left="278" width="37" height="13" font="12">3, 10, 2</text>
+<text top="1126" left="79" width="31" height="13" font="12">1, 4, 1</text>
+<text top="1158" left="647" width="36" height="13" font="12">30.000</text>
+<text top="1173" left="454" width="13" height="13" font="12">30</text>
+<text top="1173" left="633" width="36" height="13" font="12">45.000</text>
+<text top="1173" left="742" width="37" height="13" font="12">[0] = 1</text>
+<text top="1171" left="720" width="7" height="16" font="11">𝐿</text>
+<text top="1178" left="730" width="12" height="9" font="15">out</text>
+<text top="25" left="36" width="92" height="12" font="17">8/15/26, 12:53 AM</text>
+<text top="25" left="460" width="110" height="12" font="17">Problems - Codeforces</text>
+<text top="1229" left="36" width="227" height="12" font="17">https://codeforces.com/contest/2251/problems#</text>
+<text top="1229" left="841" width="15" height="12" font="17">6/8</text>
+</page>
+<page number="7" position="absolute" top="0" left="0" height="1262" width="892">
+<text top="43" left="79" width="306" height="13" font="3"><b>Example 2: grouping requests from two remote computers.</b></text>
+<text top="67" left="79" width="279" height="13" font="2">Assume requests   and   have already been assigned to </text>
+<text top="67" left="358" width="14" height="13" font="3"><b>C0</b></text>
+<text top="67" left="372" width="24" height="13" font="2"> and </text>
+<text top="67" left="397" width="14" height="13" font="3"><b>C1</b></text>
+<text top="67" left="411" width="3" height="13" font="2">,</text>
+<text top="83" left="79" width="315" height="13" font="2">respectively, and both are ready for their ﬁrst output step at time </text>
+<text top="83" left="430" width="3" height="13" font="2">.</text>
+<text top="97" left="79" width="346" height="13" font="2">This excerpt shows one across-remote-computers ﬁrst step group, two</text>
+<text top="113" left="79" width="312" height="13" font="2">single-remote-computer process tasks, and one across-remote-</text>
+<text top="128" left="79" width="134" height="13" font="2">computers ﬁnal step group.</text>
+<text top="161" left="84" width="51" height="13" font="3"><b>Interactor</b></text>
+<text top="161" left="278" width="74" height="13" font="3"><b>Your response</b></text>
+<text top="204" left="84" width="70" height="13" font="3"><b>16.500000000</b></text>
+<text top="204" left="278" width="6" height="13" font="3"><b>1</b></text>
+<text top="230" left="84" width="6" height="13" font="3"><b>1</b></text>
+<text top="230" left="278" width="84" height="13" font="3"><b>E D PRE -1 2 0 1</b></text>
+<text top="257" left="84" width="160" height="13" font="3"><b>TDN E P POST 1 1 1.250000000</b></text>
+<text top="300" left="84" width="70" height="13" font="3"><b>19.000000000</b></text>
+<text top="300" left="278" width="6" height="13" font="3"><b>0</b></text>
+<text top="326" left="84" width="6" height="13" font="3"><b>1</b></text>
+<text top="352" left="84" width="176" height="13" font="3"><b>TDN E D PRE -1 2 0 1 1.500000000</b></text>
+<text top="396" left="84" width="70" height="13" font="3"><b>22.000000000</b></text>
+<text top="396" left="278" width="6" height="13" font="3"><b>1</b></text>
+<text top="421" left="84" width="6" height="13" font="3"><b>1</b></text>
+<text top="421" left="278" width="87" height="13" font="3"><b>C0 D PROC 0 1 0</b></text>
+<text top="447" left="84" width="135" height="13" font="3"><b>XDN UP 0 125000 DEC 1 0</b></text>
+<text top="491" left="84" width="70" height="13" font="3"><b>25.000000000</b></text>
+<text top="491" left="278" width="6" height="13" font="3"><b>1</b></text>
+<text top="517" left="84" width="6" height="13" font="3"><b>1</b></text>
+<text top="517" left="278" width="87" height="13" font="3"><b>C1 D PROC 1 1 1</b></text>
+<text top="543" left="84" width="135" height="13" font="3"><b>XDN UP 1 125000 DEC 1 1</b></text>
+<text top="587" left="84" width="70" height="13" font="3"><b>27.000000000</b></text>
+<text top="587" left="278" width="6" height="13" font="3"><b>0</b></text>
+<text top="613" left="84" width="6" height="13" font="3"><b>1</b></text>
+<text top="638" left="84" width="180" height="13" font="3"><b>TDN C0 D PROC 0 1 0 4.000000000</b></text>
+<text top="683" left="84" width="70" height="13" font="3"><b>30.000000000</b></text>
+<text top="683" left="278" width="6" height="13" font="3"><b>0</b></text>
+<text top="708" left="84" width="6" height="13" font="3"><b>2</b></text>
+<text top="734" left="84" width="180" height="13" font="3"><b>TDN C1 D PROC 1 1 1 4.000000000</b></text>
+<text top="760" left="84" width="154" height="13" font="3"><b>XDN DOWN 0 125000 DEC 1 0</b></text>
+<text top="804" left="84" width="70" height="13" font="3"><b>33.000000000</b></text>
+<text top="804" left="278" width="6" height="13" font="3"><b>1</b></text>
+<text top="830" left="84" width="6" height="13" font="3"><b>1</b></text>
+<text top="830" left="278" width="91" height="13" font="3"><b>E D POST -1 2 0 1</b></text>
+<text top="855" left="84" width="154" height="13" font="3"><b>XDN DOWN 1 125000 DEC 1 1</b></text>
+<text top="900" left="84" width="70" height="13" font="3"><b>35.500000000</b></text>
+<text top="900" left="278" width="6" height="13" font="3"><b>0</b></text>
+<text top="925" left="84" width="6" height="13" font="3"><b>3</b></text>
+<text top="951" left="84" width="184" height="13" font="3"><b>TDN E D POST -1 2 0 1 1.500000000</b></text>
+<text top="977" left="84" width="27" height="13" font="3"><b>FIN 0</b></text>
+<text top="1003" left="84" width="27" height="13" font="3"><b>FIN 1</b></text>
+<text top="1047" left="84" width="23" height="13" font="3"><b>END</b></text>
+<text top="1047" left="278" width="17" height="13" font="2">exit</text>
+<text top="1079" left="79" width="348" height="13" font="2">The two requests may share the local computer tasks even though their</text>
+<text top="1093" left="79" width="326" height="13" font="2">process tasks run on diﬀerent remote computers. The two local-to-</text>
+<text top="1109" left="79" width="349" height="13" font="2">remote transfers are handled one at a time, in remote-computer number</text>
+<text top="1125" left="79" width="73" height="13" font="2">order; the ﬁnal </text>
+<text top="1125" left="152" width="41" height="13" font="3"><b>D POST</b></text>
+<text top="1125" left="193" width="212" height="13" font="2"> combines results delivered by two diﬀerent</text>
+<text top="1140" left="79" width="124" height="13" font="2">remote-to-local transfers.</text>
+<text top="42" left="454" width="335" height="13" font="2">An output task's time depends only on its group size, never on which</text>
+<text top="58" left="454" width="353" height="13" font="2">output token is being generated or how many tokens are in the request's</text>
+<text top="72" left="454" width="345" height="13" font="2">previously stored data. The task-time table and transfer formula are the</text>
+<text top="88" left="454" width="106" height="13" font="2">complete cost model.</text>
+<text top="68" left="166" width="7" height="13" font="12">0</text>
+<text top="68" left="197" width="7" height="13" font="12">1</text>
+<text top="83" left="394" width="36" height="13" font="12">16.500</text>
+<text top="25" left="36" width="92" height="12" font="17">8/15/26, 12:53 AM</text>
+<text top="25" left="460" width="110" height="12" font="17">Problems - Codeforces</text>
+<text top="1229" left="36" width="227" height="12" font="17">https://codeforces.com/contest/2251/problems#</text>
+<text top="1229" left="841" width="15" height="12" font="17">7/8</text>
+</page>
+<page number="8" position="absolute" top="0" left="0" height="1262" width="892">
+	<fontspec id="29" size="11" family="YAAAAA+Verdana" color="#541a8b"/>
+	<fontspec id="30" size="11" family="YAAAAA+Verdana" color="#000000"/>
+<text top="53" left="298" width="60" height="13" font="29"><a href="https://codeforces.com/">Codeforces</a></text>
+<text top="53" left="359" width="235" height="13" font="30"><a href="https://codeforces.com/"> (c) Cop</a>yright 2010-2026 Mike Mirzayanov</text>
+<text top="66" left="310" width="273" height="13" font="30">The only programming contests Web 2.0 platform</text>
+<text top="25" left="36" width="92" height="12" font="17">8/15/26, 12:53 AM</text>
+<text top="25" left="460" width="110" height="12" font="17">Problems - Codeforces</text>
+<text top="1229" left="36" width="227" height="12" font="17">https://codeforces.com/contest/2251/problems#</text>
+<text top="1229" left="841" width="15" height="12" font="17">8/8</text>
+</page>
+</pdf2xml>

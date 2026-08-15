@@ -1,0 +1,19 @@
+{
+  "command": [
+    "./build/release/solver",
+    "--policy",
+    "{policy}",
+    "--slack-weight",
+    "{slack_weight}"
+  ],
+  "grid": {
+    "policy": ["fifo", "edf"],
+    "slack_weight": [0, 1, 4]
+  },
+  "scorer": [
+    "./build/release/scorer",
+    "{input}",
+    "{output}"
+  ]
+}
+
