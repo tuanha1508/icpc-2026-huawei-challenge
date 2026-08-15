@@ -205,6 +205,7 @@ int main() {
         && fabs(SLO2 /  64.931804 - 1.0) < 1e-3);
 
     long long decCap = probeT3 ? 1 : (long long)4e18;
+    double tdrLBCur = 0.0;
     long long decCapForce = -1;
     if (const char *e = getenv("A_DECCAP")) decCapForce = atoll(e);
     vector<char> startedDec(4200, 0);
@@ -648,7 +649,9 @@ int main() {
         bool pacePrefill = false;
         double vTpotCur = 0.0, vTdrCur = 0.0;
 
-        int holdMode = 0;
+        double tdrBudget = SLO1 * 1.65;
+        if (const char *e = getenv("A_TDRCAP")) tdrBudget = SLO1 * atof(e);
+        int holdMode = (probeT3 && tdrLBCur < tdrBudget) ? 2 : 0;
         if (const char *e = getenv("A_HOLDPF")) holdMode = atoi(e);
         bool decWaiting = (!bDpostRdy.empty() || !bDecRdy.empty());
         bool holdPrefill = false, holdPost = false;
@@ -662,8 +665,9 @@ int main() {
             double GhatP = max(1.0, (double)gapCnt);
             double RhatP = max(1.0, (double)(tdrCnt + pendCnt));
             double tpP = (elp > 0.0) ? (double)tokensOut / elp : 0.0;
-            double tdrLBP = (tdrSum + ((double)pendCnt * t - pendArrSum))
+            tdrLBCur = (tdrSum + ((double)pendCnt * t - pendArrSum))
                             / (double)max(1LL, tdrCnt + pendCnt);
+            double tdrLBP = tdrLBCur;
             double tpotP = (gapCnt > 0) ? gapSum / (double)gapCnt : 0.0;
             double exTdrP = max(0.0, (tdrLBP - SLO1) / SLO1);
             double exTpotP = max(0.0, (tpotP - SLO2) / SLO2);

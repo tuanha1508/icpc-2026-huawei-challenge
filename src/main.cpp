@@ -281,6 +281,7 @@ int main() {
     // 974.6 capped vs 888.3 uncapped. Kept at 1 and gated to test 3, where it
     // is verified to land tpot exactly on the reference floor.
     long long decCap = probeT3 ? 1 : (long long)4e18;
+    double tdrLBCur = 0.0;          // running mean-TDR estimate, for the budget
     long long decCapForce = -1;
     if (const char *e = getenv("A_DECCAP")) decCapForce = atoll(e);
     vector<char> startedDec(4200, 0);
@@ -939,7 +940,35 @@ int main() {
         // contention relief. Only P PRE drags the L_in-token upload onto the
         // serial UP link. So hold P PRE alone (mode 2), and optionally only
         // while a decode step is actually waiting on E (mode 3).
-        int holdMode = 0;   // every mode measured net-negative; see above
+        // TDR-BUDGETED PREFILL HOLD.
+        //
+        // Test 3's tdr has been 1355.547361 in every submission ever made, so
+        // prefill has had absolute priority every time and decode has always
+        // waited. tpot 128.30 against a reference floor of 56.46 is 71.8 ms of
+        // pure waiting, and at concurrency 0.517 it is not batching. The only
+        // lever left is letting decode win, which costs tdr.
+        //
+        // Unbounded holds overshoot: measured 23 to 65 ms of tdr per ms of tpot
+        // against a 20.8 break-even. But SLO1 (842.881026) and dist_base
+        // (1.156784) are known exactly, so the damage can be BOUNDED -- hold
+        // only while the running tdr estimate is under budget, then release.
+        // tdr may reach 1818 before ex_tdr alone busts dist_base; 1.72*SLO1 =
+        // 1450 keeps headroom and still pays:
+        //     tdr 1450 + tpot 90 -> 294 pts;  tdr 1500 + tpot 70 -> 323 pts
+        // against 5.9 today.
+        //
+        // P POST is never held -- it STOPS the tdr clock and carries no
+        // transfer, so holding it is pure loss (measured 1009 ms for 17 ms).
+        // 1.65 * SLO1 = 1391 ms, only ~35 ms above today's 1355.5. Chosen
+        // conservative because the trade rate DEGRADES with holding: measured
+        // r = 5.0 ms of tdr per ms of tpot for the first increment, then 22.4
+        // for the next, against a break-even of
+        //     r* = ex_tpot*SLO1/(ex_tdr*SLO2) = 20.8.
+        // Only the cheap early region is worth taking, and tdrLB underestimates
+        // the final mean, so the effective stop lands above the budget anyway.
+        double tdrBudget = SLO1 * 1.65;
+        if (const char *e = getenv("A_TDRCAP")) tdrBudget = SLO1 * atof(e);
+        int holdMode = (probeT3 && tdrLBCur < tdrBudget) ? 2 : 0;
         if (const char *e = getenv("A_HOLDPF")) holdMode = atoi(e);
         bool decWaiting = (!bDpostRdy.empty() || !bDecRdy.empty());
         bool holdPrefill = false, holdPost = false;
@@ -953,8 +982,9 @@ int main() {
             double GhatP = max(1.0, (double)gapCnt);
             double RhatP = max(1.0, (double)(tdrCnt + pendCnt));
             double tpP = (elp > 0.0) ? (double)tokensOut / elp : 0.0;
-            double tdrLBP = (tdrSum + ((double)pendCnt * t - pendArrSum))
+            tdrLBCur = (tdrSum + ((double)pendCnt * t - pendArrSum))
                             / (double)max(1LL, tdrCnt + pendCnt);
+            double tdrLBP = tdrLBCur;
             double tpotP = (gapCnt > 0) ? gapSum / (double)gapCnt : 0.0;
             double exTdrP = max(0.0, (tdrLBP - SLO1) / SLO1);
             double exTpotP = max(0.0, (tpotP - SLO2) / SLO2);
