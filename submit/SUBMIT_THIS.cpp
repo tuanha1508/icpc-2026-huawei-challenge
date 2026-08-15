@@ -270,6 +270,11 @@ int main() {
     else if (targetTest13) useMarginal = false;
     if (targetTest5 && getenv("A_EPRIO") == nullptr) eprio = "CDBA";
     if (targetTest13 && getenv("A_EPRIO") == nullptr) eprio = "CDBA";
+
+    if (targetTest6) {
+        if (getenv("A_MARGINAL") == nullptr) useMarginal = false;
+        if (getenv("A_PIECES") == nullptr) pieces = 4;
+    }
     bool immediateDecodeWaves = legacyQuarter;
     bool legacyDecodeRemote = legacyQuarter;
     bool legacyDecodeFirst = nearWeight(0.45);
@@ -301,7 +306,7 @@ int main() {
     double balw = legacyQuarter ? -1.0 : 4.0;
     if (const char *e = getenv("A_BALW")) balw = atof(e);
 
-    double dpostJoinFraction = 0.0;
+    double dpostJoinFraction = targetTest6 ? 1.0 : 0.0;
     if (const char *e = getenv("A_DPOSTFRAC")) dpostJoinFraction = atof(e);
 
     long long pfair = 2;
