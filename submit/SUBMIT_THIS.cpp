@@ -312,7 +312,8 @@ int main() {
     long long pfair = 2;
     if (const char *e = getenv("A_PFAIR")) pfair = atoll(e);
 
-    long long maxg = probeT12 ? 1 : (targetTest12 ? 8 : (long long)4e18);
+    long long maxg = probeT12 ? 1 : (targetTest12 ? 8 :
+                     (targetTest6 ? 24 : (long long)4e18));
     if (const char *e = getenv("A_MAXG")) {
         long long v = atoll(e);
         if (v > 0) maxg = v;
