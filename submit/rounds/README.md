@@ -246,3 +246,20 @@ r26 adds `dist_base` as a second key to the four harmful gates (`dist_base` is
 in the input, and solved from the judge as `dist/(1−norm_c)`). Result:
 - **+241.35** across 72 unseen-style workloads
 - **all 22 preliminary tests byte-identical**
+
+## r27 — global default tuned for the SCORED set
+`rprio` default flipped `'D'` → `'P'`: prefill wins over decode on a free remote
+instead of decode monopolising it. This is **un-gated**, so it applies to all 20
+frozen tests.
+
+| corpus | delta |
+|--------|-------|
+| 72 re-weighted unseen-style workloads | **+254.1** |
+| 58 local preliminary-style tests | **+148.31** |
+
+Biggest movers: `burst_2` +112.55, `t12_het` +35.47, `t9_fit` +6.92,
+`burst_1` −6.06. `A_PFAIR=0` is the identical lever (same decode-vs-prefill
+choice via `decStreak`) and gives the same number.
+
+Other global defaults swept on the unseen corpus: `dgfrac 0` +124.6,
+`order 'A'` +60.5, `radapt 0` +1.0, `balw`/`chunk`/`rporder` all ≤ 0.
