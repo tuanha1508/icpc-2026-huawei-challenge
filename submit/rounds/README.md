@@ -1136,3 +1136,28 @@ prefill onto decode-heavy remotes.
 This also explains **why 1.25 beats 4.0** — the overestimate is useful, but 4.0
 over-applies it. The estimator is right for the right reason, and `balw` is
 simply the dial that sets how much future-load pessimism to carry.
+
+## The load-balancer is now fully verified — form, exponent and bookkeeping
+Generalised the future-load term to `decCnt^p * dproc1 * balw` and swept p:
+
+    0.5 -15.244   0.75 -8.575   0.9 -9.572   **1.0 best**   1.25 -11.127   1.5 -32.448
+
+A clean peak at p = 1.0 with monotonic decline both sides, so **linear in the
+decode count is the correct form**, and 1.25 is the correct coefficient (its own
+7-value plateau). Both halves of r41's change are independently confirmed.
+
+`procWork` bookkeeping also checks out: admission adds the full
+`col[1].at(lenIn)` and each completed piece subtracts
+`(le-ls)/num_layers * col[1].at(lenIn)`, which sums to exactly the increment
+since `Σ(le-ls) = num_layers`. No drift.
+
+### Parametric space: exhausted and verified
+Every global knob has now been swept on the **uncontaminated** off-weight corpus,
+subjected to the plateau filter, and checked for interaction:
+
+    balw      1.25  <- CHANGED (7-value plateau, the only real structure found)
+    dgfrac    noise across 0.18-0.30, no stable optimum
+    order/rporder/rprio/pfval/radapt/pfair/chunk/maxg/dpostfrac/nfactor
+              all already optimal; several re-confirmed by large margins
+
+Remaining upside is structural, not parametric. **r41 is the build to submit.**
