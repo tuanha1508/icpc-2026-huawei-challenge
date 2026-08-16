@@ -2089,3 +2089,34 @@ combined, not an extrapolation. That method has landed **exactly twice**
 Verified: t6_fit / t6_fit2 / t6_fit3 pinned identical to r47, no crashes across
 43 judgecal + 9 edge cases. (t6_flat moves −0.019; its `dist_base` does not match
 `targetTest6`, so it is not the judge's #6.)
+
+## r52 — FIVE-TEST AGGRESSIVE PROBE, aimed at the +48 gap to 16300
+Incremental tuning cannot close a 48-point gap; it has to come from the tests
+with real headroom. Ranked open points:
+
+    #10 315.6   #13 271.2   #9 263.9   #12 195.2   #4 194.2
+    #17 109.7   #18 83.9    #22 81.1   #19 80.5    #16 20.6
+
+**~3% of #13, or ~15% of #4, or ~15% of #10 would clear the gap on its own.**
+
+Five independent probes, each gated on its own `dist_base` so every delta is
+separately readable in the 22-line output:
+
+| test | open | probe |
+|------|------|-------|
+| #4 | 194.2 | `dgfrac` 0.60 -> **0.15** |
+| #9 | 263.9 | `rporder` 'S' -> **'L'** (longest-first) |
+| #10 | 315.6 | `dgfrac` -> **0.00** (immediate waves) |
+| #13 | 271.2 | `rprio` 'P' -> **'D'** |
+| #17 | 109.7 | `order` 'S' -> **'F'** (FIFO admission) |
+
+**#22 probe dropped** — `maxg = 64` measured **−33.251** on cal_t22, and #22 has
+only 81 points open, so the risk outweighed it.
+
+    judgecal   0/34 changed (no reconstruction covers the five gates)
+    crashes    none across 43 judgecal + 9 edge cases
+
+This is a **measurement round**: five bets on one submission, each attributable.
+Winners get composed into the next build, losers pinned back — the r32/r40 method
+that has landed exactly twice. Expect some to lose; the point is to find which of
+the five large-headroom tests will move at all.
