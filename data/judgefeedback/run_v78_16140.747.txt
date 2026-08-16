@@ -1,0 +1,4 @@
+# V78 judge result: total 16140.747 (below r24 16164.873)
+# #6 dpost=0.90 backfired: 399.775 -> 375.242 (-24.533), derivative inversion
+# all other merges landed: #5 486.332, #4 804.200, #12 804.728, #16 942.602
+#6 375.2422912647
