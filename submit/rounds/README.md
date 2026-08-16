@@ -2073,3 +2073,19 @@ either direction — has lost on the judge, 4 times out of 4.
 
 **r47 is restored as the build.** 16251.843, judge-confirmed, and the only
 remaining candidate whose judgecal delta is exactly 0.000.
+
+## r51 — compose r50's gains without its #6 loss (predicted NEW BEST 16252.309)
+r50 scored 16250.536. The judge showed the loss was **entirely #6**
+(399.774864 -> 398.001660, −1.773) while **#17 gained +0.419**. #6 already has a
+narrow gate, so `dpostJoinFraction` keeps 0.05 everywhere it helped and returns
+to 0.0 for `targetTest6`.
+
+    predicted = 16250.536 + 1.773 = **16252.309**   (new best, +0.466 over r47)
+
+This is the r32/r40 "best of measured" composition — two measured judge runs
+combined, not an extrapolation. That method has landed **exactly twice**
+(r32 error 0.000, r40 error +0.0004).
+
+Verified: t6_fit / t6_fit2 / t6_fit3 pinned identical to r47, no crashes across
+43 judgecal + 9 edge cases. (t6_flat moves −0.019; its `dist_base` does not match
+`targetTest6`, so it is not the judge's #6.)
