@@ -1726,3 +1726,27 @@ workloads worsen on revert against 5 improving, top-1 only 21%.
 
 Both fully validated: crash-free on the t3 family and all 9 edge cases, gate
 decisions stable, `dpostfrac` tuned and confirmed at 0.25.
+
+## Untested hardcoded logic — the `prefillBoost` pressure multiplier is correct
+Every *knob* has been swept, but the solver also contains hardcoded decision
+thresholds that were never parameterised and so never tested. The most
+substantive is:
+
+    double pressure = pendCnt / max(1.0, decTotal);
+    if (!legacyHalfNoGaps && pressure > 1.0) prefillBoost *= pressure;
+
+Tested two alternatives against r48 on 339 workloads:
+
+    nopress  (multiplier removed)  -110.39   **0 win / 13 lose**  top-1 23%  agree  trimmed -52.28
+    cappress (capped at 2x)         -45.16   **0 win /  8 lose**  top-1 54%  agree  trimmed  -8.80
+
+**Zero wins in both cases.** The multiplier is load-bearing and correctly left
+uncapped — scaling the prefill boost by queue pressure genuinely helps, and
+limiting it costs. Well-distributed (top-1 23%), halves agree, trimming does not
+flip the sign.
+
+This is a real result on code that had never been exercised: the hardcoded
+behaviour is right as written. Remaining untested constants (`tuneEvery` 16/64,
+`shrinkDiv` 2/5, `growDiv` 2/4, `exTdr > 2.0 * exTpot`, radapt's
+`gK > 1.4 * bestG && share < 0.25`, `decTotal >= 16`) sit in paths that measured
+inert when their surrounding knobs were swept.
