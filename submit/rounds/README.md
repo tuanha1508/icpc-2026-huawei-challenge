@@ -322,3 +322,27 @@ on the target tests and monotonically worse globally (35781 → 32070), because 
 only adds latency.
 
 Kept at `artifacts/known-good/experiment_inbound_wait.cpp`.
+
+## r32 = 16251.890 — exact hit
+Composing per-test judge measurements (no prediction) landed to the digit.
+**Every failed round still contains usable per-test wins**; reverting wholesale
+throws them away.
+
+## Judge-derived CEILINGS for the sub-500 tests
+Two judge points for #6 give `T(N) = 2.804 + 1.3328·N`, so `tp = N/T(N)` has
+asymptote `1/1.3328 = 0.7503`:
+
+| test | now | ceiling | available |
+|------|-----|---------|-----------|
+| #6 | 399.775 | **412.8** | +13 (not 600) |
+| #5 | 487.172 | — | needs only **−4.2% tpot** |
+| #14 | 415.267 | ~469 | forced, zero contention |
+
+#5's three judge points show N pinned near 75.6 while tpot fell 76.90 → 62.49 —
+so on #5, tp moves through tpot alone, and it is the only sub-500 test with real
+room.
+
+## r33 (pending) — layered prefill on #5
+`pieces = 3`. Lost on #6 (−2.68) and I generalised that to "pieces are bad", but
+#5 is a different regime (22%/25% contention). On t5_fit: tpot 69.277 → 68.984,
+tp +1.4%.
