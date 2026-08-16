@@ -836,3 +836,27 @@ Swept as compiled defaults or env from the r40 base on robust-72:
 | `rporder` | 'S' below 0.9 (r39); above 0.9 worth only +5.3 and not neutral |
 | `order` | 'S' wherever `w_c > 0` |
 | `eprio` | `CDAB` — only the D POST/D PRE relative order binds |
+
+### Global knob space: EXHAUSTED
+Completing the sweep from the r40 base on robust-72:
+
+| knob | result |
+|------|--------|
+| `chunk` 1/2/8 | exactly inert |
+| `pfair` 0.25/1.0 | −1.089 / inert |
+| `pfval` 0.5/2.0 | **−123.360 / −26.360** — default best |
+| `pfbarrier` 0/1 | exactly inert |
+| `radapt` 0 | +2.480 — inside noise |
+
+Every global default is now either measured optimal or inert. There is no
+remaining single-knob gain on this corpus.
+
+### ⚠ robust-72 was never truly "unseen" in the weight dimension
+Its six weight groups — 0.25, 0.30, 0.75, 0.80, 0.90, 0.98 — **all appear in the
+feedback set** (#8, #4, #13, #5, #6, #16). So it proxies *re-weighted feedback
+bases*, not genuinely unseen weights.
+
+Built a better proxy: **435 workloads over 146 distinct bases at weights the
+feedback set does not contain** (0.10, 0.20, 0.35, 0.40, 0.55, 0.60, 0.70, 0.85,
+0.95). This is the corpus that should be arbitrating global-default decisions,
+and r40's dgfrac bet is being re-validated against it.
