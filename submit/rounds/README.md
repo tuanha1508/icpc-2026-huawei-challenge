@@ -1702,3 +1702,27 @@ the strongest in the sweep and hold on both the 485 and 339 slices.
 
 **r48 unchanged. The choice remains r47 (safe, confirmed) vs r48 (better
 expected frozen-set score, −11 visible).**
+
+## Gate decisions re-checked with `dpostfrac` active — both hold
+Knob interactions have flipped a verdict before (`dgfrac` x `balw`), so each gate
+decision was re-tested by reverting it on the **r48** base (dpostfrac = 0.25),
+n = 855:
+
+    revert legacyQuarter narrowing   -3520.82    5/25   top-1 21%   agree
+    revert useMarginal 0.05/0.15     -2240.92   17/23   top-1 42%   agree
+
+Both reverts hurt, both with agreeing halves and low-to-moderate concentration,
+so **both gate decisions remain correct with dpostfrac active**. r48 is
+internally consistent; there is no interaction to unwind.
+
+`legacyQuarter` remains the single most robust result of the session: 25
+workloads worsen on revert against 5 improving, top-1 only 21%.
+
+### Session state
+| build | visible judge | unseen evidence | status |
+|-------|---------------|-----------------|--------|
+| r47 | **16251.843 confirmed** | gates only, all robust | safe, null-rule compliant |
+| r48 | ~16240.8 predicted | gates + dpostfrac (31/17, halves agree) | better expected frozen score |
+
+Both fully validated: crash-free on the t3 family and all 9 edge cases, gate
+decisions stable, `dpostfrac` tuned and confirmed at 0.25.
