@@ -1376,3 +1376,30 @@ contaminated one.
 
 **r45 remains the conservative choice** if the visible preliminary total matters
 more than the frozen-set estimate.
+
+## Bug-hunt swept across every rejected knob — dpostfrac was the only one
+Built an INVALID-scanner over 64 tests (all judgecal + 30 off-weight) and ran it
+against 15 settings previously rejected as "harmful": `maxg` 2/8/32, `pfval`
+0.5/2.0, `pieces` 2/4, `ruse` 1/2, `dgfrac` 0.9, `dpost` 0.9, `chunk` 1,
+`pfair` 0.25, `balw` 0, `nfactor` 2.
+
+**All clean on r46.** Those rejections are genuine performance losses, not
+disguised crashes.
+
+**Scanner sensitivity confirmed** by running it against r45 (unfixed):
+
+    dpost=0.2   1/64 FAILED   t3_gate
+    dpost=0.9   3/64 FAILED   t3_gate, t3_burst, t3_cont
+
+So the deadlock fix resolves failures on **three** tests, not one, and the
+"clean" verdict on r46 is meaningful rather than a blind scanner.
+
+### r46 verified safe on the whole t3 family at its real defaults
+No INVALID anywhere, and 10 of 12 t3 tests are byte-identical to r45. The reason
+is that the fix sets `dpostPool = min(decTotal, decodePoolCap) = 1` under
+`targetTest3`, so `futureDpost = 0` and the join wait never engages — it both
+prevents the crash *and* correctly disables a wait that could never help a
+capped pool. Only cal_t3_burst2 moves (−5.821).
+
+(`t3_fit` and `t3_v2` score 0.000 in **both** builds — pre-existing genuine
+zeros, not protocol failures, unrelated to this change.)
