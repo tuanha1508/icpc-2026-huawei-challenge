@@ -285,3 +285,21 @@ unseen +83.1, preliminary **+251.36**. Movers: `t3_true` +87.32, `t3_loose`
 +62.49, `cal_t3_burst` +23.97, `cal_t22` +15.67.
 Rejected alternatives: `GROW=8` (+109.9 unseen / −21.27 prelim), `TUNE=32`
 (+58.0 / −369.93).
+
+## FINAL: r27 = 16247.375 is the best build
+`artifacts/known-good/BEST_16247_r27.cpp`
+
+### Probe record after r27 (judge-measured)
+| probe | local prediction | judge |
+|-------|------------------|-------|
+| `rprio 'D'→'P'` | +148 / +254 | **+82.50 HIT** |
+| `dgfrac 0.25→0.10` | +64 / +136 | −5.77 |
+| `tpotFac 1.0→1.2` | +251 / +83 | 0.00 |
+| `marginal` re-enable @0.30 | +57 | −29.56 |
+| `eprio "CDAB"→"DCBA"` | +1.55 / +33.45 | **−101.34** |
+
+**1 hit in 5.** EV per probe is now negative: one +82.50 against four misses
+averaging −34.2. Stopping is the correct call, not a concession.
+
+### Session result
+16093 → **16247.375** (+154.4), and +148.9 over Codex v70's 16098.470.
