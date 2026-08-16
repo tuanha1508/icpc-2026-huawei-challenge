@@ -563,3 +563,45 @@ Gated to #5 — decode-first is exactly inert on t6_fit3, t6_fit, t9_fit, t12_fi
 and t3_judge and costs 0.67 on t13_fit, so it is a property of #5's structure,
 not a general rule. Isolation verified: **1 of 115 local tests changed.**
 Expected #5 487.172 -> ~492; total ~16257.
+
+## r35 = 16251.890 — third exact tie, and the three ties share one cause
+#5 came back byte-identical: tp=1.210093, tdr=1497.254452, tpot=62.487279. The
+gate fired; the change did nothing.
+
+**Why — only the D POST vs D PRE relative order matters on #5.** With
+`A = D POST, B = D PRE, C = P POST, D = P PRE`:
+
+| eprio | D POST vs D PRE | judge |
+|-------|-----------------|-------|
+| `CDBA` | D PRE first | cost **13.89** (removing it was the +13.89 fix) |
+| `CDAB` | **D POST first** | 487.172 |
+| `ABDC` | **D POST first** | **identical to CDAB, 6 decimals** |
+
+All three judge observations are consistent: `CDAB` was **already optimal**, and
+`ABDC` only reshuffles prefill, which barely contends for E. The +13.89 fix had
+already captured the entire available gain.
+
+### The t5_fit repro is not trustworthy for E-ordering
+Locally the 24 permutations clustered by **C's position** (P POST), and `CDAB`
+and `CDBA` scored *identically* — yet on the judge those two differ by 13.89.
+The repro has E-contention the real #5 does not. Its tp is 0.80 against the
+judge's 1.21 and its tp_UB/tp_base differ wildly. **Do not use it to rank E
+priorities.**
+
+### Ordering and priority are exhausted — three for three
+| round | change | judge |
+|-------|--------|-------|
+| r34 A | SJF admission (#8) | byte-identical |
+| r34 B | per-remote SJF (#7) | byte-identical |
+| r35 | E priority (#5) | byte-identical |
+
+Every "which ready item goes first" change now measures as exactly zero. Either
+the queue holds one item (r34) or the solver already picks correctly (r35).
+**Stop spending rounds on ordering.** What has ever moved this judge is batching
+amounts (`dgfrac`) and remote assignment (`rprio`, +82.50) — quantities, not
+orders.
+
+### Standing
+16251.890 across r32/r34/r35. Sub-500 targets: #14 impossible (contradictory),
+#6 needs +32.3% with ~6% identified, #5 needs +4.38% and its E-ordering lever is
+now proven already-optimal.
