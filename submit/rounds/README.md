@@ -1983,3 +1983,37 @@ Everything now checked, with nothing left untested:
 
 **r47 is final.** 16251.843 judge-confirmed, three null-class gate fixes shipped,
 every alternative measured and rejected on evidence.
+
+## r50 — a SMALL `dpostfrac` (0.05) is positive on BOTH proxies
+Last check of the search, and it found something. `dpostfrac = 0.25` was rejected
+at **−34.552** on reconstructions. Small values had never been measured there:
+
+    dpost=0.05   reconstructions **+1.199**  (5/29 changed)
+    dpost=0.10   reconstructions  -7.011    (6/29 changed)
+
+0.05 is **positive** on the proxy that predicts judge behaviour, not merely
+cheap. Under the robust standard:
+
+    all 485      +196.16   23/13   halves +77.79/+118.37 AGREE   trimmed +136.52
+    excl. w000   +125.19   16/8    halves +16.29/+108.90 AGREE   trimmed  +48.16
+    crashes      none (43 judgecal + 9 edge; carries the dpostPool fix)
+
+So it does not trade feedback score for corpus score — it is mildly positive on
+both. That is the **null-class-or-better** profile, the only one that has ever
+survived the judge (5/5).
+
+**Caveats, stated plainly:** the gain is modest, top-1 concentration is high on
+the full set (96%, from `overload_1__w000` +188 against `overload_7__w000` −184
+nearly cancelling), and the no-w000 halves are lopsided (+16 vs +109). The
+reconstruction gain of +1.199 is small enough to be noise. This is a *mild*
+positive, not another `legacyQuarter`.
+
+| build | reconstructions | corpora | judge |
+|-------|-----------------|---------|-------|
+| r47 | 0 | robust gates | **16251.843 confirmed** |
+| **r50** | **+1.199** | +125 to +196, halves agree | predicted ~unchanged |
+| r48 | −34.552 | +248 | rejected |
+| r49 | −44.741 | +870 | rejected |
+
+**r50 supersedes r47** on the evidence: same null-class safety, plus a modest
+corpus gain and the latent deadlock fix.
