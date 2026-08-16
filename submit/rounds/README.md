@@ -1750,3 +1750,31 @@ behaviour is right as written. Remaining untested constants (`tuneEvery` 16/64,
 `shrinkDiv` 2/5, `growDiv` 2/4, `exTdr > 2.0 * exTpot`, radapt's
 `gK > 1.4 * bestG && share < 0.25`, `decTotal >= 16`) sit in paths that measured
 inert when their surrounding knobs were swept.
+
+## Remaining hardcoded constants — two are dead code, the rest are noise
+Tested against r48 on 339 workloads:
+
+    rad_strict (2.0 / 0.15)   +0.00   0/0   <- radapt branch NEVER fires
+    rad_loose  (1.1 / 0.40)   +0.00   0/0   <- unchanged in either direction
+    pp_even    (1.0x)         +0.00   0/0   <- preferPrefill asymmetry never decisive
+    ctl_slow   (4/10)       -106.94   6/10  top-1 96%  outlier-dominated
+    ctl_fast   (1/3)         +40.87   6/5   top-1 107%  DISAGREE — noise
+
+**`radapt`'s cost model is effectively dead**: `gK > 1.4*bestG && share < 0.25`
+never triggers, so tightening it to `2.0/0.15` or loosening to `1.1/0.40` is
+byte-identical. Same for `preferPrefill`'s `exTdr > 2.0*exTpot` asymmetry. The
+`Ntarget` shrink/grow rates move only outliers.
+
+### The solver's decision logic is now fully characterised
+**Load-bearing** (measured, changing them costs): `prefillBoost` pressure
+multiplier, `balw`, `dgfrac`, `rprio`, `rporder`, `order`, `eprio` (D POST vs
+D PRE order only), `dpostfrac`, and the six gate decisions.
+
+**Inert or dead** (measured, changing them does nothing): radapt cost model,
+`preferPrefill` asymmetry, `Ntarget` controller rates, `nfactor`, `chunk`,
+`pfair`, `pfbarrier`, `maxg`, `pieces`.
+
+Both the knob space and the hardcoded-constant space are now exhausted. Further
+parameter search has negative expected value; what remains would be a structurally
+different scheduler, and the problem statement's fixed-remote rule
+(`PROBLEM.md:110`) closes the main structural degree of freedom.
