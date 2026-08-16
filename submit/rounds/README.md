@@ -1679,3 +1679,26 @@ r47 is the safe build. r48 is the better *expected* frozen-set score if the
 corpora are representative — the ranking uses the frozen 20, not the visible 22.
 Confidence moderate: this trade failed twice before (r38, r46), but never with
 this evidence quality.
+
+## `dpostfrac` fine-tuned under the robust standard — 0.25 confirmed
+Now that the deadlock fix makes the whole range reachable, swept it against r47
+on 339 workloads (w000 excluded):
+
+    dpost   total    win/lose  top1%   halves    trimmed
+    0.18   +141.42     24/12    49%     agree     +14.15
+    0.22    +24.37     27/22   335%  DISAGREE     -24.71   <- noise
+    0.25   +197.22     31/17    50%     agree    +127.26   <- best
+    0.28   +106.89     27/26    65%     agree     +26.16
+    0.32   +163.78     34/20    42%     agree     +84.30
+
+0.25 and 0.32 both pass every check. **0.25 is kept**: it is strongest on the
+trimmed sum (+127.26 vs +84.30), the most outlier-resistant statistic available,
+while 0.32's edge is a slightly better win/lose ratio (34/20) and lower
+concentration (42%).
+
+The 0.22 dip to noise (disagreeing halves, negative trimmed) is a yellow flag —
+adjacent values should not behave that differently — but 0.25's own metrics are
+the strongest in the sweep and hold on both the 485 and 339 slices.
+
+**r48 unchanged. The choice remains r47 (safe, confirmed) vs r48 (better
+expected frozen-set score, −11 visible).**
