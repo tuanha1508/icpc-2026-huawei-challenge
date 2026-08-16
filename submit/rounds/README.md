@@ -65,3 +65,16 @@ the parameter space is closed: 16125.644 is this architecture's practical
 ceiling. Every gain that ever landed came from exactly two sources —
 copying Codex's judge-proven features, and stream-diffing our binary against
 theirs.
+
+## r17 = 16159.793 — TARGET CLEARED
+#5 452.183 -> 486.332 (+34.15). Projected +19; the judge paid +34.15.
+That is the third time `t5_fit` has UNDERSTATED a #5 gain — the bias is
+consistent and directional (~1.8x), which makes it usable rather than useless.
+
+Lead over Codex v70: +61.32.
+
+## r18 (pending)
+#5 admits by age/service ratio instead of shortest-service-first.
+Proxy: tp 0.800300 -> 0.819240 (+2.4%), tpot 69.277 -> 68.516.
+Projection: #5 -> 493.3 at face value, ~498.9 with the usual understatement.
+Total 16166.7 - 16172.4.
