@@ -420,3 +420,53 @@ zero-weight test, so **#7** runs FIFO per-remote too — at 248.9 pts/unit dist.
 
 Isolation verified: 60/60 non-w025 robust tests byte-identical to r32. The two
 probes land on different judge lines (#8, #7) and so are separately readable.
+
+## r34 = 16251.890 — an exact tie, and the reason is the finding
+Both probes **fired**: #8 solved to `w_tp = 0.25000` exactly, and #7 to
+`dist_base = 4.017749` against a gate of 4.017728 (5e-6 relative, inside 1e-3).
+SJF was applied to both and the output was byte-identical.
+
+**SJF had nothing to sort.** The admission queue is essentially never deep. That
+retires the whole SPT / mean-flow-time family for this judge set, despite `tdr`
+being the right objective for it — the queues are simply not at the admission
+point.
+
+### Where the queues actually are — the bottleneck map
+| test | bottleneck | util | reading |
+|------|-----------|------|---------|
+| t9 | REMOTE | **0.996** | capacity-saturated; #9 is capped |
+| t6 | E | 0.942 / 0.765 | *not* saturated |
+| t5 | E | 0.668 | slack |
+| t13 | E | 0.489 | slack |
+| t12 | remote | 0.192 | not resource-bound at all |
+| t3 | remote | 0.338 | confirms the zero-contention proof |
+
+Only **#9** is saturated, and it is saturated on the one resource we cannot add.
+Everything else is dependency/latency-bound, not capacity-bound.
+
+### E is not the constraint even where it is labelled the bottleneck
+`interactor.py:421` charges every E task `S + dur`, so fewer E tasks means less E
+busy time. On t6_fit3 E splits: **D POST n=810 (46%)**, D PRE n=499 (25%),
+P PRE 250 (14%), P POST 250 (14%); setup is 17.2% of E.
+
+D POST is one-per-3.24-requests and eats half the bottleneck — but batching it
+harder **frees E and loses throughput**: t5 `dpost 0.7` cuts D POST 699 -> 426
+and E 0.764 -> 0.650 while tp falls 0.7456 -> 0.7040. The reclaimed E time was
+idle anyway. **E idle time is the enemy, not E busy time.**
+
+### Transfer latency is real but must not be paid down
+`UP latency-fraction = 0.963` at ~3.3 transfers per dispatch: a group spanning R
+remotes costs R transfers, each paying `latency` on a serial link both ways.
+Concentrating remotes does cut transfers — and is catastrophic:
+
+    t13  ruse=K  xfers 3230  tdr   1685.9  score 553.7
+    t13  ruse=1  xfers  291  tdr  69630.9  score 130.3
+
+Monotonic in every case, on all three tests. Remote parallelism dominates
+transfer latency by an order of magnitude. `ruse = K` is already optimal.
+
+### Standing after r34
+Ruled out this round, each with a mechanism rather than a sweep: SJF admission,
+per-remote SJF on #7, D POST batching, remote concentration. Best build is
+**r32 = r34 = 16251.890**; r34 is safe to keep as the live submission since it
+ties exactly and its two changes are theory-backed.
