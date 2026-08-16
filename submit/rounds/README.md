@@ -1331,3 +1331,48 @@ and the run never completes. Traded a fast failure for a deadlock.
 and t3_gate match — so it is unreachable on the frozen set. Recorded here so it
 is not rediscovered, and so `dpostfrac` is understood as blocked by a *bug*
 rather than by a genuine performance cliff.
+
+## r46 — root-caused the D POST deadlock, unlocking a +186 plateau
+### The bug, properly diagnosed
+`dpostfrac > 0` produced `INVALID score=0 reason: group size 0 < 1` on t3_gate.
+The empty group was a *symptom*. Root cause:
+
+    dpostPool = max(bDpostRdy.size(), decTotal)
+
+`decTotal` counts every request in the decode stage, but `decodePoolCap`
+(= 1 under `targetTest3`) limits how many may actually be **started**. So the
+join wait waited for members that could never arrive — a circular wait. Decode
+stalled, and the `targetTest3` D PRE branch then emitted a zero-size group.
+
+My first "fix" — adding `if (tmp.empty()) continue;` — **made it worse**,
+converting the crash into a hang: decode stayed suppressed and `decActive` never
+drained. Fixed properly by capping the pool:
+`max(bDpostRdy.size(), min(decTotal, decodePoolCap))`. t3_gate now scores
+382.820 under `dpostfrac = 0.2`, identical to the default.
+
+The fix alone is inert: **judgecal 0/34, off-weight 0.000**.
+
+### The unlocked gain
+| dpost | off-weight | gate-weight |
+|-------|-----------|-------------|
+| 0.10 | −3.452 | +110.845 |
+| 0.15 | +68.993 | +265.837 |
+| 0.20 | +58.189 | +120.104 |
+| **0.25** | **+90.214** | **+95.794** |
+| 0.30 | +87.080 | +8.838 |
+| 0.40 | −21.398 | +29.617 |
+
+**All 8 measurements across 0.15-0.30 are positive**, on two independent diverse
+corpora, with cliffs at 0.10 (off-weight) and 0.40. 0.25 chosen over 0.15's
+larger peak because every neighbour of 0.25 is positive on *both* corpora.
+
+### ⚠ This is the first change to break the judgecal-neutral rule
+That rule is 5 for 5 (r37, r39, r43, r44, r45). r46 costs **−14.018 on judgecal**
+(12/34, mostly the t6 family) for **+186 combined on the frozen-set proxies**.
+The justification is that judgecal proxies the **unscored** feedback set while
+the corpora proxy the tests that decide the ranking — and unlike r38, the
+evidence here is a plateau on two clean corpora rather than a spike on a
+contaminated one.
+
+**r45 remains the conservative choice** if the visible preliminary total matters
+more than the frozen-set estimate.
