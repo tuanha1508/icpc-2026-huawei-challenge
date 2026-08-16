@@ -1460,3 +1460,37 @@ the null-prediction class that is **5 for 5** on the judge.
 Two corpora agreeing is not enough. Both bad calls this session came from
 optimising against the subset of corpora a change happened to help. Every
 candidate must be scored on **all five** before shipping.
+
+## r47 CONFIRMED — 16251.843, error +0.0004. Null-prediction rule now 5 for 5
+r26, r37, r39, r40 (composed) and r47 all predicted "no feedback change" and all
+landed exactly. **r47 is live**: same judge total as r40, **+1417.869 on unseen
+work, zero regressions on any of the five corpora.**
+
+### Gate audit closed — both remaining candidates re-tested in isolation
+Earlier verdicts came from a variant that disabled three gates at once, so both
+were re-measured alone against r47 on all five corpora.
+
+**`targetTest13`** — narrowing it (keeping #13 exact) loses **−83.652**
+(0 win / 4 lose) on gate-weight, zero elsewhere, judgecal 0/34. The isolated
+result agrees with the combined one: **broad is genuinely right** for the w=0.75
+class. Not a mistake this time.
+
+**`legacyHalfNoGaps`** — removing it gains only **+44.613** on gate-weight
+(2 win / 1 lose, just 3 of 180 tests move), zero on the other four corpora, and
+costs **−20.948** on judgecal. Thin evidence, marginal gain, and it breaks the
+null rule. **Kept broad.**
+
+### Final disposition — every gate tested at its own weight, in isolation
+| gate | disposition | evidence |
+|------|-------------|----------|
+| `legacyQuarter` | narrowed | +3798.139 (w=0.25) |
+| `useMarginal` 0.05/0.15 | broad | narrowing cost −2181.281 |
+| `useMarginal` 0.30/0.45/0.80/0.98 | narrowed | +1061.140 |
+| `legacyDecodeFirst` | narrowed | +64.490 (w=0.45) |
+| `targetTest13` | broad | narrowing loses 83.652 |
+| `legacyHalfNoGaps` | broad | +44.6 unseen vs −20.9 feedback |
+| `balw` | **reverted to 4.0** | 1.25 was net −17.484 |
+| `dpostfrac` | **0.0** | 0.25 regressed 3 corpora |
+
+**r47 is the settled build.** Every remaining lever is either measured optimal
+or a marginal trade that breaks the one rule with a perfect record.
