@@ -1095,3 +1095,24 @@ measured holding everything else at its current value.
 **r41 is the best build on the clean corpus** and is the one to submit. r42
 (`r39 + balw`, without the dgfrac change) is kept as a slightly more
 conservative alternative — 4.17 behind r41, which is 0.005% and not meaningful.
+
+## Joint dgfrac x balw sweep — no stable dgfrac optimum, r41 stands
+A 60-workload 2-D grid suggested `dgfrac = 0.30` was best at every `balw`
+(+20.51 / +23.76 / +7.70 / +17.76). It does not survive the full 150:
+
+    0.22 -52.884   0.25  -4.167   0.26 +23.402   0.28 -10.328
+    0.30  +9.680   0.32 -12.773   0.35 -63.476   0.40 -109.234
+
+Sign flips between **every** adjacent pair, and the grid's +23.76 at 0.30 shrinks
+to +9.680. **`dgfrac` has no stable optimum** — it is noise across 0.18-0.30, so
+r41's 0.18 is as defensible as any value in that band.
+
+Two methodological notes:
+- **A 60-workload subset misleads.** It ranked 0.30 first by a clear margin; the
+  full 150 puts 0.26 ahead of it and makes both neighbours negative. Grid
+  searches on small samples need the winner re-checked at full size.
+- **`balw` remains the only knob with real structure** — 7 consecutive positive
+  values, no sign flip. Every other candidate examined (global `dgfrac`, #5
+  `dgfrac`, `dpostfrac`, adaptive decode waves) has been a single-point spike.
+
+**r41 stands as the build to submit.**
