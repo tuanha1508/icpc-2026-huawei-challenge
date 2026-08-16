@@ -139,3 +139,12 @@ reproductions, every weight-gated legacy path probed, seeds vs forced widths
 distinguished, marginal exclusions verified correct.
 
 Total gained this session: **16093 → 16164.873 (+71.9)**, and +66.4 over Codex v70.
+
+## r25 (pending) — #6 deferred join, found by re-examining a mis-attribution
+dpost response on #6 is **non-monotonic**: 0.0 baseline, trough at 0.25–0.5,
+sharp rise at 0.9. I had sampled only 0.5 and concluded "dpost is bad for #6".
+Separately, r03's −19.78 was a *bundle* (dpost 1.0 + marginal off + pieces 4)
+where marginal-off disabled the `prefillBoost=14` that #6 depends on — so dpost
+alone had never been isolated.
+
+All five #6 reproductions agree on 0.9. Projection: #6 413–431, total 16178–16196.
