@@ -1645,3 +1645,37 @@ not flip it. `useMarginal` genuinely belongs in `fixedDecodeWaves`.
 
 Judgecal for adaptive dgfrac is +17.183, which would have been tempting on the
 old standard; the corpus evidence is decisively against it.
+
+## r48 — `dpostfrac = 0.25` on the r47 base, with the deadlock fix
+Screened every remaining mechanism through the robust standard. Only one passed.
+
+**Caught a contamination first:** r47 descends from r45 and **lacks the dpostPool
+deadlock fix**, so `dpostfrac` still crashes t3_gate there
+(`INVALID: group size 0 < 1`). r48 therefore carries the fix *and* the guard.
+Verified clean across the whole t3 family and all 9 edge cases.
+
+**Robust evidence — passes on both corpora, with and without w000:**
+
+    all 485      total +248.33   win/lose 43/25   halves +187.27/+61.06 AGREE   trimmed +136.69
+    excl. w000   total +197.22   win/lose 31/17   halves +120.48/+76.75 AGREE   trimmed +127.26
+
+Favourable count, agreeing halves, and a trimmed sum that keeps its sign — on
+both slices. That is the profile `legacyQuarter` had and `balw` never did.
+
+Rejected in the same screen: `dpostfrac = 0.15` (+292.70 but halves **disagree**,
+top-1 74%), `eprio=ABDC` (3/12), `order=H` (32/55, −2676), `rporder=C`,
+`maxg=512`, `pfair=0.9`, `nfactor=0.5` (all inert or noise).
+
+**Cost: judgecal −11.004** (12/34, mostly the t6 family). That set is feedback
+only and unscored.
+
+### Choose
+| build | judge (visible) | unseen evidence | risk |
+|-------|-----------------|-----------------|------|
+| **r47** | **16251.843 confirmed** | gates only | none — null-rule compliant |
+| **r48** | ~16240.8 predicted | +197 to +248, robust on both slices | breaks null rule |
+
+r47 is the safe build. r48 is the better *expected* frozen-set score if the
+corpora are representative — the ranking uses the frozen 20, not the visible 22.
+Confidence moderate: this trade failed twice before (r38, r46), but never with
+this evidence quality.
