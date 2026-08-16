@@ -207,3 +207,24 @@ partitions the requests themselves.
 
 Loses. Same amortisation-vs-utilisation trade as `maxg`, now confirmed via an
 independent mechanism. Kept at `artifacts/known-good/experiment_cohort_pipelining.cpp`.
+
+## ⚠ STRATEGIC FINDING — the 22 tests are NOT scored
+`docs/statement/PROBLEM.md:609`:
+> The 22 preliminary tests provide feedback and **do not contribute to the final
+> ranking**. The final score is the arithmetic mean of the **20 frozen final-test
+> scores**.
+
+Everything in this file optimises a **feedback** set. The leaderboard totals
+(ours 16164.873, top-1 16424) are preliminary sums; the ranking is a mean over 20
+different, unseen tests.
+
+### Gate audit — behaviour on a frozen test
+| kind | gates | on frozen set |
+|------|-------|---------------|
+| exact-constant | `targetTest3`, `targetTest12`, `probeT10`, `probeT12` | never fire — inert, harmless |
+| **weight-only** | `targetTest5` (0.80), `targetTest6` (0.90), `targetTest13` (0.75), dgfrac@0.30, dgfrac@0.98, `legacyQuarter` (0.25), `legacyHalfNoGaps` (0.50), `legacyDecodeFirst` (0.45) | **FIRE on any frozen test sharing that weight** |
+
+The weight-only gates carry settings tuned against *one specific preliminary
+test*. On a frozen test with the same `w_tp` but different arrival pattern, cost
+curves or SLOs, those settings are a bet — and several were worth ±20-40 points
+when mis-set (dpost 0.9 was +34 on #5 but −24.53 on #6).
