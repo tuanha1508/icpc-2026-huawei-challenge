@@ -605,3 +605,42 @@ orders.
 16251.890 across r32/r34/r35. Sub-500 targets: #14 impossible (contradictory),
 #6 needs +32.3% with ~6% identified, #5 needs +4.38% and its E-ordering lever is
 now proven already-optimal.
+
+## r37 — +96.8 on unseen workloads, feedback set untouched
+Retargeted at the corpus that actually proxies the **scored** frozen set
+(`PROBLEM.md:609`: the 22 are feedback only). Robust-72 baseline **35785.887**.
+
+### The weight-only gate audit, finished
+r26 narrowed `targetTest5`/`targetTest6` with `dist_base` but left four families
+weight-only. Narrowing **all** of them (r36) measured **35671.010, −114.877** —
+worse. The per-group split shows why the aggregate was misleading:
+
+| group | gate narrowed | delta |
+|-------|---------------|-------|
+| w025 | `legacyQuarter` | **−190.522** |
+| w075 | `targetTest13` | **−21.189** |
+| w030 | `useMarginal`@0.30 (#4) | **+57.193** |
+| w098 | `useMarginal`@0.98 (#16) | **+24.908** |
+| w080 | `useMarginal`@0.80 (#5) | **+14.733** |
+
+**Two families with opposite signs.** The legacy *bundles* are good policy for
+their whole weight class — not overfit baggage — while the `useMarginal`
+exclusions are genuinely overfit, 3 for 3.
+
+### r37 = the evidence-supported half only
+Narrow the `useMarginal` exclusions (and `fixedDecodeWaves`' bare
+`nearWeight(0.80)`); leave `legacyQuarter`, `targetTest13` and
+`legacyDecodeFirst` broad.
+
+    robust-72   35785.887 -> 35882.721   (+96.834, exactly the predicted sum)
+    judgecal    34/34 tests byte-identical
+
+Feedback total should stay 16251.890; the gain is entirely on unseen-style
+workloads, which is what the ranking is computed from.
+
+### Method note
+`A_DGFRAC=0.25` (its own default value) scored +75 purely by disabling gates —
+but that only disables the *dgfrac* gates. It is not a proxy for narrowing the
+bundles, which also control `immediateDecodeWaves`, `legacyDecodeRemote`,
+`balw`, `radapt`, `rprio`, `rporder` and `useMarginal`. Decompose per group
+before generalising from an aggregate.
