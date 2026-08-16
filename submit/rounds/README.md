@@ -1778,3 +1778,43 @@ Both the knob space and the hardcoded-constant space are now exhausted. Further
 parameter search has negative expected value; what remains would be a structurally
 different scheduler, and the problem statement's fixed-remote rule
 (`PROBLEM.md:110`) closes the main structural degree of freedom.
+
+## r49 — STRUCTURAL: compose decode waves by remote density
+First non-gate, non-parameter change of the session. `D PRE` is one E call for the
+whole wave, but `D PROC` runs **per-remote** and is strongly sublinear, so a wave
+spread thinly across many remotes buys small, expensive D PROC groups. r49
+requires a minimum ready-count per remote (`minR = 3`) before including that
+remote's requests, falling back to the full set if that would empty the wave.
+
+    minR=2  +145.80  19/10  top1 50%  DISAGREE  trim  +65.10
+    minR=3  +291.76  25/9   top1 26%  agree     trim +106.44  <- chosen
+    minR=4  +181.31  17/9   top1 31%  agree     trim  +56.56
+    minR=6  +257.03  24/16  top1 41%  DISAGREE  trim  +60.29
+
+3 and 4 both pass every check, so it is a plateau. 3 is the maximum *and* has the
+lowest concentration (26%).
+
+**Cumulative r47 -> r49 is the strongest robust profile measured all session:**
+
+    +870.25   win/lose **51/19**   top-1 only **16%**
+    halves +463.76 / +406.49 AGREE   trimmed +485.30
+    no crashes across 43 judgecal + 9 edge cases
+
+### ⚠ But the two proxies now disagree sharply
+    judge-calibrated RECONSTRUCTIONS  **-44.741**   (model real judge tests)
+    synthetic probes                   -21.628
+    synthetic corpora                  **+870.25**
+
+The reconstructions share the real generator's structure with the frozen set;
+the corpora are re-weighted synthetics. They point opposite ways, and this is the
+first change where the disagreement is large enough to matter.
+
+### Three-way choice
+| build | visible judge | unseen evidence | reconstruction cost |
+|-------|---------------|-----------------|---------------------|
+| r47 | **16251.843 confirmed** | gates only | 0 |
+| r48 | ~16240.8 | +248 (43/25, top-1 46%) | ~-11 |
+| r49 | ~16207 | **+870 (51/19, top-1 16%)** | **~-45** |
+
+**r48 is the balanced bet.** r49 has far better corpus evidence but a 4x larger
+cost on the proxy that most resembles the frozen set.
