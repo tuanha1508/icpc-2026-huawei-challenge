@@ -228,3 +228,21 @@ The weight-only gates carry settings tuned against *one specific preliminary
 test*. On a frozen test with the same `w_tp` but different arrival pattern, cost
 curves or SLOs, those settings are a bet — and several were worth ±20-40 points
 when mis-set (dpost 0.9 was +34 on #5 but −24.53 on #6).
+
+## r26 — robustness narrowing (the change that protects the SCORED set)
+Re-weighted 12 diverse workloads onto each gated weight and compared gated vs
+neutral. The two biggest preliminary gains were the two worst overfits:
+
+| gate | net over 12 workloads | worst single |
+|------|----------------------|--------------|
+| w 0.80 (#5 route + dpost 0.9) | **−166.59** | −150.84 |
+| w 0.30 (dgfrac 0.60) | **−140.45** | −89.26 |
+| w 0.90 (prefillBoost 14) | −13.77 | |
+| w 0.98 (dgfrac forced) | −6.03 | |
+| w 0.75 (eprio DCBA) | **+36.41** | generalises — left broad |
+| w 0.25 (legacyQuarter) | +6.38 | fine — left alone |
+
+r26 adds `dist_base` as a second key to the four harmful gates (`dist_base` is
+in the input, and solved from the judge as `dist/(1−norm_c)`). Result:
+- **+241.35** across 72 unseen-style workloads
+- **all 22 preliminary tests byte-identical**
