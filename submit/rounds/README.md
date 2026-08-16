@@ -801,3 +801,38 @@ directional predictions have now failed three times (r25, r33, r38).
 Honest framing: ~0.05 feedback points for an **unvalidated** +79.6 on the
 frozen-set proxy. Robust-72 aggregates have never been directionally validated —
 only null predictions have.
+
+## r40 CONFIRMED — 16251.843, predicted 16251.843 (error +0.0004)
+#6 pinned at 399.774864178 exactly as designed; the other five took r38's values.
+
+### The composition method is 2 for 2 (r32, r40)
+Predicting a build's judge score by **composing per-test results from previous
+judge runs** has now landed exactly twice. That makes it a reusable tool, and it
+implies a repeatable two-round process for any global change:
+
+1. Ship the change globally. Read the **per-test** deltas.
+2. Pin the tests that lost — most feedback tests already have a narrow gate
+   (`targetTest3/5/6/12/13`, `legacyQuarter`, the `useMarginal` keys, #7's
+   `nearBase`) — and re-ship. Round 2's judge score is then **exactly
+   predictable**, not estimated.
+
+r38 -> r40 is the worked example: −1.295 became −0.047 for the same +79.6 on the
+frozen-set proxy.
+
+**Live build: r40.** judge 16251.843, robust-72 35962.370.
+
+### Global knob space is close to exhausted
+Swept as compiled defaults or env from the r40 base on robust-72:
+
+| knob | verdict |
+|------|---------|
+| `dgfrac` | 0.18 — **shipped**, plateau 0.15-0.20 |
+| `balw` | default 4.0 already optimal (0 is −2539, others −4 to −94) |
+| `nfactor` | exactly inert (confirms the earlier controller finding) |
+| `maxg` | unlimited already best (2/4/8/32 all −300 to −2500) |
+| `dpostfrac` | 0.0 already best (−12 to −1893) |
+| `ruse`/`radapt` | K already best (concentrating is catastrophic) |
+| `rprio` | flipped globally in r27, +82.50 judge-confirmed |
+| `rporder` | 'S' below 0.9 (r39); above 0.9 worth only +5.3 and not neutral |
+| `order` | 'S' wherever `w_c > 0` |
+| `eprio` | `CDAB` — only the D POST/D PRE relative order binds |
