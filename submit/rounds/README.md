@@ -470,3 +470,46 @@ Ruled out this round, each with a mechanism rather than a sweep: SJF admission,
 per-remote SJF on #7, D POST batching, remote concentration. Best build is
 **r32 = r34 = 16251.890**; r34 is safe to keep as the live submission since it
 ties exactly and its two changes are theory-backed.
+
+## #14 closed — all three scored components, mechanically
+#14's constants: `w_tp = 0.65000`, `dist_base = 0.865366`, and a throughput
+window `tp_UB − tp_base = 1.8e-5`, only **0.51% of tp**. That makes it the most
+sensitive test in the set: **−260 ms of makespan is worth +74.6 points**, and a
+0.39% cut would be +506.
+
+### tp — makespan is 99.63% arrivals
+Arrivals are perfectly uniform at **2245.1 ms**; a request's whole chain takes
+**1672.5 ms**. That leaves **572.6 ms of structural idle between consecutive
+requests, so overlap is impossible by construction.** Makespan = last_arrival +
+one chain, and arrivals are 446,772.9 of the 448,445 ms.
+
+The tail is 1672.5 ms = **1412.5 compute + 260.0 transfers**, and instrumenting
+it shows every one of those gaps is protocol-mandated, not queueing:
+
+    E P PRE  --42--> C0 P PROC --42--> E P POST      (84)
+    E D PRE  --11--> C0 D PROC --11--> E D POST      (8 x 22 = 176)
+
+Nothing there is schedulable. The earlier "invariant across 60 settings" result
+now has its mechanism.
+
+### tpot — it is the single-request round trip
+`54.2 + 11 + 54.1 + 11 + 54.1 = 184.4` **is** the reported `tpot = 184.378`.
+D PRE and D POST fire **1600 times for 1600 tokens** — group size exactly 1,
+because only one request is ever live.
+
+### the one lever, and why it loses
+`tdr` ends at `P POST`, so a decode-only hold is *free* on `tdr` — the sole
+legal way to batch. But the makespan sensitivity kills it:
+
+    entire tpot prize (ex_tpot -> 0)      +15.4
+    a 55 ms makespan slip                 -15.8
+
+A **55 ms** slip already outweighs the whole prize, and closing the 572.6 ms
+idle would cost 163. Confirmed empirically: the inbound-aware wait is inert at
+every setting (`nDPRE` stays 1600 at dgIn 0 / 0.25 / 0.5 / 0.9) because no
+second request is ever inbound.
+
+**#14 is capped on tp, tdr and tpot simultaneously.** With #3 (tdr at the
+arithmetic floor, `ex_tpot` exactly 0), #6 (ceiling 412.8), #9 (remote util
+0.996) and #1/#2/#11 (`norm_tp` exactly 0, arrival-bound), every sub-500 test
+now has a mechanism, not just a failed sweep.
