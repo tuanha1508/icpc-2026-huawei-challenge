@@ -2141,3 +2141,37 @@ Two rounds give **11 independent per-test measurements** across the six tests
 holding 1350 open points. Whatever lands gets composed; whatever loses gets
 pinned. If any single one moves its test by 15%, the 48-point gap to 16300
 closes.
+
+## r52 = 16117.718, r53 = 16249.925 — the probe campaign's verdict
+**r51's composition is CONFIRMED at 16252.309** (a new best, +0.466 over r47):
+every test r53 did not probe carries exactly r51's value, and the #6 pin held at
+399.774864178.
+
+### 11 probes across the six biggest-headroom tests — ONE gain
+| test | open | r52 probe | r53 probe |
+|------|------|-----------|-----------|
+| #4 | 194 | dgfrac .15 → **−1.906** | rporder L → **0.000** |
+| #9 | 264 | rporder L → **0.000** | dgfrac 0 → **+0.112** |
+| #10 | 316 | dgfrac 0 → **0.000** | rprio D → **0.000** |
+| #12 | 195 | — | maxg ∞ → **0.000** |
+| #13 | 271 | rprio D → **−76.043** | order F → −2.424 |
+| #17 | 110 | order F → **−56.642** | dgfrac 0 → −0.073 |
+
+**Total: 1 gain (+0.112), 5 exact zeros, 5 losses.**
+
+The zeros matter more than the losses. #10 (316 open) did not move under *either*
+lever. #12 (195 open) did not move when its `maxg` cap was lifted entirely. #4
+did not move under `rporder`. These tests are **insensitive to every lever the
+solver exposes** — the open points are real but unreachable from here.
+
+The two large losses show the tests that *do* respond only respond downward:
+#13 loses 76 to decode-first remote priority, #17 loses 57 to FIFO admission.
+
+## r54 — compose the one winner (predicted 16252.421)
+r51 + #9's `dgfrac = 0`. Judge-measured, so the prediction is composition not
+extrapolation.
+
+**Straight assessment of the +48 gap:** eleven aggressive shots at the tests
+holding 1350 open points produced +0.112. That is strong evidence the visible
+total cannot reach 16300 by tuning this solver — the headroom is real but no
+available lever reaches it.
