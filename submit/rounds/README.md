@@ -1039,3 +1039,31 @@ No parametric or structural change has survived since r39. r40 remains live at
 parameter values* — is now the deciding filter, and it has correctly rejected
 three candidates (dpost rescue, global dgfrac, #5 dgfrac) that all looked
 positive on a single sample point.
+
+## r41 — `balw` 4.0 -> 1.25, the first candidate to pass the plateau filter
+Re-swept the knobs on the **uncontaminated** off-weight corpus, since every
+earlier sweep used robust-72 (whose six weight groups all appear in the feedback
+set). Two candidates surfaced; only one survived.
+
+**Rejected — `dpostfrac`.** Looked excellent off-weight and monotonic
+(0.05 +29.8, 0.20 +76.8, 0.30 +105.2) but it falls off a cliff immediately after
+(0.40 −17.5, 0.50 −485, 0.60 −1124), and judgecal is **−406.845**, driven by
+`t3_gate` collapsing **382.820 -> 0.000**. A catastrophic failure mode dwarfs the
+gain. It also silently overrides `targetTest5`'s `dpostJoinFraction = 0.9`
+(line 477), which partly confounded the sweep.
+
+**Shipped — `balw`.** Seven consecutive positive values, no sign flip:
+
+    0.25 +18.420   0.5 +24.485   0.75 +18.869   1.0 +23.707
+    1.25 +31.792   1.5 +31.655   2.0 +11.243    4.0  0 (base)
+
+A genuine plateau, not the single-point spikes that sank the dgfrac (r38/r40)
+and #5-dgfrac candidates. 1.25 is the maximum and central, well clear of the
+cliff below 0.25 (`balw = 0` is −2539 on robust-72).
+
+    off-weight   +31.792   (7 win / 2 lose — wins more often than it loses)
+    judgecal     +1.751    (3/34: cal_t22 +6.759, t6_flat -3.721)
+    robust-72    -4.180    (discounted, contaminated)
+
+Judge total predicted **near-neutral to slightly positive** — only 3 calibrated
+fits move at all, and by small amounts.
