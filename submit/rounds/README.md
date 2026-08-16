@@ -2120,3 +2120,24 @@ This is a **measurement round**: five bets on one submission, each attributable.
 Winners get composed into the next build, losers pinned back — the r32/r40 method
 that has landed exactly twice. Expect some to lose; the point is to find which of
 the five large-headroom tests will move at all.
+
+## r53 — BATCH 2, orthogonal probes (queued behind r52)
+Each high-headroom test gets a **different lever** from batch 1, so the two
+rounds together test two independent directions per test:
+
+| test | open | r52 probe | r53 probe |
+|------|------|-----------|-----------|
+| #4 | 194 | `dgfrac` 0.15 | `rporder` **'L'** |
+| #9 | 264 | `rporder` 'L' | `dgfrac` **0.00** |
+| #10 | 316 | `dgfrac` 0.00 | `rprio` **'D'** |
+| #13 | 271 | `rprio` 'D' | `order` **'F'** |
+| #17 | 110 | `order` 'F' | `dgfrac` **0.00** |
+| #12 | 195 | — | `maxg` 8 -> **unlimited** |
+
+    judgecal   +0.033 (t9_fit only)
+    crashes    none
+
+Two rounds give **11 independent per-test measurements** across the six tests
+holding 1350 open points. Whatever lands gets composed; whatever loses gets
+pinned. If any single one moves its test by 15%, the 48-point gap to 16300
+closes.
