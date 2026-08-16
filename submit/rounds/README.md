@@ -773,3 +773,31 @@ Worth noting the gate would have been *judge-neutral by construction* — no
 feedback test is floored, every judge `norm_c > 0` — so this was shippable under
 the operating rule and was rejected on evidence quality instead. **Building the
 corpus for the regime is what turned an n=2 "+444 net" into a clear reject.**
+
+## r40 — the dgfrac plateau, with #6 pinned to its judge-measured value
+r38 lost 1.295 shipping `dgfrac = 0.18` globally, but **1.248 of that was #6
+alone**. The remainder summed to −0.047:
+
+    #12 +0.027   #13 -0.009   #17 -0.047   #18 -0.017   #21 -0.001
+
+#6 already has a narrow gate (`targetTest6`), so it keeps its judge-measured
+0.25 and everything else takes the plateau value. This is r32's "best of
+measured" composition: keep what the judge proved per test, improve the default
+everywhere else.
+
+Why the default matters more than it looks: the adaptive
+`dgfrac = 0.05 + 0.70·frac` path needs `!fixedDecodeWaves`, but `useMarginal` is
+true for anything outside the exclusion list — so **every unseen test lands on
+the static constant** and never reaches the adaptive formula.
+
+    robust-72   35882.721 -> 35962.370   (+79.649)
+    t6 fits     protected (t6_fit/2/3/flat unchanged; t6_true -0.004)
+
+**Predicted judge total 16251.843 (−0.047).** This is a composition of two
+measured judge runs rather than an extrapolation — the r32 method, which landed
+to the digit. The judge-calibrated fits say +7.847; that is ignored, since their
+directional predictions have now failed three times (r25, r33, r38).
+
+Honest framing: ~0.05 feedback points for an **unvalidated** +79.6 on the
+frozen-set proxy. Robust-72 aggregates have never been directionally validated —
+only null predictions have.
