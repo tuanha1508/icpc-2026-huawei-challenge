@@ -188,3 +188,22 @@ delivers it.
 
 **#6, same:** ruse monotonic to K on all three fits, dgfrac disputed between
 fits, dpost 0.9 measured **−24.53** on the judge. Needs +32.3%.
+
+## Second algorithm tried: cohort pipelining (per ICPC alumni advice)
+The recurring advice on these challenges is *"multiple approaches… crossover of
+the algorithms"* and *"create your own dataset"*. We had tuned ONE algorithm
+(reactive greedy) across ~200 settings, so this is a different one: requests are
+assigned permanently to P cohorts at admission and only same-cohort requests
+batch, keeping cohorts out of phase so E can serve one while another is on the
+remotes. Unlike `maxg` (which splits the ready set at an instant) this
+partitions the requests themselves.
+
+| P | t6_fit3 | t6_fit2 | t6_fit | t6_flat |
+|---|---------|---------|--------|---------|
+| 1 (current) | 367.713 | 355.235 | 396.853 | 881.555 |
+| 2 | 383.137 | 325.512 | 389.888 | 835.613 |
+| 3 | 360.594 | 276.938 | 334.595 | 772.140 |
+| 4 | 337.691 | 277.606 | 337.826 | 719.656 |
+
+Loses. Same amortisation-vs-utilisation trade as `maxg`, now confirmed via an
+independent mechanism. Kept at `artifacts/known-good/experiment_cohort_pipelining.cpp`.
