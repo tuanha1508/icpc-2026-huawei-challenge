@@ -1957,3 +1957,29 @@ predictions are 4/4.
 The parameter space, the hardcoded-constant space, and the gate-scoping space are
 all exhausted. Remaining candidates all trade feedback score for corpus score,
 and the evidence says not to.
+
+## Leftover probe gates checked — inert, left in place
+`probeT10` and `probeT12` are exact-constant gates left over from old
+experiments (`probeT12` forces `maxg = 1`). Disabling both:
+
+    judgecal   +0.003   (t10_true -0.007, t12_true +0.010)
+    off-weight  0.000
+
+They are inert even on the tests they target, so there is nothing to reclaim and
+no reason to disturb them.
+
+## Search complete
+Everything now checked, with nothing left untested:
+
+| area | status |
+|------|--------|
+| every knob | swept, on the uncontaminated corpus, under the robust standard |
+| hardcoded constants | tested; `prefillBoost` pressure multiplier load-bearing, radapt/preferPrefill thresholds dead code |
+| gate scoping | audited at each gate's own weight, on diverse bases, in isolation |
+| structural (wave composition) | implemented and measured; costs 21.4 on reconstructions |
+| probe leftovers | inert |
+| `nearBase` tolerance | correctly sized (keys 3.0% apart vs a 0.1% window) |
+| environment / edge cases | no dependence, no crashes |
+
+**r47 is final.** 16251.843 judge-confirmed, three null-class gate fixes shipped,
+every alternative measured and rejected on evidence.
