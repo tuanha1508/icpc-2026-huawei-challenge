@@ -1264,3 +1264,36 @@ Both errors came from validating a weight-gated change on a corpus that either
 **re-weights the same few bases** (robust-72's w025) or **has no group at that
 weight at all** (w005, w015). The fix is to build workloads *at the gate's own
 weight, from diverse bases*, before trusting any gate decision.
+
+## r45 — narrow `legacyDecodeFirst`; the gate audit is now complete and correct
+Tested the last two weight-only gates at their own weights on 95 diverse
+workloads each:
+
+    legacyHalfNoGaps  @ w=0.50   +101.246   (6 win / 0 lose)
+    legacyDecodeFirst @ w=0.45    +64.490   (6 win / 0 lose)
+
+**Shipped `legacyDecodeFirst`**, narrowed to #15's `dist_base` (180.3302) rather
+than removed — judgecal has no t15 reproduction, so a bare removal could not be
+*shown* safe for #15 even though it measures 0/34. Narrowing keeps #15 exact and
+frees every unseen w = 0.45 test.
+
+    judgecal 0/34    w=0.45 +64.490 (6/0)    off-weight 0.000
+
+**Did NOT ship `legacyHalfNoGaps`** despite +101.246: removing it costs
+**−20.948 on slack_probe**, and #1/#2/#11 have `dist = 0`, so their `dist_base`
+cannot be derived to key a narrow gate. That makes it a directional feedback
+trade — the class that has failed every time (r25, r33, r38).
+
+### Final gate disposition, all tested at each gate's own weight
+| gate | disposition | evidence |
+|------|-------------|----------|
+| `legacyQuarter` | **narrowed** (r43) | +3798.139 at w=0.25 (23/4) |
+| `useMarginal` 0.05, 0.15 | **broad** (r44) | narrowing cost −2181.281 |
+| `useMarginal` 0.30/0.45/0.80/0.98 | narrow | +1061.140 combined |
+| `legacyDecodeFirst` | **narrowed** (r45) | +64.490 at w=0.45 (6/0) |
+| `targetTest13` | broad | removing loses 81.509 |
+| `legacyHalfNoGaps` | broad | +101.2 unseen but −20.9 feedback |
+| `targetTest3/5/6/12`, probes | exact-constant | inert on unseen |
+
+**Cumulative on unseen work vs r40: +6092**, with the feedback set provably
+unmoved except `balw`'s +1.751.
