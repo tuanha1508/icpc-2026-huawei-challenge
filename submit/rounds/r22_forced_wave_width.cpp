@@ -307,11 +307,14 @@ int main() {
     // neither of which has ever had a fixed width tried, so both are probed here.
     // Each is gated to one test, so the per-test scores attribute all three.
     //   #4  w 0.30, 159 open on tp   -> 0.85 (stronger than the 0.6 that worked)
-    //   #16 w 0.98, throughput-heavy ->  0.85
+    //   #16 w 0.98: keep the 0.95 the flat-curve block sets -- that value is
+    //       judge-proven at +3.84 -- and only make it PERSIST. #16 also has
+    //       useMarginal false, so its 0.95 has been a transient too and the
+    //       +3.84 is merely what survived before the adaptive rule reset it.
     //   #15 w 0.45, 128 open         ->  0.60
     if (getenv("A_DGFRAC") == nullptr) {
         if (nearWeight(0.30))      { dgfrac = 0.85; dgfracForced = true; }
-        else if (nearWeight(0.98)) { dgfrac = 0.85; dgfracForced = true; }
+        else if (nearWeight(0.98)) { dgfracForced = true; }  // KEEP its 0.95
         else if (nearWeight(0.45)) { dgfrac = 0.60; dgfracForced = true; }
     }
     if (const char *e = getenv("A_P12DG")) dgfrac = atof(e);
