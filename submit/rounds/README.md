@@ -1067,3 +1067,31 @@ cliff below 0.25 (`balw = 0` is −2539 on robust-72).
 
 Judge total predicted **near-neutral to slightly positive** — only 3 calibrated
 fits move at all, and by small amounts.
+
+## Remaining knobs re-validated on the clean corpus — all already optimal
+From the r41 base on the 150 off-weight workloads:
+
+    ORDER    F -289.129   H -194.741        (default 'S' best)
+    RPORDER  F  -97.633   L -109.935   N  -97.100   I -30.301   C +0.304
+    RPRIO    D -132.107                     (r27's global 'P' re-confirmed)
+    PFVAL    0.8 -103.844  1.2 -113.097  1.5 -113.463
+    RADAPT   0    -0.619        PFAIR  inert
+
+So **`balw` was the only knob robust-72 got wrong.** r27's `rprio` flip and
+r39's `rporder` extension both re-validate on the uncontaminated corpus (+132
+and +98 respectively), which is reassuring for the two judge-confirmed wins.
+
+### ⚠ The knobs INTERACT — one-at-a-time sweeps can mislead
+    r39  dgfrac 0.25              82028.291
+    r40  dgfrac 0.18              82007.545   (-20.746 alone — worse)
+    r42  0.25 + balw 1.25         82035.170   (balw adds only +6.879)
+    r41  0.18 + balw 1.25         82039.337   (balw adds +31.792)
+
+`dgfrac = 0.18` is **worse alone but better combined with `balw = 1.25`**. The
+pair is what matters, not either knob independently. That is a caution on every
+single-knob conclusion in this file, including the ones above — they were all
+measured holding everything else at its current value.
+
+**r41 is the best build on the clean corpus** and is the one to submit. r42
+(`r39 + balw`, without the dgfrac change) is kept as a slightly more
+conservative alternative — 4.17 behind r41, which is 0.005% and not meaningful.
