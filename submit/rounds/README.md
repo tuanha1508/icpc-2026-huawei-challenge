@@ -346,3 +346,26 @@ room.
 `pieces = 3`. Lost on #6 (−2.68) and I generalised that to "pieces are bad", but
 #5 is a different regime (22%/25% contention). On t5_fit: tpot 69.277 → 68.984,
 tp +1.4%.
+
+## r33 = 16229.366 (−22.52) — rejected
+`pieces=3` on #5: tdr 1497→1623, tpot 62.49→67.32. The proxy said tpot would
+*fall*. **r32 = 16251.890 stands.**
+
+## The unifying result: N is arrival-limited everywhere
+Two judge points per test give `T(N)` and, via the two `norm_tp` values,
+`tp_base`/`tp_UB` exactly. Since `tp = N/T(N)`:
+
+| test | N now | N needed for norm_tp=1 | available | verdict |
+|------|-------|------------------------|-----------|---------|
+| #6 | 50.26 | ×2.93 | +13 only (`T(N)` asymptote caps it at 412.8) | capped |
+| #5 | 75.62 | ×2.75 | — | needs −4.2% tpot; pieces made it worse |
+| #8 | 1.86 | ×1.32 | +75 | arrival-limited |
+| #13 | 1.87 | ×1.32 | +233 | arrival-limited |
+
+#13 is the proof: its D PRE groups average **1.48** (1469 of 2083 are size 1),
+so the batching gap is real — but making the wave *wait* for more members is
+monotonically worse, because there is no second request to wait for.
+
+**N is set by how many requests are concurrently in decode — i.e. by arrivals,
+not by policy.** That single fact explains #5, #6, #8, #13, #14 and the ~40
+probes that returned exact zeros.
