@@ -972,3 +972,38 @@ exactly 0.000 on t9/t13/t12/t3/t5/t6.
 
 **Conclusion: the solver leaves no exploitable idle time.** #6 in particular is
 genuinely E-saturated at 0.1% waste, which independently corroborates its cap.
+
+## Every large opportunity is now diagnosed — and one strategic point dominates
+Ranked open points from the r40 judge run, with the binding constraint:
+
+| test | open | binding constraint |
+|------|------|--------------------|
+| #10 | 314.7 | **remote saturated** 0.996, prefill-fraction 0.999; decode groups already maximal (D PRE 200, D POST 100) |
+| #13 | 271.2 | arrival-limited — D PRE groups mean 1.48, 1469 of 2083 are size 1 |
+| #12 | 195.3 | arrival-limited — **2140 D PRE calls for 2140 tokens, every group size 1**; 20 requests over an 88M ms span, each taking ~1.17M ms, so they never overlap |
+| #4 | 194.2 | not locally reproduced |
+| #17/#18 | 110/84 | overload, tdr-dominated |
+| #22/#19 | 81/80 | tp side, near ceiling |
+| #9 | — | remote saturated 0.996 |
+| #3 #5 #6 #8 #14 | — | closed earlier (floor / N-bound) |
+
+#12 is the cleanest illustration: `col3` (D PRE) costs 301.71 at batch 1 but
+434.76 at batch 4 — **2.8x cheaper per token** — and 966.95 at batch 64, 20x
+cheaper. The amortisation is enormous and completely unreachable, because only
+one request is ever live.
+
+### ⚠ The strategic point: feedback-test scores do not affect the ranking
+`PROBLEM.md:609` — the 22 preliminary tests are feedback only; the ranking is
+the mean of 20 **frozen** tests. So per-test gates that raise #4 or #13 are
+worth **exactly zero** for the ranking. Only the *default* policy, applied to
+unseen tests, matters.
+
+That default policy has now been swept to a measured optimum on every global
+knob (`dgfrac`, `balw`, `maxg`, `dpostfrac`, `ruse`/`radapt`, `rprio`,
+`rporder`, `order`, `eprio`, `chunk`, `pfair`, `pfval`, `pfbarrier`, `nfactor`),
+and the gate audit is complete. The two changes that genuinely improved unseen
+behaviour — r37 (narrow the overfit `useMarginal` gates) and r39 (per-remote SJF
+for zero-weight tests) — are both shipped and judge-confirmed neutral.
+
+**Remaining upside is structural, not parametric**, and no local oracle predicts
+directional changes reliably (r25, r33, r38 all missed, usually in sign).
