@@ -2017,3 +2017,31 @@ positive, not another `legacyQuarter`.
 
 **r50 supersedes r47** on the evidence: same null-class safety, plus a modest
 corpus gain and the latent deadlock fix.
+
+## Small-`dpostfrac` region mapped — a narrow positive band at 0.04-0.05
+Swept the region on the **reconstruction** proxy, which had never been done at
+the small end:
+
+    0.01 / 0.02 / 0.03   -0.220   (2/29 changed — effectively inert)
+    0.04                 **+2.765**  (4/29)
+    0.05                 **+1.199**  (5/29)
+    0.07                  -4.077   (6/29)
+    0.10                  -7.011   (6/29)
+    0.25                 -34.552
+
+A narrow band at 0.04-0.05 is positive; below it the knob is inert, above it the
+cost grows steadily to the −34.552 that sank r48.
+
+**0.04 vs 0.05 splits the metrics:**
+
+    dpost   reconstructions   corpora   trimmed   top-1
+    0.04         +2.765       +176.97   +34.66     53%
+    0.05         +1.199       +125.19   +48.16     44%
+
+0.04 wins on reconstructions and raw total; 0.05 wins on the trimmed sum and
+concentration. The gaps are noise-scale (1.5 reconstruction points against a
+16,000 total). **r50 stays at 0.05** — it is already built and validated, and it
+is stronger on the outlier-resistant metrics that caught every false positive
+this session. 0.04 is an equally defensible choice.
+
+**r50 remains the recommendation.**
