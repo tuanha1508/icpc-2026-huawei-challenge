@@ -1818,3 +1818,37 @@ first change where the disagreement is large enough to matter.
 
 **r48 is the balanced bet.** r49 has far better corpus evidence but a 4x larger
 cost on the proxy that most resembles the frozen set.
+
+## ⚠ CORRECTION — r48's cost was understated 3x; recommendation reverts to r47
+Reported r48 as costing "-11.004 on judgecal". That figure netted `slack_probe`
+at **+23.548** — a synthetic *probe*, not a reconstruction of a real judge test —
+against the reconstructions that actually model judge behaviour.
+
+**Reconstruction-only deltas from the judge-confirmed r47 (29 files, probes
+excluded):**
+
+    r47 -> r48       **-34.552**
+    r47 -> w_min2      -36.603
+    r47 -> w_dense     -37.929
+    r47 -> r49       **-44.741**
+
+Attempts to keep r49's structural gain while shedding its cost all failed to help
+much: gating on ready-density (`>= 2K`) or on `K >= 4`, and the gentler
+`minR = 2`, all land between −36 and −38 — no better than r48 and worse than r47.
+
+### Revised standing
+| build | reconstruction cost | corpus evidence | judge |
+|-------|--------------------|-----------------|-------|
+| **r47** | **0** | gates only, all robust | **16251.843 confirmed** |
+| r48 | −34.552 | +248 (43/25) | unverified |
+| r49 | −44.741 | +870 (51/19, top-1 16%) | unverified |
+
+**Recommendation reverts to r47.** The proxy that most resembles the frozen set
+(reconstructions of real judge tests, same generator) says r48 and r49 cost 35–45
+points. Their gains sit entirely on synthetic re-weighted corpora that have never
+been validated for directional prediction — and which have already been shown to
+be outlier-dominated and, in the w000 case, artificially latency-amplified.
+
+The null-prediction rule is **5 for 5**; both r48 and r49 violate it, and the
+violation is 3x larger than previously reported. r47 remains the only build that
+is both judge-confirmed and robustly positive on unseen work.
