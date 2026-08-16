@@ -1612,3 +1612,36 @@ term for the other, with w = 0 making tpot dominate.
 **Implication:** every `w000` result in this file is suspect where `dist_base`
 was inherited from a differently-weighted original. The w000 corpus over-weights
 latency-sensitivity relative to any real test.
+
+## Correction to the correction — the w000 corpus is defensible
+I claimed the `w000` corpus over-weights latency because `dist_base` was
+inherited. That was overstated: **#3 in the real feedback set is `w_tp = 0.00`
+with `norm_c = 0.5006`** — the same regime as `overload_7__w000` (0.50). Real
+w = 0 tests with half the latency budget consumed do exist, so that sensitivity
+is representative and `balw`'s risk there is genuine. `balw` stays
+**inconclusive**: 17/9 by count favours 1.25, one workload favours 4.0, halves
+disagree. r47 keeps 4.0 because it is judge-confirmed, not because 1.25 is
+disproven.
+
+## What a ROBUST rejection looks like — adaptive `dgfrac`, re-tested
+Enabling the adaptive controller (dropping `useMarginal` from
+`fixedDecodeWaves`) on 485 workloads:
+
+    total -1005.11   win/lose **22/58**   top-1 only **19%**
+    halves -756.84 / -248.27  AGREE
+    trimmed (drop 3 largest) -831.93  same sign
+
+Loses on nearly 3x as many workloads as it wins, the effect is **well
+distributed** rather than outlier-driven, both halves agree, and trimming does
+not flip it. `useMarginal` genuinely belongs in `fixedDecodeWaves`.
+
+**The contrast is the point.** Same standard, opposite verdicts:
+
+| candidate | win/lose | top-1% | halves | trimmed | verdict |
+|-----------|----------|--------|--------|---------|---------|
+| adaptive `dgfrac` | 22/58 | 19% | agree | same sign | **solidly rejected** |
+| `legacyQuarter` narrowing | 5/22 on revert | 20% | agree | — | **solidly accepted** |
+| `balw = 1.25` | 17/9 | **631%** | **disagree** | **flips** | **unmeasurable** |
+
+Judgecal for adaptive dgfrac is +17.183, which would have been tempting on the
+old standard; the corpus evidence is decisively against it.
