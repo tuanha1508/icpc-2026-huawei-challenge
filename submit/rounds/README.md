@@ -1161,3 +1161,23 @@ subjected to the plateau filter, and checked for interaction:
               all already optimal; several re-confirmed by large margins
 
 Remaining upside is structural, not parametric. **r41 is the build to submit.**
+
+## Placement is the ONLY structural choice — and r41 validates on heavy work too
+`PROBLEM.md:110`: *"You assign each request to one remote computer in its `P PRE`
+task. **The choice is fixed** … every `D PROC` containing it runs there."*
+
+So decode cannot be migrated, and the remote choice at `P PRE` is the single
+placement decision in the whole system. That is precisely why `balw` is the one
+knob with real structure — it governs the only degree of freedom there is. Its
+form (linear), exponent (p = 1.0) and coefficient (1.25) are each independently
+confirmed optimal, and `L_out` is hidden so no better-informed rule is available.
+
+**r41's evidence, consolidated:**
+
+    fast off-weight  (150)   +31.792    7 win / 2 lose
+    heavy off-weight  (45)   +17.070    1 win / 2 lose   (sumLout > 20k)
+    judgecal          (34)    +1.751    3 changed
+                           = +48.9 across 195 workloads
+
+The gain is not confined to light workloads, which was the obvious way it could
+have been an artifact of the fast-subset filter.
