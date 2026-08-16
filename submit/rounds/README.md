@@ -121,3 +121,21 @@ wave.** I assumed persistence would multiply the gain; it reversed it.
 
 ## r23 = best of both = 16164.872 expected
 #4 seeded 0.60 (transient, by design) + #16's 0.95 forced to persist.
+
+## r24 = 16164.873 — four probes, four EXACT zeros
+| test | open | lever | delta |
+|------|------|-------|-------|
+| #10 | 316 | dgfrac seed 0.45 | 0.00 |
+| #13 | 271 | rprio D | 0.00 |
+| #9  | 264 | dgfrac seed 0.45 | 0.00 |
+| #8  | 235 | balw 4.0 work-based | 0.00 |
+
+1086 points, four independent levers, all inert. Those points are **measured**
+as unreachable by scheduling policy, not assumed.
+
+## Final standing: 16164.873
+Parameter space is closed: all 18 knobs swept on 8 judge-calibrated
+reproductions, every weight-gated legacy path probed, seeds vs forced widths
+distinguished, marginal exclusions verified correct.
+
+Total gained this session: **16093 → 16164.873 (+71.9)**, and +66.4 over Codex v70.
