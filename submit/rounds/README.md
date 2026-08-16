@@ -677,3 +677,32 @@ below the plateau and is not revisited.
     r35  35785.887
     r37  35882.721  (+96.834)  judge-confirmed free
     r38  35966.629  (+180.742 cumulative)
+
+## r38 = 16250.595 (−1.295) — REJECTED, and it settles the methodology
+Predicted **+12.192** from the judge-calibrated fits, actual **−1.295**: a miss
+of 13.5 **with the wrong sign**. #6 was the big one — t6_fit3 said +4.259, the
+judge gave −1.248.
+
+### The rule the record now supports
+| change | touches feedback set? | predicted | actual |
+|--------|----------------------|-----------|--------|
+| r26 | no | 0 | **0** ✓ |
+| r37 | no | 0 | **0** ✓ |
+| r33 | yes | tpot down | −22.52 ✗ |
+| r25 | yes | gain | −24.53 ✗ |
+| r38 | yes | +12.19 | **−1.30** ✗ |
+
+**The proxies are reliable for NULL predictions and unreliable for directional
+ones.** Every change that left the feedback set untouched landed exactly as
+predicted; every change that moved it missed, usually in sign.
+
+### Operating rule going forward
+Ship only changes that are **provably neutral on the judge-calibrated fits and
+positive on robust-72**. Those are gate-narrowings and overfit removals —
+principled generalisation improvements that need no accurate proxy, because
+"this test-specific tuning cannot help an unseen test" is true by construction.
+Do **not** ship retuned global constants on proxy evidence; r38 is what that
+looks like.
+
+**Reverting to r37 (16251.890) as the live build.** r38's +83.9 robust gain is
+unverifiable, and the single verifiable prediction it made was wrong.
