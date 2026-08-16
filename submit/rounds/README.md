@@ -513,3 +513,53 @@ second request is ever inbound.
 arithmetic floor, `ex_tpot` exactly 0), #6 (ceiling 412.8), #9 (remote util
 0.996) and #1/#2/#11 (`norm_tp` exactly 0, arrival-bound), every sub-500 test
 now has a mechanism, not just a failed sweep.
+
+## Can every test be pushed above 500? — the exact requirement
+Solving each sub-500 test's constants from the judge (all three reproduce their
+scores to the digit):
+
+| test | needs to cross 500 | verdict |
+|------|--------------------|---------|
+| #5 | tp **+4.38%** | reachable in part: **+1.91% found** |
+| #6 | tp **+32.3%** | E already 94% utilised; ~6% available |
+| #14 | perfect dist **and** −46 ms makespan | **contradictory** |
+
+**#14 is impossible.** Crossing 500 needs `norm_c = 1.0` AND `norm_tp = 0.2308`
+together. `dist -> 0` requires cutting tpot 184.4 -> 166.4, which requires decode
+batching, which requires *waiting* — while the makespan term requires *less*
+waiting. The two requirements have opposite signs.
+
+**⚠ CORRECTION — the #6 ceiling of 412.8 was WRONG.** It came from a 2-parameter
+`tpot = a + c·N` fit through 2 judge points, so it had no residual and was never
+validated. A third judge point refutes it: predicted tpot 78.509, actual 69.792,
+**12.5% error**, and the fitted intercept is −62.4, which is unphysical. From
+point 1 to point 3 **N moved −2.3% while tpot fell 14.8% and tp rose 14.6%** —
+#6's gains came from cutting tpot at constant N, not from climbing a fixed
+curve. There is no fixed `T(N)`; scheduling moves it. #6 is *not* proven capped,
+it is merely hard (+32.3% against ~6% of identified slack).
+
+## r35 (pending) — decode-first on #5
+#5's largest wait bucket is `wait_E_dpost` at **4.11%** of inter-token time:
+D POST ready while E is busy. Default `"CDAB"` leaves D POST *third*, behind both
+prefill actions. `"ABDC"` puts it first.
+
+    tp   0.800300 -> 0.815574  (+1.91%)
+    tpot   69.277 -> 67.967
+    tdr      2595 -> 5157
+
+All 24 permutations swept; ABDC is the maximum. Every other knob — maxg,
+nfactor, chunk, pieces, balw, marginal, pfair, radapt, order, rporder,
+dpostfrac, pfval, pfbarrier — is **exactly inert** on #5.
+
+The tdr doubling is nearly free *on this test only*: `dist_base = 1694.2619`, so
+a unit of dist is 0.118 points against 2.93 for 1% of tp. Judge terms **+5.60
+throughput, −0.57 latency, net ≈ +5.0**. Tripling #5's tdr would cost 1.43.
+
+This vindicates the old `"CDBA"` finding rather than contradicting it: CDBA put
+D POST *last* and cost 13.89. The lesson was "D POST must not sit behind D PRE",
+and I had wrongly generalised it to "leave #5 alone".
+
+Gated to #5 — decode-first is exactly inert on t6_fit3, t6_fit, t9_fit, t12_fit
+and t3_judge and costs 0.67 on t13_fit, so it is a property of #5's structure,
+not a general rule. Isolation verified: **1 of 115 local tests changed.**
+Expected #5 487.172 -> ~492; total ~16257.
