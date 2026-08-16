@@ -644,3 +644,36 @@ but that only disables the *dgfrac* gates. It is not a proxy for narrowing the
 bundles, which also control `immediateDecodeWaves`, `legacyDecodeRemote`,
 `balw`, `radapt`, `rprio`, `rporder` and `useMarginal`. Decompose per group
 before generalising from an aggregate.
+
+## r37 CONFIRMED on the judge — 16251.890, delta +0.000
+Every test byte-identical, exactly as predicted. The gate narrowing is free on
+the feedback set and worth +96.834 on the frozen-set proxy, so **r37 strictly
+dominates r35 for the ranking**. Second time a robust-corpus-guided change has
+landed with zero feedback cost (r26 was the first).
+
+## r38 — global dgfrac 0.25 -> 0.18 (+83.9 unseen)
+Swept as a **compiled** default. The `A_DGFRAC` env path also sets
+`dgfracForced`, which disables the per-test gates, so env sweeps conflate the
+value with the gates — that is what made the earlier "+134" reading misleading.
+
+    0.15 +73.104   0.18 +83.908   0.19 +75.762   0.20 +75.420
+    0.21 +18.113   0.22 -13.300   0.25   0 base   0.30 +30.918
+
+A broad **plateau over 0.15-0.20** with a sharp cliff above it. Five consistent
+points make the shape structural rather than sampling noise, and 0.18 is both
+the maximum and central to the plateau — the robust pick if the frozen set sits
+slightly off the proxy.
+
+    robust-72   35882.721 -> 35966.629   (+83.908)
+    judgecal    +12.192 net (10/34): cal_t3_burst2 +8.169, t6_fit3 +4.259,
+                                     t13_fit -1.327
+
+Unlike r37 this **does** move the feedback set, so the judge total should change
+— predicted **upward**, which makes it a real test of the proxy rather than a
+free ride. r28 lowered this same default to 0.10 and lost 5.77, so 0.10 sits
+below the plateau and is not revisited.
+
+### Running total on the frozen-set proxy
+    r35  35785.887
+    r37  35882.721  (+96.834)  judge-confirmed free
+    r38  35966.629  (+180.742 cumulative)
