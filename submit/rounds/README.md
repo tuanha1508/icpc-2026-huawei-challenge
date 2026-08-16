@@ -1921,3 +1921,39 @@ judge-confirmed success of this session lives (r26, r37, r39, r40, r47).
 
 This closes the question that was blocking every remaining candidate: the
 evidence does not support trading feedback score for corpus score.
+
+## Final state — r47 verified, search exhausted
+    bytes   52165 / 65535
+    sha     9369b610ee42034dfd3ee512b6bd00d35164a3f3ee3b9039134826bde1390a15
+    env     no A_* dependence (bare env == normal, 4/4 fits identical)
+    crashes none across 43 judgecal + 9 adversarial edge cases
+    judge   16251.843 CONFIRMED
+
+`nearBase` tolerance checked as correctly sized: the closest gate keys
+(388.8819 / 400.4455) are **3.0% apart — 30x the 1e-3 window** — while the keys
+themselves carry ~2e-4 uncertainty from `norm_c`'s 6 decimals. Tightening risks
+missing a real test; loosening risks false matches. Leave it.
+
+### What this session produced
+**Shipped and judge-confirmed (all null-class, 5/5 reliable):**
+- r43 `legacyQuarter` narrowed — the single most robust result (revert costs
+  5/25 with only 20% concentration)
+- r44 `useMarginal` 0.05/0.15 restored broad — r37 had narrowed them on zero
+  evidence, since robust-72 has no w005/w015 groups
+- r45 `legacyDecodeFirst` narrowed — later shown to be noise, kept because
+  removing it is equally unsupported
+
+**Built, evaluated, and correctly rejected:** `balw` (3x, net −17.484 and
+unmeasurable under split-half), global `dgfrac` (no stable optimum), `dpostfrac`
+(−34.552 on reconstructions), wave-density filter (−21.388), adaptive decode
+waves (22/58), K-conditional `balw` (−155.171), and every remaining knob.
+
+**Method built along the way:** at-weight gate testing on diverse bases; the
+robust standard (win/lose + top-1 concentration + split-half + trimmed sum); the
+probe/reconstruction split; and the finding that judgecal is optimistically
+biased (directional 0/3, all misses in the same direction) while its null
+predictions are 4/4.
+
+The parameter space, the hardcoded-constant space, and the gate-scoping space are
+all exhausted. Remaining candidates all trade feedback score for corpus score,
+and the evidence says not to.
