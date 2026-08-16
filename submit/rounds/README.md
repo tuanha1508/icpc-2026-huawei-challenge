@@ -1494,3 +1494,31 @@ null rule. **Kept broad.**
 
 **r47 is the settled build.** Every remaining lever is either measured optimal
 or a marginal trade that breaks the one rule with a perfect record.
+
+## Gate-key audit closed; K-conditional `balw` rejected (3rd balw rejection)
+**No gate keys on a non-scoring dimension.** All 31 gate keys in r47 are
+`w_tp` (13), `dist_base` (9), `SLO1` (4), `SLO2` (3), `tp_base`/`tp_UB` (2).
+Zero references to `K`, `L_in`, `L_out`, `num_layers` or `maxbatch`. So gates
+cannot leak onto unseen tests along those axes — that scoping question is closed.
+
+**Regime-dependence is real but does not survive.** Stratifying showed `balw`'s
+optimum genuinely varies:
+
+    K<=2       1.0 -1.66   2.0 -0.05   4.0 base   8.0  -6.36   -> 4.0 best
+    K>=4       1.0 +12.06  2.0 +15.50  4.0 base   8.0  -7.47   -> 2.0 best
+    L_out>8    1.0 +10.60  2.0 +15.69  4.0 base   8.0 -10.48   -> 2.0 best
+
+But `balw = (K >= 4 ? 2.0 : 4.0)` scored on **all five** corpora:
+
+    off-weight +5.459   gate-weight +45.855   heavy +4.318   edge 0.000
+    zero-weight **-210.803** (1 win / 4 lose)   ==> NET **-155.171**
+
+The strata were built from `fastlist + gwlist`, which contain **no zero-weight
+workloads**, so the stratified view could not see where the change loses. Same
+failure mode as r41.
+
+**Third consecutive `balw` rejection.** Every reduction (1.25 global, K-conditional)
+looks good on off-weight and gate-weight and loses heavily on zero-weight, where
+`w_tp = 0` makes the score pure latency. **`balw = 4.0` is settled.**
+
+**r47 unchanged and remains the build.**
