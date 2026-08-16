@@ -2045,3 +2045,31 @@ is stronger on the outlier-resistant metrics that caught every false positive
 this session. 0.04 is an equally defensible choice.
 
 **r50 remains the recommendation.**
+
+## r50 = 16250.536 (−1.307) — REJECTED. Revert to r47.
+Predicted +1.199 from the reconstructions; the judge gave **−1.307**. #6 fell
+399.775 -> 398.002 (−1.773), #17 rose +0.419.
+
+### judgecal directional record: 0 for 4, every miss optimistic
+| round | change | predicted | actual | error |
+|-------|--------|-----------|--------|-------|
+| r33 | pieces=3 on #5 | + (tpot) | −22.520 | ~+22 |
+| r35 | eprio ABDC on #5 | +1.711 | +0.000 | +1.7 |
+| r38 | dgfrac 0.18 | +12.192 | −1.295 | +13.5 |
+| **r50** | **dpostfrac 0.05** | **+1.199** | **−1.307** | **+2.5** |
+
+Null predictions (judgecal exactly 0.000): r26, r37, r39, r40, r47 — **5 for 5**.
+
+### REFINED RULE — ship only when judgecal is EXACTLY 0.000
+I treated r50's **+1.199** as "positive on both proxies, therefore safe". That
+was wrong. A positive judgecal reading is **not** evidence of a gain: the
+estimator is optimistically biased by roughly +2 to +13 on every directional
+call, so a small positive prediction is consistent with a small real loss —
+which is exactly what happened.
+
+The dividing line is not *sign*, it is *magnitude*: only an exactly-zero
+prediction has ever held. Anything that moves the calibrated fits at all — in
+either direction — has lost on the judge, 4 times out of 4.
+
+**r47 is restored as the build.** 16251.843, judge-confirmed, and the only
+remaining candidate whose judgecal delta is exactly 0.000.
