@@ -1198,3 +1198,36 @@ r41 scores identically with the flag and under a bare environment (t6_fit3
 leaks into a run.
 
 So the measured configuration **is** the submitted configuration.
+
+## r43 — narrow `legacyQuarter`: +3798 on unseen w=0.25, zero feedback risk
+The off-weight corpus uses weights 0.10-0.95, which **excludes 0.25, 0.50 and
+0.75** — exactly where the three legacy weight-only gates fire. So those gates
+had never been tested on anything but robust-72.
+
+Built 285 workloads from **95 diverse bases** at exactly those weights:
+
+| w | gate | delta with gate OFF | win/lose |
+|---|------|---------------------|----------|
+| **0.25** | `legacyQuarter` | **+3798.139** | **23 / 4** |
+| 0.50 | `legacyHalfNoGaps` | +101.246 | 6 / 0 |
+| 0.75 | `targetTest13` | −81.509 | 6 / 11 |
+
+**robust-72 was flatly wrong about `legacyQuarter`** — it reported −190.5 for
+narrowing, because its w025 group is 12 re-weighted copies of the *same 12
+bases*, mostly reconstructions of judge tests. On genuinely diverse w = 0.25
+work the bundle costs ~40 points per workload.
+
+r43 keys it on #8's `dist_base` (10.8848), so #8 keeps its judge-measured
+behaviour and every unseen w = 0.25 test gets the modern defaults:
+
+    w=0.25       +3798.139  (23 win / 4 lose)
+    w=0.50 / 0.75    0.000
+    off-weight       0.000
+    judgecal         0.000   (0/34)
+
+`targetTest13` stays broad — removing it *loses* 81.5, so it is good policy for
+its class. `legacyHalfNoGaps` is +101.2 (6/0) and is a candidate for a later
+round; it cannot be keyed on `dist_base` because #1/#2/#11 have `dist = 0`.
+
+**Judge total predicted ≈ unchanged** (r43 vs r41 is 0/34; r41 vs r40 was
++1.751). The value is entirely on the frozen set.
