@@ -148,3 +148,27 @@ where marginal-off disabled the `prefillBoost=14` that #6 depends on — so dpos
 alone had never been isolated.
 
 All five #6 reproductions agree on 0.9. Projection: #6 413–431, total 16178–16196.
+
+## Why so many levers were inert — measured, not guessed
+Queue depth at every E decision point (mean, and % of decisions with >1 choice):
+
+| test | arrived | postRdy | decRdy | procRdy |
+|------|---------|---------|--------|---------|
+| #6 | 22.28 (19%) | 0.08 (**1%**) | 14.97 (23%) | 1.13 (17%) |
+| #5 | 22.74 (22%) | 0.08 (**0%**) | 30.97 (25%) | 0.05 (0%) |
+| #3 | 0.02 (**0%**) | 0.02 (0%) | 0.18 (**0%**) | 0.02 (0%) |
+
+- **Ordering policies can only act when a queue has ≥2 entries.** P POST almost
+  never does, so SPT-at-the-hub is unusable however sound the theory.
+- **#3 has no contention anywhere** — its schedule is forced. Independent second
+  proof of the 1360 ms floor result.
+- This is also why `order='A'` (#5) and rporder changes were exact zeros.
+
+## Literature angles tried and their outcomes
+| idea | source | result |
+|------|--------|--------|
+| chunked / layered prefill | Sarathi, layered-prefill | judge −2.68 on #6 |
+| micro-batching to cut pipeline bubble | GPipe / 1F1B | maxg declines monotonically |
+| SPT at a reentrant hub | reentrant flow-shop theory | inert — queue never contended |
+| prefill-decode disaggregation | DistServe/Splitwise | already inherent in the protocol |
+| iteration-level scheduling | Orca | already implemented |
