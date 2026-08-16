@@ -263,3 +263,25 @@ choice via `decStreak`) and gives the same number.
 
 Other global defaults swept on the unseen corpus: `dgfrac 0` +124.6,
 `order 'A'` +60.5, `radapt 0` +1.0, `balw`/`chunk`/`rporder` all ≤ 0.
+
+## r27 = 16247.375 (+82.50) — the approach change that worked
+`rprio 'D' → 'P'` (un-gated). **#8 +46.07** after 40+ gated probes moved it zero;
+**#16 +36.78**. A gated route reaches one test; a default reaches all 20 scored.
+
+## r28 = 16241.614 (−5.76) — rejected
+`dgfrac 0.25→0.10`. Both corpora said +64/+136; judge said −5.77 (all of it #6).
+Corpus agreement is necessary, not sufficient.
+
+## Prefill-priority axis is now fully exploited
+| probe | result |
+|-------|--------|
+| `prefillBoost` 1→64 globally | inert (0.4 spread) |
+| `eprio` global | unseen +104.7, preliminary −0.39 → reject |
+| `pfcap` prefill fairness cap | monotonically worse; r27's unconditional prefill-first is optimal |
+
+## r29 (pending) — adaptive controller was over-throttling
+`tpotTarget` factor 1.0 → 1.20: tolerate 20% over SLO2 before shrinking Ntarget.
+unseen +83.1, preliminary **+251.36**. Movers: `t3_true` +87.32, `t3_loose`
++62.49, `cal_t3_burst` +23.97, `cal_t22` +15.67.
+Rejected alternatives: `GROW=8` (+109.9 unseen / −21.27 prelim), `TUNE=32`
+(+58.0 / −369.93).
