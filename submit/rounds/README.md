@@ -860,3 +860,42 @@ Built a better proxy: **435 workloads over 146 distinct bases at weights the
 feedback set does not contain** (0.10, 0.20, 0.35, 0.40, 0.55, 0.60, 0.70, 0.85,
 0.95). This is the corpus that should be arbitrating global-default decisions,
 and r40's dgfrac bet is being re-validated against it.
+
+## The dgfrac plateau was an artifact — REVERT to r39
+Re-tested `dgfrac` on **150 workloads at weights absent from the feedback set**:
+
+    0.25 (r39)   baseline
+    0.15          -49.745   (7 win / 14 lose)
+    0.18 (r40)    -20.746   (4 win / 11 lose)
+    0.20           +7.073   (5 win / 7 lose)
+
+**No plateau.** Values scatter around zero with no structure. The robust-72
+plateau (0.15-0.20 all +73 to +84) does not reproduce, because robust-72 is
+re-weighted feedback bases at feedback weights — not an unseen-weight sample.
+
+The full 435-set said +634.775 for 0.18, but this subset excludes ΣL_out > 20k,
+so **that entire gain lived in the heavy/overloaded tail**, not the general
+population.
+
+### Three lines of evidence, two against
+| evidence | source | verdict on dgfrac 0.18 |
+|----------|--------|------------------------|
+| judge feedback set | **real generator** | −1.295 (r38) → harmful |
+| off-weight, light | synthetic | −20.7 → harmful |
+| off-weight, full | synthetic | +634.8 → helpful (heavy tail only) |
+
+The feedback set is the only sample drawn from the *real* test generator, and
+the 20 frozen tests are almost certainly produced the same way — which makes it
+a **small but unbiased** estimator of frozen behaviour, and arguably better than
+synthetic re-weightings. It says harmful.
+
+**Revert to r39 (16251.890).** Its two gains — gate narrowing (r37) and
+zero-weight per-remote SJF (r39) — are both principled and judge-confirmed
+neutral on the feedback set, which is the class of change that has never failed.
+
+### Methodological correction
+Earlier I treated robust-72 as a frozen-set proxy and let it drive global
+defaults. It is not one: **all six of its weight groups appear in the feedback
+set**. Global-default decisions driven by it (r38, r40) are unsupported; the
+gate/exclusion fixes it validated (r37, r39) stand on separate, principled
+grounds and were confirmed by the judge.
