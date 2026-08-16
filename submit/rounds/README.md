@@ -1555,3 +1555,30 @@ and should not be read as expected frozen-set gains. The honest claim is
 **Rule going forward:** report win/lose counts and split-half agreement, never a
 bare corpus total. A total whose top-1 workload exceeds ~50% is a single
 observation, not a measurement.
+
+## Shipped gates re-validated under the robust standard
+Re-tested each of r47's three gate decisions by reverting it individually and
+scoring on 855 workloads (gatew + umw), reporting win/lose, top-1 concentration
+and split-half agreement rather than a bare total.
+
+| reverting | total | win/lose | top-1% | halves | verdict |
+|-----------|-------|----------|--------|--------|---------|
+| `legacyQuarter` narrowing | −3788.50 | **5/22** | **20%** | agree | **solid** |
+| `useMarginal` 0.05/0.15 restore | −2169.96 | 16/22 | 44% | agree | holds |
+| `legacyDecodeFirst` narrowing | +30.72 | **2/2** | **113%** | **DISAGREE** | **noise** |
+
+**`legacyQuarter` is a genuine population effect** — 22 workloads worsen on
+revert against 5 improving, top-1 contributes only 20%, split-half agrees. This
+is the one change in the whole session that passes every robustness check.
+
+**`useMarginal` holds** on balance (22 worsen vs 16 improve, halves agree) though
+top-1 at 44% means the magnitude is still inflated.
+
+**`legacyDecodeFirst` does not replicate.** r45 claimed "+64.490, 6 win / 0 lose";
+on the larger corpus only 4 workloads move at all, top-1 exceeds the total, and
+the halves disagree in sign. That claim was wrong. Reverting it also measures as
+noise (+30.72, 2/2, disagree), so there is no evidence either way — it stays in
+r47 because removing it is equally unsupported, not because it helps.
+
+**r47 stands**, now with its value correctly attributed: `legacyQuarter` is the
+real gain, `useMarginal` is a smaller real gain, `legacyDecodeFirst` is neutral.
