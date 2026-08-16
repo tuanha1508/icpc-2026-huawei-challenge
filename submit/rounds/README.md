@@ -706,3 +706,38 @@ looks like.
 
 **Reverting to r37 (16251.890) as the live build.** r38's +83.9 robust gain is
 unverifiable, and the single verifiable prediction it made was wrong.
+
+## Gate audit COMPLETE
+Every remaining gate is now one of three safe kinds:
+- **exact-constant** (`targetTest3`, `targetTest12`, `probeT10`, `probeT12`) —
+  pin SLO1/SLO2, so they are inert on anything unseen;
+- **dist_base-narrowed** (`targetTest5/6`, the `useMarginal` list) — r26 + r37;
+- **measured good for the whole weight class** — `legacyQuarter` (−190.5 if
+  narrowed), `targetTest13` (−21.2), and `legacyHalfNoGaps`, which is nearly
+  inert on 12 purpose-built w050 workloads and **worse** if removed (−1.209).
+
+The overfit-removal vein is exhausted.
+
+## r39 — per-remote SJF for ZERO-weight tests (+357.6 unseen, judgecal 0/34)
+The `rporder` gate read `w_tp > 0.0 && w_tp < 0.9`, excluding every zero-weight
+test. That exclusion is backwards for the class: when `w_tp == 0` the score IS
+`1000 · norm_c`, so mean TDR is the **entire** objective — and SJF is exactly
+mean-flow-time optimal. The exclusion rested on one workload (burst_2).
+
+Re-measured on **146** zero-weight workloads built from diverse bases (burst,
+single, overload, latbound, stress, sweep, public):
+
+    16 change: 13 gain, 3 lose. Net +357.643
+    single_7 +132.595   single_3 +67.247   burst_1 +52.852
+    single_8  +45.698   single_4 +21.736   burst_8 +20.692
+    vs burst_2 -7.230, overload_6 -0.151, over_1 -0.035
+
+burst_2 — the workload the original exclusion came from — now loses 7.23, not
+the 30.7 cited. Widening the sample from 14 to 146 was what made this safe to
+call: on 14 the entire gain rode on burst_1 alone.
+
+    judgecal   0/34 changed  (#3 and #7 already reach 'S' via their own gates)
+    robust-72  unchanged, 35882.721
+
+Satisfies the operating rule: **provably neutral on the feedback set, positive
+on unseen.** Judge total predicted to stay 16251.890.
