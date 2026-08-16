@@ -1886,3 +1886,38 @@ with the wrong sign.
 
 **r47 remains the recommendation** on risk-minimisation, not because r48/r49 are
 proven worse.
+
+## Proxy disagreement RESOLVED — judgecal is optimistically biased
+Scored judgecal's historical predictions against actual judge outcomes:
+
+| round | change | judgecal said | judge gave | verdict |
+|-------|--------|---------------|------------|---------|
+| r33 | pieces=3 on #5 | tpot improves | **−22.520** | miss |
+| r35 | eprio ABDC on #5 | +1.711 on t5_fit | **+0.000** | miss |
+| r38 | dgfrac 0.18 global | +12.192 | **−1.295** | miss (sign) |
+| r26/r37/r39/r47 | gate scoping | 0 | **0** | 4/4 hit |
+
+**Directional: 0 for 3. Null: 4 for 4.**
+
+The tempting reading — "judgecal can't predict direction, so ignore its −34.6
+warning about r48" — is **backwards**. All three misses run the same way:
+judgecal predicted *better* than reality, by +13, +1.7 and +13.5. It is
+**optimistically biased**.
+
+So when judgecal predicts r48 at −34.552 and r49 at −44.741, those are the
+*generous* estimates. Correcting for the observed bias makes them worse, not
+better.
+
+### Final position
+| build | judgecal (optimistic) | bias-corrected | corpus | judge |
+|-------|----------------------|----------------|--------|-------|
+| **r47** | **0** (null class, 4/4 reliable) | **0** | +robust gates | **16251.843 confirmed** |
+| r48 | −34.552 | likely worse | +248 | unverified |
+| r49 | −44.741 | likely worse | +870 | unverified |
+
+**r47 is the answer.** Its prediction sits in the null class, which is the only
+class judgecal gets right (4/4) — and the null class is exactly where every
+judge-confirmed success of this session lives (r26, r37, r39, r40, r47).
+
+This closes the question that was blocking every remaining candidate: the
+evidence does not support trading feedback score for corpus score.
