@@ -942,3 +942,33 @@ pool policy can raise N. A request that has not arrived cannot be decoded.
 
 **Root cause, unified:** every sub-500 test is bounded by N, and N is set by the
 arrival process. #5, #6, #8, #13, #14 all reduce to this.
+
+## Idle-E audit — no exploitable scheduling waste
+Instrumented the interactor to sample, after every frame, whether E is idle
+while a *legal* E task is ready, broken down by stage.
+
+**First run was wrong and the correction matters:** `Req.stage` defaults to
+`ARRIVED` (`interactor.py:132`), so the sampler counted requests that had not
+arrived yet — reporting a bogus "t13 98.5% idle, 74 pending, 100% ARRIVED". The
+tell was that disabling the `Ntarget` admission clamp changed *nothing*
+(0.000 on all six calibrated fits). Filtering on `r.arrival <= t`:
+
+| test | E idle with work | pending kind |
+|------|------------------|--------------|
+| t6_fit3 | **0.1%** | DEC_RDY |
+| t13_fit | **1.2%** | DEC_RDY |
+| t9_fit | 92.7% (19.0) | DEC_RDY |
+| t5_fit | 53.3% (20.8) | DPOST_RDY |
+
+Both remaining cases are harmless rather than wasteful:
+- **t9** — the idle is decode-wave batching, but t9's `tdr` ends at `P POST`
+  (prefill only) and its bottleneck is the remote at 0.996, so decode-side waits
+  cannot move its score.
+- **t5** — this is the `wait_E_dpost` bucket, and the judge already proved
+  `CDAB` optimal there (r35 tied to 6 decimals).
+
+Also confirmed: the `valC > valTp` admission clamp is inert — removing it is
+exactly 0.000 on t9/t13/t12/t3/t5/t6.
+
+**Conclusion: the solver leaves no exploitable idle time.** #6 in particular is
+genuinely E-saturated at 0.1% waste, which independently corroborates its cap.
