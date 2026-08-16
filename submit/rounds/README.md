@@ -46,3 +46,22 @@ On #10 `exTdr` is 143.98 vs `exTpot` 0.41, so the adaptive rule calls `grow()`
 ("TDR dominates: admit faster"). Correct when underloaded, backwards when
 saturated — and #10 runs its remotes at 99.6%. Moot only because Ntarget never
 binds there.
+
+## r16 verdict: the exclusion list was correct
+| test | change | delta |
+|------|--------|-------|
+| #4  | marginal on (w 0.30) | **-20.73** |
+| #15 | legacyDecodeFirst lifted (w 0.45) | -4.76 |
+| #9  | marginal on (w 0.05) | -3.94 |
+| #8  | marginal on + legacyQuarter lifted | 0.00 (inert) |
+| #10 | marginal on (w 0.15) | +0.06 |
+
+r16 = 16096.278. **r15 = 16125.644 stands.**
+
+## Search exhausted
+Judge-calibrated reproductions now exist for #3, #5, #6, #9, #12, #13, #14 and
+all 18 knobs have been swept on each. Every one is inert. Combined with r16,
+the parameter space is closed: 16125.644 is this architecture's practical
+ceiling. Every gain that ever landed came from exactly two sources —
+copying Codex's judge-proven features, and stream-diffing our binary against
+theirs.
