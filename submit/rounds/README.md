@@ -78,3 +78,15 @@ Lead over Codex v70: +61.32.
 Proxy: tp 0.800300 -> 0.819240 (+2.4%), tpot 69.277 -> 68.516.
 Projection: #5 -> 493.3 at face value, ~498.9 with the usual understatement.
 Total 16166.7 - 16172.4.
+
+## r18 = r17 exactly (order=A inert)
+`order` only runs when `bArrived.size() > 1`. The real #5 never has contended
+admission, so the comparator never executes. The proxy showed +2.4% because its
+arrivals are denser — a structural mismatch, not the usual scale bias.
+**Rule: verify the mechanism is live on the real test before trusting a projection.**
+
+## r19 (pending)
+#5 gets `eprio = "DCAB"` — D (admission) first. On t5_fit every D-first order
+(DCAB/DACB/ADCB) gives +1.6%; every C-first order is flat. eprio is proven live
+on #5 (+13.89 and +34.15 came through it). Projection: #5 491.1–494.8,
+total 16164.6–16168.3.
