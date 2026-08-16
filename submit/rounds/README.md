@@ -741,3 +741,35 @@ call: on 14 the entire gain rode on burst_1 alone.
 
 Satisfies the operating rule: **provably neutral on the feedback set, positive
 on unseen.** Judge total predicted to stay 16251.890.
+
+## r39 CONFIRMED — 16251.890, delta +0.000. Null-prediction rule 3 for 3
+r26, r37, r39 all predicted "no change" and all landed exactly. **r39 is live**
+and strictly dominates r37: same judge score, +357.6 on unseen zero-weight work.
+
+## Negative results this iteration (all closed with evidence, none shippable)
+**1. `rporder` upper boundary.** Enabling per-remote SJF at `w_tp >= 0.9` is
+worth only **+5.3** on robust (w090 +4.8, w098 +0.5) and breaks judgecal
+neutrality (#6 is w=0.90). The 0.9 threshold is right.
+
+**2. Input-space coverage — no gaps.** `1 <= K <= 8` and the corpora already
+span K 1-8, R 1-1935, L_in 7-4096, num_layers 1-64, ΣL_out to 2e5. There is no
+untested regime to exploit.
+
+**3. The `prefill_5` policy failure does not generalise.** Found a workload
+scoring **0.000** by default and **452.952** under `dpostfrac=0.7`: it is
+UP-link-bound with E at 0.011, so batching D POST cut tpot 73.04 -> 47.07 at
+*identical* tp and makespan, moving `norm_c` 0 -> 0.906.
+
+Two hypotheses tested and both refuted:
+- *"batch D POST whenever E is idle"* — on 92 E-idle tests: **net −975.6**,
+  8 win / 17 lose (prefill_4 collapses 750 -> 0.15).
+- *"batch D POST when `norm_c` is already floored (`dist >= dist_base`)"* — only
+  n=2 naturally, so **36 floored workloads were built** by setting
+  `dist_base = 0.70 x achieved dist`. Result: **7 win / 11 lose**, net +450 but
+  carried by outliers, and wildly parameter-sensitive (0.5 → −22, 0.7 → +450,
+  0.9 → −97). That is the r38 failure signature.
+
+Worth noting the gate would have been *judge-neutral by construction* — no
+feedback test is floored, every judge `norm_c > 0` — so this was shippable under
+the operating rule and was rejected on evidence quality instead. **Building the
+corpus for the regime is what turned an n=2 "+444 net" into a clear reject.**
