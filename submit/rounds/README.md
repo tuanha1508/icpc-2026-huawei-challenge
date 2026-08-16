@@ -1007,3 +1007,35 @@ for zero-weight tests) — are both shipped and judge-confirmed neutral.
 
 **Remaining upside is structural, not parametric**, and no local oracle predicts
 directional changes reliably (r25, r33, r38 all missed, usually in sign).
+
+## Two structural ideas tested, both rejected on evidence
+**1. Enable the adaptive decode-wave rule.** The code contains a principled
+controller — `dgfrac = 0.05 + 0.70·valTp/(valTp+valC)` — that trades latency for
+throughput by the *actual* value ratio. It is dead everywhere, because
+`fixedDecodeWaves` includes `useMarginal`, which is true for every unseen test.
+Enabling it:
+
+    judge-calibrated fits   +17.183 (10/34, swings +19.3 to -13.6)
+    off-weight proxy       **-522.226**  (10 win / 21 lose)
+
+The better-sampled corpus is clearly negative. `useMarginal` is in
+`fixedDecodeWaves` for a reason. **Rejected.**
+
+**2. Raise #5's gated `dgfrac` (latency is nearly free there:
+dist 3.84 / dist_base 1694 = 0.23%, so a unit of dist costs 0.118 points against
+2.93 for 1% of tp).** First look was encouraging — 0.70 gave tp +1.77% *and*
+tdr 5157 -> 4812, better on both axes. The finer sweep kills it:
+
+    0.10  +0.00%     0.30  +1.59%     0.50  +1.02%
+    0.60  **-0.48%** 0.70  +1.77%     0.80  **-0.41%**
+
+Sign flips between adjacent values, no plateau — the same phase-artifact
+signature as the dpost rescue rule (-22/+450/-97). **Rejected.** Shipping the
+0.70 spike would have been r38 all over again.
+
+### Standing
+No parametric or structural change has survived since r39. r40 remains live at
+16251.843. The plateau test — *does the effect persist across neighbouring
+parameter values* — is now the deciding filter, and it has correctly rejected
+three candidates (dpost rescue, global dgfrac, #5 dgfrac) that all looked
+positive on a single sample point.
