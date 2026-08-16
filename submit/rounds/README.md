@@ -108,3 +108,16 @@ A-vs-B order matters and `CDAB` already has it.
 `fixedDecodeWaves=false` and the adaptive rule `0.05+0.70*frac` overwrites
 dgfrac every 16–64 events. r22 forces it, and probes the same on #15 and #16,
 which share that adaptive path and have never had a fixed width tried.
+
+## r22 = 16160.188 — forcing #4 backfired
+| probe | delta vs best | verdict |
+|-------|---------------|---------|
+| #4 0.85 **forced** | -4.68 vs r21's 0.6 transient | revert to transient |
+| #16 0.95 forced | **+2.32** | keep |
+| #15 0.60 forced | 0.00 | drop |
+
+**#4's win is an early wide-wave burst then adaptation — not a permanently wide
+wave.** I assumed persistence would multiply the gain; it reversed it.
+
+## r23 = best of both = 16164.872 expected
+#4 seeded 0.60 (transient, by design) + #16's 0.95 forced to persist.
