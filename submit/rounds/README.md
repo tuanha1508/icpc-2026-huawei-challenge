@@ -1403,3 +1403,23 @@ capped pool. Only cal_t3_burst2 moves (−5.821).
 
 (`t3_fit` and `t3_v2` score 0.000 in **both** builds — pre-existing genuine
 zeros, not protocol failures, unrelated to this change.)
+
+## Re-swept on the fixed build — r46's settings are stable
+Since the knobs interact, the deadlock fix and `dpostfrac = 0.25` could have
+moved the other optima. They did not.
+
+**`balw`** — every alternative is negative off-weight (−1.096 at 1.0, −2.413 at
+0.75, −3.037 at 1.5, −47.584 at 2.0). Gate-weight is jagged (1.5 −20.798, 2.0
+−21.713, 3.0 +28.669), so 3.0 is a spike between negatives, not structure.
+**1.25 confirmed on the fixed build.**
+
+**`dgfrac`** — still noise:
+
+    off-weight   0.15 +10.064   0.22 +8.943   0.25 **-16.837**   0.30 +2.897
+    gate-weight  0.15 +40.404   0.22 +62.649  0.25  +21.072      0.30 +107.834
+
+Off-weight dips negative at 0.25 between positives on either side. A weight
+cannot be trusted when its immediate neighbour flips sign, whatever the other
+corpus says. **0.18 kept.**
+
+**Nothing further to change: r46 is settled.**
