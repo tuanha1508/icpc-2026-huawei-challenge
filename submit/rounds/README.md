@@ -1852,3 +1852,37 @@ be outlier-dominated and, in the w000 case, artificially latency-amplified.
 The null-prediction rule is **5 for 5**; both r48 and r49 violate it, and the
 violation is 3x larger than previously reported. r47 remains the only build that
 is both judge-confirmed and robustly positive on unseen work.
+
+## Cost attribution — neither structural change is feedback-neutral
+Isolated each change's reconstruction cost from the judge-confirmed r47 (29
+files, probes excluded):
+
+    dpostfrac = 0.25 alone   **-34.552**
+    wave filter alone        **-21.388**   (t6_fit2 -12.690, t6_fit3 -3.315,
+                                            t5_fit -2.860, t6_fit -2.073)
+    both (r49)               -44.741       (sub-additive)
+
+The wave filter's loss is concentrated in the **t6 family**, confirming the
+mechanism: deferring requests on sparse remotes starves E, and #6 is E-bound at
+94% utilisation. Three gating attempts — on decode share (`remDecWork >
+remProcWork`), on decode volume (`decTotal >= 4K`), and on ready density
+(`>= 2K`) — all landed at −38 to −40, no better than ungated.
+
+**No feedback-neutral structural change exists.** Wave composition affects every
+workload by construction, so unlike the gate-scoping fixes (r43/r44/r45) it
+cannot be made inert on the feedback set. Every remaining candidate trades
+reconstruction score for corpus score.
+
+### Where this leaves the search
+The productive vein was **mis-scoped gates** — changes provably inert on the
+feedback set and positive on unseen work. That vein is exhausted: every gate is
+now exact-constant, `dist_base`-narrowed, or measured good broad.
+
+What remains all has the same shape: −20 to −45 on the proxy that shares the
+frozen set's generator, in exchange for gains on synthetic corpora shown to be
+outlier-dominated and (for w000) latency-amplified. Neither proxy has been
+validated for directional prediction — judgecal itself missed r38 by 13.5 points
+with the wrong sign.
+
+**r47 remains the recommendation** on risk-minimisation, not because r48/r49 are
+proven worse.
