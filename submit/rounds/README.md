@@ -1181,3 +1181,20 @@ confirmed optimal, and `L_out` is hidden so no better-informed rule is available
 
 The gain is not confined to light workloads, which was the obvious way it could
 have been an artifact of the fast-subset filter.
+
+## r41 safety audit — clean
+**Adversarial shapes.** Built 9 workloads at the edges of the constraint space:
+single request, K = 1, thundering herd (200 arrivals at t = 0), all `L_out = 1`,
+all `L_out = 512`, `L_in = 4096`, `num_layers = 64`, K = 1 + herd, and a mixed
+extreme. **No crashes, no protocol errors, all completed**, and r41 is identical
+to r40 on every one — `balw` only differentiates when remotes carry asymmetric
+load, which these symmetric shapes do not produce.
+
+**Environment.** Every local measurement in this file used `A_NOPROBE=1`, which
+the judge never sets. Checked: the flag appears in neither the solver nor the
+interactor — it is a dead leftover, masking nothing. Verified empirically that
+r41 scores identically with the flag and under a bare environment (t6_fit3
+367.713, t5_fit 274.648, t13_fit 552.334 both ways), and that no `A_*` variable
+leaks into a run.
+
+So the measured configuration **is** the submitted configuration.
