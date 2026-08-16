@@ -32,3 +32,17 @@
    matching workload and diff. That found the #5 bug exactly.
 3. Local reproductions match METRICS but not policy RESPONSES. They have
    mispredicted five times. Do not ship on their say-so.
+
+## Levers ruled out on the calibrated fits (cooldown after r15)
+- `order` (admission S/F/L/A): inert everywhere except #5/#6, both already tuned.
+- `nfactor` (scales the Ntarget cap on the 9 tests with `w_c >= w_tp`, 1642 open
+  points): inert across 0.05..64 on #9/#10/#3. The adaptive controller re-tunes
+  Ntarget every 16-64 events so the seed is overwritten; even `nfactor=0`, which
+  kills both cap and adaptation, changes nothing. Admission control never binds
+  on these tests — their queueing is resource saturation.
+
+## Recorded flaw (currently moot)
+On #10 `exTdr` is 143.98 vs `exTpot` 0.41, so the adaptive rule calls `grow()`
+("TDR dominates: admit faster"). Correct when underloaded, backwards when
+saturated — and #10 runs its remotes at 99.6%. Moot only because Ntarget never
+binds there.
