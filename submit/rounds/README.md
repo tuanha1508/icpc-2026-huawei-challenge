@@ -90,3 +90,21 @@ arrivals are denser — a structural mismatch, not the usual scale bias.
 (DCAB/DACB/ADCB) gives +1.6%; every C-first order is flat. eprio is proven live
 on #5 (+13.89 and +34.15 came through it). Projection: #5 491.1–494.8,
 total 16164.6–16168.3.
+
+## r21 = 16162.557 (new best) — one live lever of four
+| probe | test | delta |
+|-------|------|-------|
+| dgfrac 0.6 | #4 | **+2.76** keep |
+| eprio DCAB | #5 | 0.00 drop |
+| legacyDecodeRemote lifted | #8 | 0.00 drop |
+| maxg 24 | #12 | 0.00 drop |
+
+**#5 is finished at 486.332.** Confirmed pattern: eprio/order changes that
+reorder `D` (admission) are inert there — admission is never contended. Only the
+A-vs-B order matters and `CDAB` already has it.
+
+## r22 (pending)
+#4's +2.76 came from a *transient* seed: it has `useMarginal=false`, so
+`fixedDecodeWaves=false` and the adaptive rule `0.05+0.70*frac` overwrites
+dgfrac every 16–64 events. r22 forces it, and probes the same on #15 and #16,
+which share that adaptive path and have never had a fixed width tried.
