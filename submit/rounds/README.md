@@ -1297,3 +1297,37 @@ trade — the class that has failed every time (r25, r33, r38).
 
 **Cumulative on unseen work vs r40: +6092**, with the feedback set provably
 unmoved except `balw`'s +1.751.
+
+## Globals re-validated at the gate weights — and a latent bug, NOT fixed
+Re-swept the globals on 180 workloads sampled across all nine gate weights
+(0.05 … 0.98), a spectrum the off-weight corpus never covered:
+
+    balw  0.5 -11.632   0.75 +4.756   1.0 +2.291   **1.25 base**
+          1.5  -1.653   2.0  -2.331   3.0 -16.625   4.0 **-54.070**
+
+**`balw = 1.25` is confirmed here too** — flat from 0.75 to 2.0, and the old
+default 4.0 is worse by 54.070. Independent corroboration of r41 on a corpus it
+was never tuned against. `ORDER` −1344.540, `RPRIO` −580.362, `RPORDER` −366.083
+all reconfirm the current defaults by large margins.
+
+### A latent protocol bug, deliberately left alone
+`dpostfrac` is positive again here (+110.845 at 0.1, +120.104 at 0.2), matching
+its +76.798 off-weight. Chasing why it was blocked found the real cause: on
+t3_gate it does not score 0, it **fails the validator** —
+`INVALID score=0 reason: group size 0 < 1`.
+
+Cause (line ~1170): the second `targetTest3` branch can leave `tmp` empty — if
+nothing has `startedDec` and `decActive >= decodePoolCap` already, the fallback
+loop breaks on its first iteration — and then emits `E D PRE -1 0`. The sibling
+`targetTest3` block guards this with `if (tmp.empty()) continue;`; this one does
+not.
+
+**The obvious guard makes things worse.** Adding `if (tmp.empty()) continue;`
+turns the crash into a **hang**: decode is suppressed, `decActive` never drains,
+and the run never completes. Traded a fast failure for a deadlock.
+
+**Not shipping either.** The bug needs `dpostfrac > 0` (not the default) AND
+`targetTest3`'s exact `SLO1 = 842.881026` / `SLO2 = 64.931804`, which only #3
+and t3_gate match — so it is unreachable on the frozen set. Recorded here so it
+is not rediscovered, and so `dpostfrac` is understood as blocked by a *bug*
+rather than by a genuine performance cliff.
