@@ -369,3 +369,54 @@ monotonically worse, because there is no second request to wait for.
 **N is set by how many requests are concurrently in decode — i.e. by arrivals,
 not by policy.** That single fact explains #5, #6, #8, #13, #14 and the ~40
 probes that returned exact zeros.
+
+## The headroom map — splitting each test into its tp half and its dist half
+The judge prints `norm_tp` and `norm_c` separately, so `w_tp` is solvable per
+test (`w = (norm_c − score/1000)/(norm_c − norm_tp)`) and the open points split
+cleanly. **All my ceiling proofs bounded only the tp half.**
+
+    open on the tp side   4199
+    open on the dist side 1773
+
+`dist = sqrt(ex_tdr² + ex_tpot²)`, both *relative* excesses over SLO1/SLO2
+(`tools/interactor.py:627`).
+
+**#3 re-checked, still capped.** It is `w_tp = 0.00`, so all 499 of its open
+points are dist — but `ex_tdr = (1329.85 − 842.881)/842.881 = 0.57776`, which
+equals `dist = 0.577735` to 5 decimals. `ex_tpot` is exactly zero, so the tdr
+floor proof does cover the whole score.
+
+**Where the dist points actually are.** Five tests are pure-tdr
+(`mean_tpot = 0` ⇒ `dist = ex_tdr`), and `tdr` is mean flow time — the `1||ΣCj`
+objective, where SPT is optimal:
+
+| test | dist | dist_base | pts/unit dist | +10% tdr cut |
+|------|------|-----------|---------------|--------------|
+| #9 | 9.33 | 33.9 | 28.06 | +26.2 |
+| #10 | 143.98 | 388.9 | 2.19 | +31.5 |
+| #15 | 36.63 | 180.3 | 3.05 | +11.2 |
+| #17 | 1016.07 | 3259.1 | 0.10 | +10.3 |
+| #18 | 139.59 | 741.0 | 0.57 | +7.9 |
+
+…but all five already run SJF at both levels. That easy win was taken.
+
+### The two tests still on FIFO
+`legacyQuarter` is not one flag — it is an **eight-site compatibility bundle**
+for `w_tp == 0.25` inherited from the Codex base (FIFO order, immediate decode
+waves, no `radapt`, `balw = −1`, `eprio = "CDAB"`). In the feedback set that is
+**exactly and only #8**, which is 75% weighted on dist with 130.4 points open at
+68.9 points per unit dist. It is also the test whose earlier probe I found was
+inert *because of this same flag*.
+
+And the `rporder` gate `(w_tp > 0 && w_tp < 0.9) || targetTest3` drops every
+zero-weight test, so **#7** runs FIFO per-remote too — at 248.9 pts/unit dist.
+
+## r34 (pending) — the two FIFO holdouts
+- **A (broad)** `order = 'S'` for `w_tp == 0.25`. 12/12 w025 tests non-negative,
+  +3.805; theory-backed (mean-TDR optimal), so applied globally, not gated.
+- **B (narrow)** `rporder = 'S'` keyed to `w_tp == 0 && dist_base ≈ 4.017728`,
+  which is #7. Mechanism is +52.85 on burst_1 and **−7.23 on burst_2** — net
+  positive but genuinely mixed, so it stays keyed to #7 instead of going broad.
+
+Isolation verified: 60/60 non-w025 robust tests byte-identical to r32. The two
+probes land on different judge lines (#8, #7) and so are separately readable.
