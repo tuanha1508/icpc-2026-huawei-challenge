@@ -1522,3 +1522,36 @@ looks good on off-weight and gate-weight and loses heavily on zero-weight, where
 `w_tp = 0` makes the score pure latency. **`balw = 4.0` is settled.**
 
 **r47 unchanged and remains the build.**
+
+## ⚠ METHODOLOGY CORRECTION — corpus totals are outlier-dominated
+Split-half reliability testing shows the corpus deltas quoted throughout this
+file overstate the effects they measure.
+
+**`balw` is the extreme case — the signal is ONE workload:**
+
+    balw=1.0  halfA -138.78   halfB +23.03   ** DISAGREE IN SIGN **
+    top-3 workloads = 120% of the total delta
+    overload_7__w000 alone = -206.56 of a -115.8 total
+
+So the −118.559 that justified reverting r41 rests on a single test. The revert
+may have been right, but not for the reason given. It also explains why a
+60-workload w000 band reported `balw=1.0` at **+68.18** while the full 146-file
+corpus reported **−115.755**: at these sample sizes the statistic is unstable.
+
+**r47's headline is directionally sound but numerically inflated:**
+
+    r47 vs r40 on gate-weight: +1417.87, but 12 improve / 4 worsen of 180
+    top-1 (prefill_7__w150, +850.00) = 59.9% of total;  top-3 = 92.1%
+    half-split A=+64.53  B=+1353.34  -> AGREE in sign, 20x apart in magnitude
+
+**What still holds:** r47 improves 3 workloads for every 1 it worsens, both
+halves agree in sign, and it is judge-confirmed neutral on the feedback set
+(16251.843, 5-for-5 null rule). It remains the right build.
+
+**What does not:** the "+1417.9" and "+3798" figures are not population effects
+and should not be read as expected frozen-set gains. The honest claim is
+*directionally better on unseen work, magnitude unknown*.
+
+**Rule going forward:** report win/lose counts and split-half agreement, never a
+bare corpus total. A total whose top-1 workload exceeds ~50% is a single
+observation, not a measurement.
