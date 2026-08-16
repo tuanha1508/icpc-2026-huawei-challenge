@@ -933,3 +933,12 @@ E is **94% utilised** on #6 and decode is 71% of E's work, so #6's required
 This replaces the retracted "ceiling 412.8" (a 2-point fit refuted by a third
 point) with a mechanism: **#6 is capped because decode batch width is capped by
 N, and N is set by arrivals.** Same root cause as #5, #8, #13 and #14.
+
+### N cannot be raised at admission either
+On t6_fit3 arrivals run at 0.00911 req/ms against a prefill capacity of
+8/192.897 = 0.04147 req/ms — **22% of capacity**. Requests never queue for
+prefill (remote util 0.429 confirms remotes are half idle), so no admission or
+pool policy can raise N. A request that has not arrived cannot be decoded.
+
+**Root cause, unified:** every sub-500 test is bounded by N, and N is set by the
+arrival process. #5, #6, #8, #13, #14 all reduce to this.
