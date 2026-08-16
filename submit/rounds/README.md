@@ -1231,3 +1231,36 @@ round; it cannot be keyed on `dist_base` because #1/#2/#11 have `dist = 0`.
 
 **Judge total predicted ≈ unchanged** (r43 vs r41 is 0/34; r41 vs r40 was
 +1.751). The value is entirely on the frozen set.
+
+## r44 — r37's narrowing was NET NEGATIVE; restore the two weights it never tested
+Applied r43's method to the gates **r37 narrowed**. robust-72 has **no w005 or
+w015 groups**, so the 0.05 and 0.15 exclusions were validated against nothing.
+Re-measured on 570 workloads from 95 diverse bases (narrow − broad):
+
+| w | test | delta | win/lose |
+|---|------|-------|----------|
+| **0.05** | #9 | **−1182.028** | 6/12 |
+| **0.15** | #10 | **−999.253** | 8/12 |
+| 0.30 | #4 | +43.607 | 16/6 |
+| 0.45 | #15 | +122.423 | 12/4 |
+| 0.80 | #5 | +562.140 | 14/5 |
+| 0.98 | #16 | +332.970 | 13/2 |
+| **TOTAL** | | **−1120.141** | |
+
+**r37, which is live, is a net loss on diverse workloads** — entirely from the
+two weights it never measured. The other four narrowings are genuinely good.
+
+r44 restores 0.05 and 0.15 to weight-only and keeps the rest narrowed:
+
+    w=0.05  +1182.028 (12/6)      w=0.15  +999.253 (12/8)
+    w=0.30/0.45/0.80/0.98  0.000
+    off-weight 0.000              judgecal 0.000 (0/34)
+
+#9 and #10 get `useMarginal = false` under either form, so the feedback set does
+not move. Total gain **+2181.281**, zero feedback risk.
+
+### The pattern behind r43 and r44
+Both errors came from validating a weight-gated change on a corpus that either
+**re-weights the same few bases** (robust-72's w025) or **has no group at that
+weight at all** (w005, w015). The fix is to build workloads *at the gate's own
+weight, from diverse bases*, before trusting any gate decision.
