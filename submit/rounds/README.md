@@ -172,3 +172,19 @@ Queue depth at every E decision point (mean, and % of decisions with >1 choice):
 | SPT at a reentrant hub | reentrant flow-shop theory | inert — queue never contended |
 | prefill-decode disaggregation | DistServe/Splitwise | already inherent in the protocol |
 | iteration-level scheduling | Orca | already implemented |
+
+## Sub-500 tests: final state
+| test | score | contention | verdict |
+|------|-------|-----------|---------|
+| #5 | 486.332 | 22% / 25% | **lever set exhausted** — see below |
+| #6 | 399.775 | 19% / 23% | needs +32.3% tp; every lever measured |
+| #14 | 415.267 | **0% / 0%** | forced; two independent proofs |
+
+**#5, every lever measured:** eprio `CDAB` optimal (+13.89 to get here),
+dpost 0.9 optimal (+34.15), dgfrac **inert** (dpost already fills the ready set,
+so the wait never binds), ruse monotonic with K best (radapt picks K anyway),
+order inert, pieces/pfair/marginal tested. Needs +4.7% tp for 500 and nothing
+delivers it.
+
+**#6, same:** ruse monotonic to K on all three fits, dgfrac disputed between
+fits, dpost 0.9 measured **−24.53** on the judge. Needs +32.3%.
