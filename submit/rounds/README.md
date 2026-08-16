@@ -1423,3 +1423,40 @@ cannot be trusted when its immediate neighbour flips sign, whatever the other
 corpus says. **0.18 kept.**
 
 **Nothing further to change: r46 is settled.**
+
+## ⚠ CORRECTION — `balw = 1.25` was net NEGATIVE; r47 supersedes r41/r45/r46
+Ran every build against the judge-confirmed r40 across **all five corpora** at
+once. That exposed an error in my own recommendation.
+
+**balw = 1.25 in isolation (r40 → r41):**
+
+    off-weight  +31.792    gate-weight +52.213    zero-weight **-118.559**
+    heavy       +17.070    edge          0.000    ==> NET **-17.484**
+
+r41 was shipped on the off-weight plateau and "confirmed" on gate-weight — but
+the **zero-weight corpus was never checked**, and it loses 118.559 there. A
+7-value plateau on two corpora was not enough; the third reversed the sign.
+
+**dpostfrac = 0.25 (r45 → r46)** adds only +64.9 net while regressing three
+corpora: edge cases −44.028 (**0 win / 4 lose**), heavy −35.1, zero-weight −42.0
+— plus −14.018 on judgecal.
+
+### Final comparison against r40
+| build | total | regressions | judgecal |
+|-------|-------|-------------|----------|
+| r41 (balw) | −17.484 | zero-weight | +1.751 |
+| r45 (balw + gates) | +1402.242 | zero-weight | +1.751 |
+| r46 (+ dpostfrac) | +1467.150 | zero, heavy, **edge 0/4** | −14.018 |
+| **r47 (gates only)** | **+1417.869** | **none** | **0.000** |
+
+**r47 is strictly the best**: all the gain comes from the gate fixes (r43/r44/r45),
+which are genuinely good, while `balw` and `dpostfrac` were both net-harmful once
+fully measured. Zero regressions on any corpus, and judgecal 0/34 puts it back in
+the null-prediction class that is **5 for 5** on the judge.
+
+**Predicted judge total: 16251.843, unchanged.**
+
+### Lesson
+Two corpora agreeing is not enough. Both bad calls this session came from
+optimising against the subset of corpora a change happened to help. Every
+candidate must be scored on **all five** before shipping.
