@@ -899,3 +899,37 @@ defaults. It is not one: **all six of its weight groups appear in the feedback
 set**. Global-default decisions driven by it (r38, r40) are unsupported; the
 gate/exclusion fixes it validated (r37, r39) stand on separate, principled
 grounds and were confirmed by the judge.
+
+## #6 closed properly — the cap is N, not the retracted T(N) fit
+Read #6's own cost table (`[batch, P PRE, P PROC, P POST, D PRE, D PROC, D POST]`
+= cols 0..5, mapped via `interactor.py:447/474/500/536/563/583`). D PRE and
+D POST are strongly sublinear in group size, so batching is the whole game:
+
+| group | D PRE + D POST per token | vs current |
+|-------|--------------------------|------------|
+| 22 (current) | 1.0087 ms | 100% |
+| 35 | 0.7810 ms | 77% |
+| **50** | **0.6670 ms** | **66%** |
+| 250 | 0.1728 ms | 17% |
+
+E is **94% utilised** on #6 and decode is 71% of E's work, so #6's required
++32.3% tp needs roughly 24% less E work — i.e. **groups of ~50, 2.3x today's
+21.9**. The prize is real and the mechanism is exact.
+
+### Why it is unreachable
+- **The merge is already maximal.** D POST dispatch takes `tmp = bDpostRdy.v`,
+  every ready member, across D PROC groups (legal per C-03). Group 21.9 means
+  only ~22 are *ready*, not that we split them.
+- **Ordering cannot grow it.** All **24** eprio permutations produce
+  byte-identical output on t6_fit3 — same score, tp, tpot, group size and E
+  work. E never faces a choice, the same fact that killed r34/r35.
+- **Waiting cannot grow it profitably.** `dpostfrac` moves mean group only
+  21.88 -> 24.05 across its whole range while E *work* rises 17386 -> 19619.
+  Pushing to 0.7 does reach group ~40, but tp does not improve: the idle E time
+  spent waiting cancels the amortisation.
+- **So group size is bounded by how many D PROC completions are ready at once,
+  which is bounded by N ~ 50 — and N is arrival-limited.**
+
+This replaces the retracted "ceiling 412.8" (a 2-point fit refuted by a third
+point) with a mechanism: **#6 is capped because decode batch width is capped by
+N, and N is set by arrivals.** Same root cause as #5, #8, #13 and #14.
