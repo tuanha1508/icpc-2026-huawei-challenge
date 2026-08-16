@@ -1116,3 +1116,23 @@ Two methodological notes:
   `dgfrac`, `dpostfrac`, adaptive decode waves) has been a single-point spike.
 
 **r41 stands as the build to submit.**
+
+## Why `balw` is the one knob with structure — and why the "obvious fix" loses
+The remote-placement estimator is
+`est = procWork[k] + decCnt[k] * dproc1 * balw`, where `dproc1 = col[4].at(1)`.
+Since D PROC is strongly sublinear, `decCnt * dproc1` badly overestimates a
+remote's decode cost — on t6, 50 decodes estimate 554 ms against an actual group
+cost near 45 ms, a **12x overestimate**. The obvious fix is `col[4].at(decCnt)`.
+
+**It loses at every `balw`:** −9.398 (0.5), −15.244 (1.0), −22.847 (2.0),
+−26.276 (4.0), −41.859 (8.0), and −15.139 at the 1.25 default.
+
+The overestimate is doing real work. `decCnt * dproc1` is a proxy for **recurring
+future load**, not instantaneous cost: a remote holding 50 decodes will receive
+decode work again every single token, so its future occupancy is high even though
+any one D PROC call is cheap. The exact group cost underestimates that and piles
+prefill onto decode-heavy remotes.
+
+This also explains **why 1.25 beats 4.0** — the overestimate is useful, but 4.0
+over-applies it. The estimator is right for the right reason, and `balw` is
+simply the dial that sets how much future-load pessimism to carry.
