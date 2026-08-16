@@ -303,3 +303,22 @@ averaging −34.2. Stopping is the correct call, not a concession.
 
 ### Session result
 16093 → **16247.375** (+154.4), and +148.9 over Codex v70's 16098.470.
+
+## Deep dive: single-token batching — hypothesis disproved by measurement
+r31's loss was a lead: #9 dropped 71.56 from an `eprio` change, and tdr *ends at
+P POST*, so decode order can only have moved it by competing for the shared E.
+That suggested E-side decode cost was starving prefill on single-token tests
+(#1 #2 #9 #15 #18 #21 — mean_tpot = 0, **1507 open points**).
+
+Found a real structural gap: the decode-wave wait requires `decTotal > ready`,
+which is false when every decoding request is ready — exactly the `L_out = 1`
+case. So the wait never fires there. Implemented an inbound-aware wait that
+counts requests still in prefill as future members.
+
+**Result: the premise was false.** On `t9_fit`, 350 requests produce only
+**19 D PRE calls (mean group 18.42)** and 12 D POST calls — E is already
+batching well, so there is no amortisation to recover. The fix measured as noise
+on the target tests and monotonically worse globally (35781 → 32070), because it
+only adds latency.
+
+Kept at `artifacts/known-good/experiment_inbound_wait.cpp`.
