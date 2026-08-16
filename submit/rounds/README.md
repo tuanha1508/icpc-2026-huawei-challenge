@@ -1582,3 +1582,33 @@ r47 because removing it is equally unsupported, not because it helps.
 
 **r47 stands**, now with its value correctly attributed: `legacyQuarter` is the
 real gain, `useMarginal` is a smaller real gain, `legacyDecodeFirst` is neutral.
+
+## Re-testing rejections — `balw` is INCONCLUSIVE, not proven bad
+Re-ran `balw = 1.25` against r47 on 485 workloads spanning all corpora:
+
+    total -32.70   win/lose **17/9**   top-1 = **631% of total**
+    halves -124.69 / +91.99  ** DISAGREE **
+    trimmed (drop 3 largest) **+81.69 — SIGN FLIPS**
+
+By count (17 win / 9 lose) and by trimmed sum (+81.69), `balw = 1.25` is
+*better*. The negative total is one workload, `overload_7__w000` at −206.
+
+**My r41 revert reasoning was wrong.** It rested on the zero-weight −118.559,
+which is that single workload. The conclusion (keep 4.0) still stands, but on
+different grounds: the evidence for 1.25 is *inconclusive*, not favourable, and
+r47 at `balw = 4.0` is judge-confirmed at 16251.843. Inconclusive evidence does
+not justify moving off a confirmed build.
+
+### ⚠ Corpus construction flaw — re-weighting without re-deriving `dist_base`
+`overload_7`'s **real** `w_tp` is 0.50. Forcing it to 0.00 while keeping the
+original `dist_base = 182.329` makes the score *pure* latency, so a dist move of
+91.88 → 129.49 swings it 206 points. That amplification is an artifact of my
+re-weighting, not a property of any real test.
+
+The behaviour is also subtler than "1.25 is worse": it gives **lower tdr**
+(2012587 → 1788340) but **higher tpot** (9374 → 14289) — trading one latency
+term for the other, with w = 0 making tpot dominate.
+
+**Implication:** every `w000` result in this file is suspect where `dist_base`
+was inherited from a differently-weighted original. The w000 corpus over-weights
+latency-sensitivity relative to any real test.
