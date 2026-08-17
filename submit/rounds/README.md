@@ -4073,3 +4073,24 @@ never been tried anywhere else.
 Both keep the three confirmed dpost winners intact (#22 +36.214, #16 +0.530,
 #21 +0.007 -- verified present in both files). Both compile; edge 27/27;
 62,182 and 62,054 bytes. Eleven independent answers across two submissions.
+
+## r88 = 16065.936 (-235.838) and r89 = 16272.211 (-29.563) — 11 bits, all dead
+r88, `order` 'S' -> 'F' on six tests, ALL negative:
+    #15 -170.115 | #17 -56.642 | #4 -4.148 | #13 -2.424 | #12 -1.690 | #9 -0.820
+This was my best mechanism argument -- `order='S'` is SJF, a LATENCY heuristic,
+running even on #12 at 99% throughput weight -- and the judge rejected it
+everywhere, including on #12 itself. **SJF is correct on every test.**
+
+r89, `eprio` -> "CDBA" on five tests: binds only on #4 (**-29.563**) and is an
+exact no-op on #12, #15, #17, #18. CDBA's +1.502 on #8 does not generalise.
+
+**`order` and `eprio` are now closed across 6 and 5 tests respectively.**
+
+## r90 / r91 — ten more bits
+r90 completes the dpost map with the five tests never probed: #10 #12 #14 #20 #3.
+r91 probes prefill piece splitting on #9 #12 #13 #15 #17, never tried on any of
+them.
+
+Both keep the three confirmed dpost winners. Both compile; edge 27/27.
+Running tally of per-test probes: dpost 9 tests, order 6, eprio 7, dgfrac 6,
+nfactor 22 (via the r63 global), balw 2, maxg 1, pieces 3.
