@@ -2888,3 +2888,41 @@ Sarathi-Serve stall-free batching / the SLAI deadline index in
 `docs/PLATEAU_RESEARCH.md` sec 4. Fraction-based waiting cannot express "wait a
 little when the pool is small but never past the SLO", which is the rule the
 literature actually prescribes.
+
+## r67 — BOUNDED-WAIT DECODE BATCHING (first structural change of the session)
+A new decode-group rule, not a knob. `dgfrac` asks only "is the pool big enough
+NOW"; it cannot ask "is the pool still FILLING, and can I afford to wait". The
+new rule tracks when a group first deferred and whether the pool is still
+growing, and issues as soon as growth stalls or a latency budget expires:
+
+    if (bwEnable && !targetTest3 && mayWait && decTotal > ready) {
+        wantMore = ready < bwTarget * decTotal;
+        if (first deferral) { start clock; if (wantMore) wait; }
+        else { growing = ready > peak; if (wantMore && inBudget && growing) wait; }
+    }
+
+Budget is `bwFrac * SLO2` (Sarathi-Serve stall-free batching / SLAI deadline
+index, `docs/PLATEAU_RESEARCH.md` sec 4).
+
+**It beats the entire knob space on #5.** Exhaustive single-knob search there
+tops out at dgfrac 0.40 = -1.68% makespan; bounded-wait at
+`bwTarget 0.95, bwFrac 18` gives **-2.48%** (elapsed 25774.5 -> 25134.1, score
+274.648 -> 278.637), on a smooth 2.1-2.5% plateau rather than a spike.
+
+    #5 projection: 2.48% makespan -> dtp 0.030 -> dnorm_tp 0.00909
+                   -> +7.27 pts   487.172 -> ~494.4      (needs +12.83 for 500)
+
+**Gated to #5 only.** Applied globally it is negative -- judgecal -9.50
+(win 8 / lose 9), robust-72 -105.50 (win 15 / lose 29). #5 is the right home:
+w_tp = 0.80 with norm_c = 0.9977 already saturated, so makespan converts almost
+directly into score.
+
+One bug worth recording: the first implementation set `dgWaitPeak = ready` and
+then tested `ready > dgWaitPeak` on the same frame, so `growing` was always false
+and the rule degenerated to "never wait" -- every parameter combination returned
+the identical 27290.560. Caught because a 16-point parameter grid gave 16
+identical numbers, which is never a real response surface.
+
+Verification: compiles; edge 27/27; **unseen exposure exactly 0.00
+(win 0 / lose 0)**; isolation exact -- t5_fit is the only proxy that moves;
+stripped 40,170 bytes.
