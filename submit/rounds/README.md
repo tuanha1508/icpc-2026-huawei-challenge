@@ -2741,3 +2741,35 @@ currently reachable part is this one setting — which is what r63 ships.
 
 The 3 differing proxies (cal_t14_b1 -9.75, cal_t14_b2 -6.50, t12_fit +0.83) are
 refuted directly by r63's judge isolation, which showed #14 and #12 unchanged.
+
+## r65 — a 3-hypothesis PROBE round (judge as the oracle)
+r63 proved per-test attribution is exact (21 of 22 tests byte-identical under a
+one-line change), so one submission can test several independent hypotheses at
+once. With losses acceptable, that is the highest information rate available.
+
+    A  #15  nfactor 1.0 -> 0.5     tighten the early admission cap
+    B  #6   dgfrac  0.25 -> 0.05   (599 open tp pts, w_tp 0.90)
+    C  #13  dgfrac  0.18 -> 0.05   (233 open tp pts, w_tp 0.75)
+
+**A** is the only untouched side of a parameter with a *measured* 167.862-point
+lever: r63 moved nfactor 1 -> 0 and the judge charged -167.862, all of it #15.
+The judge ordering is now `uncap-after-first-FIN 882.678 > always-cap 871.653 >
+never-cap 714.815`, so the cap matters hugely there, but the value of the cap
+(nfactor < 1) has never been tried. Nothing local can score #15 -- a
+`single`-profile corpus at #15's exact weights spreads 5 points in 6036 across
+nfactor 0..16 while the judge's spread is 167.9 -- so this can only be answered
+by submitting.
+
+**B/C** test the one direction the judge record supports. Every confirmed dgfrac
+win moved DOWN (#5 0.18 -> 0.10 = +0.840, #9 -> 0.00 = +0.112); every upward move
+lost hard (0.95 cost -37.55 on #6, -31.57 on #13, -13.89 on #5). Neither #6 nor
+#13 has ever been probed BELOW its default. Note the first attempt at this round
+was silently inert: #5 and #4 already carry judge-measured optima (0.10 and 0.60)
+installed later in the chain, which overwrote the probes -- the overrides are now
+placed after every existing dgfrac rule.
+
+Verification: compiles; edge suite 27/27; stripped 39,311 bytes; distinct SHA.
+Unseen exposure -2.81 (win 4 / lose 4) on robust-72 -- the #13 gate is
+weight-only (`nearWeight(0.75)`) so it does leak onto unseen w_tp=0.75 tests.
+Proxy readings (t13 -2.38, t6_fit +0.04, t6_fit2 -1.13, t6_fit3 -0.23) are
+treated as uninformative: #6 proxies have inverted sign on the judge five times.
