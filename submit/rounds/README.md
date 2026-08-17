@@ -3556,3 +3556,40 @@ the MECHANISM, not the magnitude.
 Verification: compiles; edge 27/27; only cal_t22 moves among 34 proxies
 (581.972 -> 608.612); gate hits #22 alone -- #21 shares w_tp = 0.50 but its
 dist_base is 2917.91 against #22's 80003.23; raw 60,105 bytes.
+
+# r74 = 16301.236 *** 16300 TARGET REACHED ***
+    #22  918.903613 -> 955.117731   **+36.214**
+    all other 21 tests byte-identical -> isolation exact
+
+    vs r64 banked   +36.214
+    vs GOAL 16300   +1.236
+    vs Codex        +38.043
+
+    tp    36.715004 -> 39.863087   +8.6%
+    tpot   8.002021 ->  6.008085   -24.9%    <- BOTH improved
+    tdr 1858.0 and dist 246.65 UNCHANGED     <- the latency budget was never spent
+
+Raising #22's D POST join fraction 0.05 -> 0.90 produced fewer, larger edge
+tasks: less total E work AND a shorter per-token wave at the same time. The trade
+I had budgeted for (pay in latency, gain throughput) turned out not to be a trade
+at all.
+
+### Why this test, and why it took so long to find
+The three-way screen that selected #22 -- open points AND a cheap latency budget
+AND actual control -- is what previous rounds lacked. I had spent many rounds on
+#5/#6/#9/#10, which have far more open points but no control surface:
+
+    #9   262 open   19 of 23 knobs EXACTLY inert
+    #10  315 open   18 of 24 inert, mean_tdr literally constant
+    #22   81 open   9 of 18 bind  <- fewest points, most freedom, and it won
+
+**Open points are worthless without a control surface.** The binding audit -- ask
+whether a knob changes the score AT ALL before asking whether it helps -- is the
+tool that should have come first.
+
+Note also that the winning direction contradicted the corpus: the full 504-test
+sweep scored `dp.9` at **-2593.10 globally**. It is strongly negative in general
+and strongly positive on #22 specifically, which is exactly why per-test gating
+beats global tuning.
+
+**#22 still has 43.3 open points on the tp side (norm_tp 0.913318).**
