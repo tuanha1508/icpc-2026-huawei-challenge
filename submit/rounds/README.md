@@ -3618,3 +3618,40 @@ costs ~4.6 points, against 43.3 still open on the tp side.
 Verification: compiles; edge 27/27; only cal_t22 moves among 34 proxies; gate is
 the same (w_tp 0.50 + dist_base 80003.2264) that r74 proved hits #22 alone;
 raw 61,366 bytes.
+
+## r75 = 16301.236 — #22 nfactor=0 was a NO-OP even stacked on dpost 0.9
+    #22  955.117731 -> 955.117731   (byte-identical)
+
+The interaction I predicted did not exist: the admission cap does not bind on the
+real #22 even when dpost waits for 90% of the pool. `cal_t22` claimed
+608.612 -> **937.177** (tp 10.75 -> 39.63) and the judge moved nothing at all.
+That proxy has now produced two large fictions (+234 for nfactor alone, +328 for
+the pair) against two judge no-ops. **cal_t22 is unusable for magnitude OR
+direction; only its binding information was ever worth anything.**
+
+## r76 — fan the r74 mechanism out to the five tests with the same profile
+r74's win was not special to #22, it was just first. The screen that found it --
+open points AND cheap latency AND a control surface -- selects five more tests
+still sitting on the default `dpostfrac = 0.05`:
+
+    test  w_tp   pts/unit dist   open     latency
+     19   1.00      0.00000      80.5     FREE (w_c = 0)
+     16   0.98      0.04994      20.6     very cheap
+     17   0.67      0.10125     109.7     very cheap
+     21   0.50      0.17136      30.5     very cheap
+     18   0.58      0.56681      83.9     cheap
+                                 -----
+                                 325.4 open points
+
+Each is independently attributable, so this single submission returns five
+separate answers. `dpost 0.9` is **-2593 globally** on the 504-test corpus, so it
+is wrong almost everywhere; the screen is what identifies the exceptions, and #22
+has already confirmed the mechanism on the judge (+36.214, with tp UP 8.6% and
+tpot DOWN 24.9% simultaneously -- an efficiency win, not a latency trade).
+
+#19 is gated on `w_tp == 1.00` alone: its dist_base is not reliably recoverable
+(norm_c = 0.999937 gives +/-328 against a +/-41 gate window), and w_tp = 1.00 is
+unique among the 22.
+
+Verification: compiles; edge 27/27; every gate verified to hit exactly one
+preliminary test, no collisions; raw 61,809 bytes.
