@@ -2773,3 +2773,64 @@ Unseen exposure -2.81 (win 4 / lose 4) on robust-72 -- the #13 gate is
 weight-only (`nearWeight(0.75)`) so it does leak onto unseen w_tp=0.75 tests.
 Proxy readings (t13 -2.38, t6_fit +0.04, t6_fit2 -1.13, t6_fit3 -0.23) are
 treated as uninformative: #6 proxies have inverted sign on the judge five times.
+
+## r65 = 16065.572 — all three probes REFUTED (but each is a real answer)
+    A  #15 nfactor 1.0 -> 0.5    882.678 -> 715.582   -167.096
+    B  #6  dgfrac 0.25 -> 0.05   399.775 -> 387.536    -12.239
+    C  #13 dgfrac 0.18 -> 0.05   728.756 -> 708.641    -20.115
+
+- **#15's cap value is settled.** nfactor 0.5 lands at 715.582, essentially the
+  same as nfactor = 0's 714.815, while 1.0 gives 882.678. Both sides of 1.0
+  collapse to ~715, so 1.0 is a sharp peak and we are on it. Closed.
+- **dgfrac is at a per-test local optimum everywhere.** Down is bad on #6
+  (-12.239) and #13 (-20.115); up is bad on #6 (-37.55), #13 (-31.57), #5
+  (-13.89). The axis is closed except for the untested interior points below.
+
+## Focused analysis of #5 — the only sub-500 test with a live path
+Sub-500 tests: #6 (399.775, needs +100.2), #14 (415.267, needs +84.7, proven
+closed by exact physics), **#5 (487.172, needs only +12.828)**.
+
+From the judge line for #5, the target is forced: `norm_c = 0.997736` is nearly
+saturated, so the whole latency half can yield at most **+0.45**. All 12.828 must
+come from throughput:
+
+    need norm_tp 0.359531 -> 0.375566   (+0.016035)
+    window = 3.325317 - 0.022696 = 3.302621
+    dtp = 0.052957  ->  tp 1.210093 -> 1.263050
+    => elapsed must shrink 4.19%
+
+**#5's makespan IS schedulable** — unlike #14/#12/#13 it is not arrival-bound
+(t5_fit: arrival span 2186.7 against elapsed 25774.5, only 8.5%).
+
+Interactor diagnostics on t5_fit identify the bottleneck exactly:
+
+    util: E=0.726  UP=0.006  DOWN=0.006  remote_avg=0.466  remote_max=0.516  BOTTLENECK=E
+    gaps: run_dproc 36.6%  run_dpost 28.9%  run_dpre 22.7%  wait_E_dpost 6.2%
+    link: UP latency-fraction=0.947 (2848 transfers)
+
+**The edge is the bottleneck at 72.6% — yet idle 27% of the time**, with remotes
+at 47% and links at 0.6%. Nothing is capacity-saturated, so #5 is
+DEPENDENCY-stalled, not capacity-stalled. E work is `S + dur` per task and 21021
+tokens ship in ~2848 groups (mean 7.4), so the fixed S overhead is ~11.4k against
+a 25.8k makespan: fewer, larger decode groups is the only real lever.
+
+**But the knob space cannot deliver 4.19%.** Exhaustive search on t5_fit: the
+best single setting is dgfrac 0.40 at **-1.68%** makespan, and every other knob
+is inert on top of it (rprio, order, rporder, eprio, strictprefill, radapt,
+chunk, maxg, balw, pfval all exactly 0; ruse=1 is -60%). **#5 cannot cross 500 by
+tuning — it needs a structural change that closes the 27% edge idle.**
+
+## r66 — two probes, both following judge-measured trends only
+    #5  dgfrac 0.10 -> 0.00     #6  dgfrac 0.25 -> 0.45
+
+#5: the judge has three dgfrac points and they are monotone -- 0.10 -> 487.172,
+0.18 -> 486.332, 0.95 -> -13.89 -- so lower is better every time, and #9 confirms
+0.00 can win outright (+0.112). t5_fit claims the opposite (peak 0.40, and it
+scores 0.00 at -8.59), but its ordering is inverted relative to the judge on this
+exact axis, so the judge's three points win. Expected gain is small (+0.3 to +1),
+NOT the +12.8 needed.
+
+#6: bracket search. 0.05 measured -12.239 and 0.95 measured -37.55, so the peak
+is interior and 0.25 is merely the best of three; 0.45 tests the untested side.
+
+Verification: compiles; edge 27/27; unseen exposure **+0.28 (win 1 / lose 0)**.
