@@ -3882,3 +3882,36 @@ which is precisely what r81's isolated dgfrac probe measures.
 Submission timing is now instrumented: the limit is 2 per rolling 900s, slots
 free 30s apart, and `tools/cooldown.py --quota 2 --watch` reports the exact
 wall-clock moment each opens.
+
+## r80 = r81 = 16297.247 (-4.527) — two more clean answers, r78 still best
+    #7  915.319 -> 910.792  -4.527   tpot 65.632 -> 67.012  ROSE 2.1%
+    #22 955.117731 unchanged EXACTLY -> dgfrac on #22 is a pure NO-OP
+
+**#7 refuted the tpot prediction outright.** I projected a 20%+ tpot CUT from
+dpost (it delivered -24.9% on #22 and -37.2% on #16) and #7's tpot ROSE instead.
+The tpot response to dpost does not transfer between tests at all.
+
+**The #22 no-op is the useful half**: r77 applied dgfrac to #22 AND #16 for a
+combined -2.367, and that loss was **entirely #16**. #22 is unaffected by D PRE
+grouping, so dpost is its ONLY working lever.
+
+### dpost 0.90, complete record over 9 tests
+    #22 +36.214 | #16 +0.530 | #21 +0.007 | #18 0.000
+    #19 -0.846  | #7 -4.527  | #4 -5.027  | #13 -6.339 | #17 -27.310
+
+## r82 / r83 — push #22's dpost past 0.90, the only live lever left
+#22's response is measurable from two judge points, and `mean_tdr = 1858.000000`
+EXACTLY in both, so prefill is fixed and only decode moves:
+
+    dpost 0.05  tp 36.715  tpot 8.002  ->  918.904
+    dpost 0.90  tp 39.863  tpot 6.008  ->  955.118   (+36.214)
+    tpot fell 24.9% -> elapsed fell 7.9%
+
+With `elapsed ~ const + (L_out-1)*tpot`, further tpot cuts pay at the same slope:
+
+    tpot -> 5.00  +20.78      tpot -> 4.50  +31.80
+    tpot -> 4.00  +43.34  (saturates tp_UB = 43.631)
+
+Saturating #22 reaches ~**16345**, within 5 points of the 16350 goal, and #22 is
+the only test still responding to anything. r82 = dpost 0.95, r83 = dpost 0.98.
+Both compile; edge 27/27 each; 61,826 bytes.
