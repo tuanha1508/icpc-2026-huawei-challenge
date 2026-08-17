@@ -3498,3 +3498,31 @@ structure leaves essentially no scheduling freedom, which is exactly why #9's
   `L_out > 1`, so these tests are built to score low on throughput.
 - CORROBORATION: Codex converged to 16263.193 from a different codebase; we are
   at 16265.022. Two independent implementations, same wall.
+
+## #8 audit — control exists but is weak; #8's dist is tdr-dominated
+No judgecal proxy carries w_tp = 0.25, so six corpus workloads were grafted with
+#8's header to exercise the `legacyQuarter` path. Binding audit:
+
+    balw 3/6 | pieces 3/6 | dgfrac 0.5 3/6 | dpostfrac 3/6 | eprio CDAB 2/6
+    rporder / order / chunk / marginal / pfair / pfval / rprio / eprio-CDBA /
+    dgfrac-0 / radapt : 0/6
+
+#8's dist decomposes as ex_tdr = 1.584 against ex_tpot = 0.474, so it is
+tdr-dominated -- and the prefill-ordering levers (order, rporder) are exactly
+inert because `legacyQuarter` already forces the settings they would change and
+`order` is already 'S' (w_c = 0.75 > 0). That leaves `balw` as the only
+tdr-relevant lever, and on the grafted set it moves the score by
++0.019 / 0 / -0.392 / +0.005 / 0 / 0 -- net **-0.37**, i.e. it binds but barely.
+
+## r73 — #8 balw -1 -> 4.0
+`balw = -1` is inherited from the Codex `legacyQuarter` bundle and has never been
+tested; the one part of that bundle that HAS been tested (eprio CDAB -> CDBA,
+r59) was worth +1.502. #8 is the highest-leverage dist-side test with any control
+left: 112.9 open at 68.90 pts per unit dist.
+
+**Expected value stated honestly: near zero, possibly slightly negative.** The
+grafted-workload evidence is weak and mixed; this is an information probe on an
+untested inherited constant, not a projected gain.
+
+Verification: compiles; edge 27/27; no judgecal proxy moves (none carries
+w_tp = 0.25); raw 59,963 bytes.
