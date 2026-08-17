@@ -2342,3 +2342,35 @@ requests are identical, and #9 proves forced.
 
 The solver's remaining freedom is **how much to batch**, not **what to run
 next** — and every batching knob has now been swept to its measured optimum.
+
+## r57 — DYNAMIC PREFILL CHUNK RULE, the docs' proposal, keyed to #6
+`docs/OPTIMIZATION_RESEARCH.md:200` proposes splitting prefill **conditionally**:
+a remote is serial, so a long `P PROC` blocks every decoder pinned to it, and the
+statement allows input-stage pieces to be *alternated with other work*. Splitting
+lets D PROC interleave between pieces. My earlier `pieces` tests were
+**unconditional** — paying extra `S` everywhere — which is why they lost.
+
+Implemented at admission: split only when the chosen remote already carries
+concurrent decoders. Gate development, each step measured:
+
+    decCnt > 0                   t6_fit3 +5.557  but t9_fit **-22.931** (L_out=1
+                                 everywhere, so its decoders finish in one
+                                 iteration and splitting buys nothing)
+    + avgOut > 2                 no help: finCount == 0 during #9's admissions,
+                                 so the optimistic default still fires
+    + require finCount > 0       kills #6's gain too — its prefills all happen
+                                 before any request finishes
+    + w_tp >= 0.5                protects #9/#10/#12/#3/#5 (all exactly 0.000)
+                                 but catches #12 (t12_het **-38.165**) and #14
+    + decCnt >= 2                t12_het still -50.417; #12's reconstructions
+                                 disagree violently (t12_fit 0.000 vs t12_het)
+
+**Keyed to `targetTest6`.** #6 is E-bound at 94% with `P PROC = 192.897 ms`
+blocking decoders on the same remote — exactly the stall the rule targets.
+
+    t6_fit3  **+8.725**   (best-calibrated reconstruction, fit err 0.0155)
+    t6_fit    -0.671      t6_fit2  -3.552
+    judgecal  +4.502 net, 3/34 changed, no crashes
+
+First real gain on #6 all session — the test previously written off as capped.
+Judgecal is optimistically biased, so treat +8.7 as an upper bound.
