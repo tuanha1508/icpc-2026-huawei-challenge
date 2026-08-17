@@ -48,30 +48,35 @@ def fmt(sec):
     sec = abs(sec)
     return f"{sign}{sec//60}m{sec%60:02d}s"
 
-def report(handle, cooldown, contest, subs):
+def report(handle, cooldown, contest, subs, quota=2):
+    """Codeforces allows `quota` submissions per rolling `cooldown` window.
+    You may burst up to quota, then wait until the OLDEST of those leaves the
+    window -- not until `cooldown` after the newest."""
     if contest:
         subs = [s for s in subs if s.get("contestId") == contest]
     if not subs:
         print(f"no submissions found for {handle}" + (f" in contest {contest}" if contest else ""))
         return None
     now = time.time()
+    ts = sorted(s["creationTimeSeconds"] for s in subs)
     last = max(subs, key=lambda s: s["creationTimeSeconds"])
-    age = now - last["creationTimeSeconds"]
-    left = cooldown - age
+    inwin = [t for t in ts if now - t < cooldown]
+    used, free = len(inwin), quota - len(inwin)
     when = time.strftime("%H:%M:%S", time.localtime(last["creationTimeSeconds"]))
-    prob = last.get("problem", {}).get("index", "?")
-    print(f"  last submission : {when} local  (problem {prob}, {last.get('verdict')})")
-    print(f"  age             : {fmt(age)}")
-    if left > 0:
-        ready = time.strftime("%H:%M:%S", time.localtime(last["creationTimeSeconds"] + cooldown))
-        print(f"  COOLDOWN        : {fmt(left)} remaining -> ready at {ready} local")
+    print(f"  last submission : {when} local  (problem "
+          f"{last.get('problem',{}).get('index','?')}, {last.get('verdict')})")
+    print(f"  window          : {used}/{quota} used in the last {cooldown//60}m")
+    if free > 0:
+        print(f"  READY NOW       : {free} submission slot(s) free")
+        left = 0
     else:
-        print(f"  READY NOW       : cooldown cleared {fmt(-left)} ago")
-    # recent cadence, so you can see the real interval the judge enforced
-    ts = sorted(s["creationTimeSeconds"] for s in subs)[-6:]
-    if len(ts) > 1:
-        gaps = [fmt(b - a) for a, b in zip(ts, ts[1:])]
-        print(f"  recent gaps     : {' | '.join(gaps)}")
+        ready_at = min(inwin) + cooldown          # oldest leaves the window
+        left = ready_at - now
+        print(f"  BLOCKED         : {fmt(left)} remaining -> next slot at "
+              f"{time.strftime('%H:%M:%S', time.localtime(ready_at))} local")
+    recent = ts[-6:]
+    if len(recent) > 1:
+        print(f"  recent gaps     : {' | '.join(fmt(b-a) for a,b in zip(recent, recent[1:]))}")
     return left
 
 def main():
@@ -79,11 +84,12 @@ def main():
     ap.add_argument("handle")
     ap.add_argument("--cooldown", type=int, default=900, help="seconds (default 900)")
     ap.add_argument("--contest", type=int, default=None, help="filter to one contestId")
+    ap.add_argument("--quota", type=int, default=2, help="submissions allowed per window (default 2)")
     ap.add_argument("--watch", action="store_true", help="poll until ready")
     a = ap.parse_args()
     while True:
         try:
-            left = report(a.handle, a.cooldown, a.contest, fetch(a.handle, 40, a.contest))
+            left = report(a.handle, a.cooldown, a.contest, fetch(a.handle, 40, a.contest), a.quota)
         except Exception as e:
             print(f"  fetch failed: {e}")
             left = 60

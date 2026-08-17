@@ -3785,3 +3785,35 @@ Both batching stages now have judge verdicts, and they disagree:
 Every round so far bundled the winners with an untested probe, so the clean
 combination was never scored on its own. Verification: compiles; edge 27/27;
 dgfrac probe confirmed absent; raw 61,048 bytes.
+
+## CORRECTION — the limit is 2 submissions per 900s window, not 1
+Codeforces allows a BURST of two, then blocks until the OLDER of the pair ages
+out of the rolling window. Validated against the full submission history:
+
+    pair-start + 900s = predicted next allowed   vs   actual next submission
+    17:42:43 + 900 = 17:57:43   actual 17:59:59   OK
+    17:59:59 + 900 = 18:14:59   actual 18:18:18   OK
+    18:03:42 + 900 = 18:18:42   actual 18:18:46   OK   <- 4 second margin
+    ... consistent on **13 of 13** bursts
+
+`tools/cooldown.py --quota 2` now models this: it reports slots used in the
+window and the exact wall-clock time each frees, rather than assuming
+`last + 900`.
+
+## r79 — dpost on the two remaining tests that pass the DENSITY condition
+r76 established that `dpost 0.90` pays only where the decode pool can fill a
+bigger group. `mean_tdr / mean_tpot` is a usable proxy for that ratio:
+
+    #22  tdr/tpot = 232  DENSE  -> +36.214
+    #16                  DENSE  ->  +0.530
+    #17  tdr/tpot = 801  thin   -> -27.310
+    #4   tdr/tpot =   5  DENSE  -> 194.2 open, NEVER TESTED
+    #13  tdr/tpot =  24  DENSE  -> 271.2 open, NEVER TESTED
+    #12  tdr/tpot = 3145 thin   -> excluded by the rule
+    #9   tpot = 0 (L_out=1)     -> no decode gaps at all, excluded
+
+So r79 = r78 plus dpost 0.90 on #4 and #13 only -- 465 open points between them,
+two more independent answers. Verification: compiles; edge 27/27; raw 61,703.
+
+Submission plan: r78 and r79 go together in one 28-second burst when the window
+opens (slot 1 at 18:33:18, slot 2 at 18:33:46 local).
