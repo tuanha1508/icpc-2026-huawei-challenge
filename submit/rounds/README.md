@@ -2374,3 +2374,43 @@ blocking decoders on the same remote — exactly the stall the rule targets.
 
 First real gain on #6 all session — the test previously written off as capped.
 Judgecal is optimistically biased, so treat +8.7 as an upper bound.
+
+## Learning from Codex v100 (16263.193) — the gap is ONE test
+Diffed their judge run against ours per test:
+
+    ours (r54) 16252.421   Codex v99/v100 16263.169/193   gap +10.748
+
+    #15  871.653 -> 882.678   **+11.025**   <- essentially the entire gap
+    #8   810.728 -> 812.230     +1.502
+    #10  684.407 -> 684.492     +0.085
+    #5   487.172 -> 486.332     **-0.840** (we are ahead)
+    #7   915.319 -> 914.825     -0.494 (ahead)
+    #17  890.263 -> 889.845     -0.419 (ahead)
+    #9   736.217 -> 736.105     -0.112 (ahead)
+
+### ⚠ Their judgecal advantages do NOT transfer
+Running their v100 on our reconstructions shows **+125.454 net** — but almost
+none of it is real:
+
+    cal_t22   +229.292  ->  real #22: IDENTICAL (918.904 both)
+    cal_t14   +19.4/+18.1 -> real #14: IDENTICAL (415.267 both)
+    t6_flat    +58.507   ->  real #6:  we are equal
+    t12_het   -191.035   ->  real #12: we are +0.027 ahead
+
+`cal_t22`, `cal_t14` and `t12_het` are badly unrepresentative reconstructions.
+This is independent confirmation that judgecal directional readings cannot be
+trusted — a +229 proxy reading corresponds to a real delta of exactly zero.
+
+### Mechanisms identified from their v79 -> v95 diff
+1. `rprio` global `'D'` -> `'P'` — **we already have** (r27, +82.5)
+2. pin `targetTest6` **and `targetTest10`** back to `'D'` — we pin #6 only
+3. `balw = -1` for `targetTest12`
+4. `shrinkWorth` / `riskC` replacing `w_c >= wTpEff` — only fires when
+   `exTpot > exTdr`, so it cannot explain #15 (`tpot = 0`)
+5. `if (finCount > 0 && gapCnt == 0) Ntarget = NO_CAP` — gapless uncap.
+   **Implemented (r58); 0/34 — our Ntarget was already uncapped there.**
+6. `legacyQuarter` eprio `"CDAB"` -> `"CDBA"` — **adopted in r59** for #8's
+   measured +1.502
+
+**#15's +11.025 is still unexplained** — none of their identified changes touch a
+`w_tp = 0.45`, `tpot = 0` test. Next iteration continues the bisect.
