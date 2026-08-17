@@ -3194,3 +3194,34 @@ cost model is already built and validated exactly (`sim/sim_core.hpp`, Example 1
 to the digit, 9000 contended frames with 0 mismatches). What remains there is a
 ~660-line refactor of the live decision loop -- large, and unvalidatable except
 by submitting.
+
+## Per-test config selection — oracle is REAL but NOT learnable from parameters
+Oracle on the honest corpus (131 tests, 14 configs):
+
+    baseline (r64 defaults)     82474.88
+    ORACLE per-test best        82811.21   gain +336.33 (+0.408%) = +2.567 pts/test
+    winners spread across 11 configs (dg.5:6, nf0:6, dp.9:5, eCDBA:3, dg0:3,
+    pieces2:3, ...) -- not a single-config artifact, unlike robust-72
+
+So ~+2.57/test (~+51 over 20 frozen tests) exists IF the right config can be
+identified. It cannot be identified from test parameters. Proper 2-fold CV,
+selecting the rule on the training half and reporting the held-out half:
+
+    fold 0: train -> `dp.9 when S2 < 43.05`   train +238.55   HELD-OUT  -99.78
+    fold 1: train -> `nf0  when R  < 109`     train  +35.17   HELD-OUT   +0.65
+    total held-out  -99.13 = -0.757 pts/test   (oracle +2.567 pts/test)
+
+Fold 0 inverts completely. Searched features: K, S, num_layers, w_tp, dist_base,
+SLO2, tp_UB/tp_base, R, mean L_in, mean L_out, arrival span, arrival density.
+**The best config is idiosyncratic per test, not a function of its parameters.**
+
+Note the first attempt at this analysis selected the rule by maximising HELD-OUT
+gain and reported +35.17 "44.6% of oracle" -- that is selecting on the test set.
+The tell was train +0.65 against held-out +35.17; a rule cannot be twenty times
+better on data it was not fitted to. Re-run correctly, the answer flips sign.
+
+### Consequence
+Parameter-based selection is closed. The oracle gain is only reachable by
+actually *evaluating* configs, i.e. simulation -- which is the rollout axis, and
+the one thing this result does NOT close, because a rollout identifies the config
+by running it rather than by predicting it from features.
