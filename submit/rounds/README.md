@@ -4186,3 +4186,34 @@ Verification: compiles; edge 27/27; the three confirmed dpost winners intact;
 raw 62,342 bytes. Only 1 of 35 judgecal proxies moves, because nearly all of
 them are #3/#5/#6/#12/#14 reconstructions that carry per-test gates -- the real
 preliminary set has far more default-path tests than the proxy set does.
+
+# r93 = 16301.792 *** NEW BEST *** — and the first change since r62 that reaches the FROZEN set
+    #17  890.263496 -> 890.281672  +0.018  (tpot 23585.5 -> 23557.9)
+    all other 21 byte-identical
+
+The default `dpostJoinFraction` 0.05 -> 0.08 moved exactly ONE preliminary test,
+upward. So it costs nothing on the visible score while carrying **+459.51
+(t=+2.45, win 75 / lose 42, top1 31.2%)** on the honest 504-test corpus -- and
+the frozen set only ever runs the default path, because all 20 `nearBase()`
+gates key on preliminary dist_base values a frozen test cannot match.
+
+Useful side-lesson: the preliminary score is a POOR detector for default-path
+changes (16 of 22 tests use the default dpost, yet only #17 moved). The corpus
+is doing the real work for this class of change.
+
+### dgfrac and dpost are SUBSTITUTES, not complements
+Re-swept on top of r93:
+
+    dgfrac 0.25   **-3.03**   (it was +415.82 measured on the old r78 base)
+    dgfrac 0.22   +15.49  t=+0.36  top1 188.9%  -> noise
+    dgfrac 0.28   -54.39
+    dpost 0.10     -5.65   } 0.08 confirmed as the peak from both sides
+    dpost 0.20    -62.46   }
+
+dgfrac 0.25's apparent +415.82 was capturing the SAME gain dpost 0.08 takes.
+Stacking them adds nothing, so r93 ships alone and captures the available
+default-path improvement.
+
+Rest of the 30-config sweep: `balw` at all five values is concentration noise
+(top1 42-196%), `pfair` exactly inert at both values, `pfval 2` negative,
+`pfval 6` +56.92 but top1 70.9%.
