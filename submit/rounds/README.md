@@ -3161,3 +3161,36 @@ that made `nfactor = 0` read +387.64 on robust-72 immediately before the judge
 charged -167.862 -- I had the tool and did not apply it.
 
 `data/corpus` is now the corpus of record for unseen-path decisions.
+
+## Honest-corpus unseen sweep — NOTHING survives; r64's defaults are optimal
+Re-ran the whole unseen-path sweep against `data/corpus` (131 fast tests, no
+reweighted clones), baseline = r64 behaviour, 82474.88:
+
+    nfactor 0    -439.15  t=-2.01     dpost 0.9   -533.95  t=-1.46
+    order F      -356.57  t=-1.79     rprio D     -144.44  win 0 / lose 11
+    dgfrac 0.50  -103.36  t=-2.28     dgfrac 0     -60.27  t=-1.27
+    pieces 2      -33.52               dpost 0.25  -17.08
+    dgfrac 0.30   -11.22               dpost 0      -3.59
+    balw 2        +1.11  top1=342%    balw 8       +4.05  top1=83.4%  (both noise,
+                                       win 2-3 / lose 8-9)
+    pfair 0.5 / maxg 512 / nfactor {2,4}   exactly inert
+
+Every candidate is negative or inert. `balw`'s two positives are pure
+concentration artifacts -- a single test carries more than the whole sum while
+the rest lose. **The r64 defaults are a local optimum on the general
+distribution**, which is the right property for the frozen 20 and closes the
+unseen-path axis just as the per-test axis closed.
+
+### Where the search now stands, completely
+    per-test knobs      at judge-confirmed local optima (dgfrac, nfactor, dpost)
+    unseen-path knobs   all negative or inert on the honest corpus
+    structural          bounded-wait refuted on the judge (-0.273)
+    physical floors     #1 #2 #3 #11 #14 closed; #5 bounded at ~+2.6%
+    proxies             refuted for direction, both families, incl. makespan
+    banked              16265.022 (r62 = r64 = r68 on feedback)
+
+The only axis never attempted is the full in-solver simulator + rollout, whose
+cost model is already built and validated exactly (`sim/sim_core.hpp`, Example 1
+to the digit, 9000 contended frames with 0 mismatches). What remains there is a
+~660-line refactor of the live decision loop -- large, and unvalidatable except
+by submitting.
