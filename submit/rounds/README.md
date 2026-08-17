@@ -2267,3 +2267,36 @@ Nothing to compose. **r54 (predicted 16252.421) is the high-water mark.**
 - A latent **protocol crash** (`group size 0 < 1`) found and root-caused
 - An evaluation standard — at-weight testing, split-half, trimmed sums,
   probe/reconstruction split — that caught six would-be regressions
+
+## Applied the repo's OWN bounds tooling — the alumni technique I had missed
+`artifacts/xr2023/` holds a previous contest's **oracle study**: exhaustive
+search for the optimal schedule on small instances, then measure the policy's gap
+(`admission-srf` matched the oracle exactly, gap = 0 on every case). The repo also
+ships `tools/floor_gap.py` and `tools/bounds.py`, which separate *reachable*
+headroom from the irreducible serial floor. I had never run either.
+
+    test          floor    achieved       gap   pts_if_closed
+    t3_judge     1360.0      1360.0       0.0        **0.0**   at floor
+    t13_fit      1677.8      1685.5       7.7        **0.0**   at floor
+    cal_t14_u     197.5       197.5       0.0        **0.0**   at floor
+    t5_fit        160.6      5157.3    4996.7          1.9   worthless (dist_base 1694)
+    t6_fit3       219.0      3143.7    2924.6          0.8   worthless
+    t12_fit   1126478.4   1259072.0  132593.6          0.5   worthless
+    t9_fit       1917.3      5472.7    3555.4      **180.1**
+    t10_true     2536.5    120288.6  117752.1      **318.1**
+
+Only #9 and #10 hold meaningful reachable points — 498 combined. Both are then
+**provably forced**:
+
+**#10 — every request is identical.** `L_in = 1024` and `L_out = 8` for all 200
+requests. SJF has nothing to sort and `balw` nothing to balance. For identical
+jobs on saturated resources **mean flow time is invariant under every
+permutation**, so its 318 points cannot be recovered by any scheduler.
+
+**#9 — the schedule is forced.** Every ordering lever produces byte-identical
+tdr (5472.666): `order` F/H/S, `rporder` F/L/S, `pfval` 1.0/16.0, and `balw`
+across a 64x range. Only `rprio = 'D'` moves it, and worse (5609.257).
+
+**Conclusion:** `floor_gap`'s "reachable" figure is a *resource* bound that
+assumes ordering has leverage. Direct measurement shows it does not on either
+test. **Truly reachable headroom across all 22 tests is approximately zero.**
