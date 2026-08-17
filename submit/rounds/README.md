@@ -3915,3 +3915,40 @@ With `elapsed ~ const + (L_out-1)*tpot`, further tpot cuts pay at the same slope
 Saturating #22 reaches ~**16345**, within 5 points of the 16350 goal, and #22 is
 the only test still responding to anything. r82 = dpost 0.95, r83 = dpost 0.98.
 Both compile; edge 27/27 each; 61,826 bytes.
+
+## r82 = r83 = 16301.774 — dpost SATURATES at 0.90 on #22
+    dpost 0.05  tpot 8.002  ->  918.904
+    dpost 0.90  tpot 6.008  ->  955.118   +36.214
+    dpost 0.95  tpot 6.008  ->  955.118    0.000
+    dpost 0.98  tpot 6.008  ->  955.118    0.000   (all byte-identical)
+
+My extrapolation was **wrong**: I projected +43.34 from driving tpot to 4.0 on
+the measured slope, but tpot floors at 6.008 and the curve plateaus.
+
+### #22 is saturated, and its 43.3 "open" points are fictional
+    tpot identical at 0.90 / 0.95 / 0.98  -> the decode wave is at minimum
+    mean_tdr 1858.000000 EXACTLY in every build -> prefill is forced
+    elapsed = const + (L_out-1)*tpot, both terms now minimal
+Those 43.3 points are measured against `tp_UB = 43.631`, and tp_UB is computed
+WITHOUT the intra-request serial decode dependency -- proven on `small_2`, where
+it implies a makespan of 425.3 against a physical minimum of 567.3. Same
+fiction as #6 (599), #5 (512), #14 (513).
+
+### Full closure map
+    #3   499 open   contention-free, forced (queue depth 0.02)
+    #5   512        tpot-pinned; the only lever destroys tp
+    #6   599        capacity asymptote 412.8, +13 max
+    #9   262        19 of 23 knobs exactly inert
+    #10  315        18 of 24 inert, mean_tdr literally constant
+    #11  500        arrival-bound, tp pinned at the serial reference
+    #12  195        thin decode, dpost negative
+    #13  271        dpost -6.34, 4 of 18 bind
+    #14  513        tdr AND tpot exactly on the physical floor
+    #22   43        dpost saturated at 0.90
+
+## r84 / r85 — the last two untested things
+r84: #16 dpost 0.90 -> 0.95. #16 gained +0.530 at 0.90 (tpot -37.2%); if it has
+not saturated like #22 did, more remains. A 0.000 result closes the mechanism.
+r85: #22 pieces 2, the last untested binder on the only responsive test. cal_t22
+scores it -4, but that proxy has predicted movement three times where the judge
+returned exactly 0.000, so its losses are not trustworthy either.
