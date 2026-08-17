@@ -2834,3 +2834,57 @@ NOT the +12.8 needed.
 is interior and 0.25 is merely the best of three; 0.45 tests the untested side.
 
 Verification: compiles; edge 27/27; unseen exposure **+0.28 (win 1 / lose 0)**.
+
+## #5 fully diagnosed — why it is stuck at 487, and what would actually move it
+Instrumented the interactor to separate *avoidable* from *unavoidable* edge idle
+(`$JOB/tmp/idle.py`, patched at the frame boundary):
+
+    EDGE busy=72.6%   IDLE_WITH_WORK=5.8%   idle_no_work=21.6%
+      idle while D_POST pending: 5.7%
+      idle while D_PRE  pending: 0.1%
+      mean requests IN DECODE=58.7   in PREFILL=66.5
+
+**The 5.8% is not waste.** #5 already carries `dpostJoinFraction = 0.9`
+(r64 line 570), so it deliberately waits for 90% of D POST members; the
+breakdown shows nothing else is pending during those waits, and the knob sweep
+confirms 0.9 beats 0 / 0.3 / 0.7 (27948 / 29155 / 30237 against 25774). The idle
+buys larger batches and pays for itself.
+
+**#5 is NOT at a floor.** The longest request (L_out = 348, arrives 1722.4) has a
+serial decode floor of `1722.4 + 348*30.203 = 12233`, against an observed
+elapsed of 25774 -- **52.5% headroom**. Unlike #14 this test is genuinely open.
+
+### The real mechanism: group size = decode concurrency / 8
+Mean decode group is **7.38** (21021 tokens in ~2848 groups) while **58.7**
+requests are in decode. The decode pipeline has exactly 8 stages (DEC_RDY,
+DPRE_RUN, DEC_UP, DPROC_RDY, DPROC_RUN, DEC_DOWN, DPOST_RDY, DPOST_RUN), so the
+58.7 spread evenly gives 58.7/8 = 7.3 per stage -- exactly the observed group
+size. Nothing is capping it (`decodePoolCap = NO_CAP`, `maxg = 4e18`).
+
+This matters because the edge cost curve is **massively sublinear**:
+
+    batch     E-cost/group (2S+dpre+dpost)     E-cost PER TOKEN
+        1                          15.423               15.4230
+        4                          20.153                5.0381
+       64                          39.071                0.6105
+     2048                          74.543                0.0364
+
+At group 7.38 we pay ~3.0/token; at group 64 it would be 0.61 -- a **5x cut in
+edge work**, and E is the bottleneck. Far more than the 4.19% #5 needs.
+
+### Why waiting longer does not capture it
+`dgfrac` accumulates DEC_RDY before issuing, but waiting stalls the pipeline, so
+the gain saturates: the proxy optimum is dgfrac 0.40 at **-1.68%** makespan and
+every other knob is exactly inert on top of it (rprio, order, rporder, eprio,
+strictprefill, radapt, chunk, maxg, balw, pfval; ruse=1 is -60%).
+
+### The structural change that would work
+Group size is set by *decode concurrency*, not by patience. Raising concurrency
+requires clearing prefill faster, but E is the bottleneck and decode E work
+(dpre 22.7% + dpost 28.9% = 51.5%) is what starves it -- a cycle. Breaking it
+needs **bounded-wait decode batching**: accumulate DEC_RDY for a bounded Dt
+derived from SLO2 headroom instead of a fraction of decTotal, which is exactly
+Sarathi-Serve stall-free batching / the SLAI deadline index in
+`docs/PLATEAU_RESEARCH.md` sec 4. Fraction-based waiting cannot express "wait a
+little when the pool is small but never past the SLO", which is the rule the
+literature actually prescribes.
