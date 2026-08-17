@@ -3860,3 +3860,25 @@ so its D PRE twin gets one clean isolated bit. #16 excluded.
 
 Both are r78 plus one change per test, so every delta stays independently
 attributable. Verification: both compile; edge 27/27 each; 61,817 and 62,327 bytes.
+
+## The tpot axis after #7 — exhausted, computed rather than guessed
+Maximum gain available on every test never probed with dpost, assuming ex_tpot
+could be driven all the way to zero:
+
+    #7   ex_tpot 0.2437, 72% of dist   -> **+26.50**   (queued in r80)
+    #14  ex_tpot 0.1083, 63% of dist   -> +15.42, BUT tpot is at the physical
+         floor: mean_tpot = 184.378198 against a computed decode-chain floor of
+         3*(5+49.126) + 2*(10+1) = 184.378. Nothing to cut.
+    #12  ex_tpot 2.1344, 72% of dist   -> +2.00
+    #10  ex_tpot 0.4130, 0.3% of dist  -> +0.00  (dist is 99.7% ex_tdr)
+    #20  ex_tpot 0.0000                -> +0.00  (already under SLO2)
+    #9 #15  tpot = 0 (L_out = 1)       -> nothing to cut at all
+
+**#7 is worth more than every remaining test combined.** Realistic ceiling on
+this axis is 16301.774 + 26.5 = **~16328** if #7 pays in full, so 16350 needs a
+further ~22 from elsewhere -- most plausibly #22's remaining 43.3 open points,
+which is precisely what r81's isolated dgfrac probe measures.
+
+Submission timing is now instrumented: the limit is 2 per rolling 900s, slots
+free 30s apart, and `tools/cooldown.py --quota 2 --watch` reports the exact
+wall-clock moment each opens.
