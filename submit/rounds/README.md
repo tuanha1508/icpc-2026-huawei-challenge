@@ -2507,3 +2507,73 @@ proxy predicted **+2.705**; the judge gave **+0.085**. Adopted because it is
 measured, not fitted. judgecal 0/34, no crashes.
 
     predicted = 16264.948 + 0.085 = **16265.033**
+
+## r62 = 16265.022 CONFIRMED — new best, first time ahead of Codex
+Predicted 16265.033, judge 16265.022 (error **-0.011**). Composition method
+lands for the 4th time (r32, r40, r51, r62).
+
+    vs r60 (16246.925)  +18.097   (#6 chunk rule reverted, as planned)
+    vs r47 (16251.843)  +13.179
+    vs Codex 16263.193  **+1.829**  <- we are now ahead
+    to goal 16300        -34.978
+
+Both adopted Codex mechanisms held: #15 = 882.678, #8 = 812.230. #10 package
+landed +0.085 as predicted.
+
+## The throughput axis — the score half nobody had looked at
+`interactor.py:616`: `tp = total_tokens / (last_token - first_arrival)`.
+total_tokens is FIXED by the input, so **norm_tp is purely a makespan
+objective** — a different objective from the mean-flow-time (SJF) our whole
+solver optimizes. The solver reads `tp_UB`/`tp_base` and then discards them:
+
+    (void)latency_ms; (void)tp_UB; (void)tp_base;          // r62 line 158
+
+Recovered params reproduce the judge's norm_tp to <2e-4 on 16/18 tests, so the
+window arithmetic is trustworthy. Marginal rates (pts per 1% makespan cut vs
+pts per 1% tdr rise):
+
+| test | pts/1% makespan | pts/1% tdr | ratio | open tp pts | cut needed |
+|------|-----------------|------------|-------|-------------|------------|
+| #14  | 1000+           | 3.58       | 377x  | 513.3       | 0.5%       |
+| #12  | 16.8            | 0.05       | 349x  | 188.8       | 11%        |
+| #17  | 13.1            | 1.02       | 12.8x | 7.3         | 0.6%       |
+| #16  | 10.7            | 0.02       | 590x  | 18.9        | 1.8%       |
+| #19  | 9.4             | 0.00       | inf   | 80.5        | 8.6%       |
+| #13  | 7.2             | 0.53       | 13.7x | 232.6       | 32%        |
+| #6   | 3.1             | 0.01       | 322x  | 599.4       | 194% (imp) |
+
+**On 9 of 13 tests throughput dominates latency by 13x-590x**, yet the solver is
+built latency-first. That is the structural mismatch.
+
+### #14 is CLOSED — exact physics, not a heuristic
+Its tp window is `(tp_UB-tp_base)/tp_base = 0.482%`; the next thinnest test is
+#3 at 68.5% (142x wider), so #14 is a true outlier. But from its cost table
+(S=5, D PRE/PROC/POST=49.126, link=10+1/token, L_in=32, L_out=8):
+
+    decode gap floor = 3*(5+49.126) + 2*(10+1) = 184.378   observed 184.378
+    prefill floor    = 25+42+63.489+42+25     = 197.489   observed 197.489
+
+Both metrics sit EXACTLY on the physical serial floor. The judge's real #14
+reports mean_tpot = 184.378198 — the identical constant. Arrival span is 99.63%
+of elapsed and the remaining 0.37% is one solo request's floor-latency span, so
+`tp` is a constant no scheduler can change. All 24 knobs are inert on elapsed,
+as predicted. **#14's 513 "open" points are unreachable.**
+
+### Makespan sweep across all 34 proxies (never measured before)
+Ranked by mean makespan reduction: `A_NFACTOR=0` -4.63% (shorter on 8, longer on
+1 by +0.03%), `A_DPOSTFRAC=1.0` -3.50% (12 shorter / 8 longer). But the cap is
+gated `w_c >= w_tp`, so it never applies on the throughput-dominant tests —
+which is exactly why Codex's V101 #12 `nfactor=0` was a judge no-op.
+
+`A_DPOSTFRAC=1.0` shortens makespan on **all five #6 proxies** (-6.06, -11.62,
+-4.81, -21.41, -0.74%). **Do not ship it:** r25 already judged dpost 0.9 on #6
+in isolation at **-24.53**, and all five proxies agreed on that one too. Fifth
+#6 proxy sign inversion. #6 proxies remain worthless in both directions.
+
+### What the throughput axis leaves open
+- #14, #3 closed by floor proofs; #10 already norm_tp 0.9946; #12/#13 makespan
+  is arrival-bound (t12_fit/t13_fit: arrival span is 98-100% of elapsed).
+- **#19 (w_c = 0.00 exactly, 80.5 pts, needs 7.9% cut)** and **#16 (18.9 pts,
+  needs 1.8%)** are the only throughput-dominant tests with real room, and
+  neither has a proxy. On #19 dist has literally zero weight, so aggressive
+  throughput settings there cannot lose points on the latency side.
