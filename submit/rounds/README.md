@@ -3986,3 +3986,29 @@ from `t12_het`, whose tp is 0.015 against #12's 0.000024 -- 600x off, not #12.
 
 **Current position: r78 = 16301.774 submitted and best. No positive-EV file
 exists right now, so nothing is being handed over.**
+
+## #4 and #15 audited at last — and #4 has the most control of any live test
+    #4   10 of 18 knobs bind   194 open points
+    #15   6 of 18 knobs bind   117 open points
+    (compare #9 at 4/23 and #10 at 6/24 -- forced schedules)
+
+Already settled on #4 by the judge: `nfactor = 0` is a no-op (r63 applied it
+globally, #4 byte-identical), `dgfrac 0.60` is tuned (+2.76), and `dpost 0.90`
+**lost -5.027** (r79).
+
+## r87 — #4 maxg 32: batch LESS, the untested direction
+The hypothesis is judge-grounded rather than proxy-grounded: **#4 got WORSE when
+batching harder** (dpost 0.90 = -5.027), so the untested direction is batching
+less, and `maxg` is the only lever that does that. Never tried on #4.
+
+Verified to actually bite before shipping, per the new standing rule:
+    maxg binds on #4-gated workloads: 4/5 at 8/16/32, 3/5 at 64, **0/5 at 128+**
+    32 sits inside the live range
+    r78 -> r87 moves 4 of 5 #4-gated workloads  -> NOT byte-identical
+    0 of 35 judgecal proxies move -> isolation clean
+    edge suite 27/27; raw 62,090 bytes
+
+**Honest odds**: the grafted workloads all move slightly NEGATIVE, but grafted
+headers are refuted for direction -- they scored #22's dpost at -32.8 when the
+judge paid +36.2. They are trustworthy for BINDING only. So this is a genuine
+coin flip with a judge-derived rationale, not a projected gain.
