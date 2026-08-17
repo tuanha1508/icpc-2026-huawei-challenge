@@ -2577,3 +2577,37 @@ in isolation at **-24.53**, and all five proxies agreed on that one too. Fifth
   needs 1.8%)** are the only throughput-dominant tests with real room, and
   neither has a proxy. On #19 dist has literally zero weight, so aggressive
   throughput settings there cannot lose points on the latency side.
+
+### Pure-throughput sweep, regime-matched to #19 — NO knob helps
+Built 12 `overload`-profile workloads (the profile written to reproduce #19's
+signature), forced `w_tp=1, w_c=0` so score IS makespan with no dist confound,
+then set each `tp_UB` so the r62 baseline lands on #19's exact operating point
+(norm_tp = 0.919530). Result:
+
+    A_NFACTOR=0     +0.00  win 0 lose 0     (inert: cap gated w_c>=w_tp)
+    A_MAXG=2000     +0.00  win 0 lose 0
+    A_ORDER=F       +0.00  win 0 lose 0
+    A_BALW=0        +1.20  win 2 lose 10    (noise, not signal)
+    A_DPOSTFRAC=0   +0.79  win 6 lose  6    (coin flip)
+    A_MARGINAL=0   -78.53  win 2 lose  8
+    A_PIECES=0    -338.02  win 2 lose 10
+    A_DGFRAC=1.0  -627.62  win 0 lose 12
+    A_DPOSTFRAC=1.0 -1220.55 win 0 lose 12
+
+**The r62 configuration is already a local optimum for pure throughput.** Note
+`A_DPOSTFRAC=1.0` loses on all 12 here while shortening makespan on all five #6
+proxies — a third independent refutation of that route (r25 judge -24.53).
+
+### #1 and #2 closed by construction
+`PROBLEM.md:79`: test #1 IS the published worked Example 1. `EXAMPLES.md`: it has
+**exactly one request** (K=1, L_in=4, L_out=1), so the serial walk is the only
+possible schedule and tp = 1/45 is forced; tp_UB = 0.0625 is unreachable. The
+statement states the general rule:
+
+> tp_base equals the rate of exactly the schedule shown — a one-request-at-a-time
+> serial walk. So a serial scheduler scores 0 on the output-rate component **by
+> construction, on every test**.
+
+So norm_tp measures overlap achieved over serial, and #1/#2's ~1000 apparent
+points do not exist. Combined with the #14 floor proof, every large block of
+"open" tp points examined so far is unreachable.
