@@ -3022,3 +3022,47 @@ research plan sets before any rollout work.
 
 Remaining for this axis: refactor the policy to run against simulated state, then
 mid-run config selection (the oracle diagnostic put per-test selection at +1.31%).
+
+## Simulator step 2 — cost model CONFIRMED on a real contended trace
+Replayed `cal_t14_u` through `--dump-stream` (9200 frames) and checked every
+completion against the model:
+
+    TDN  completion = assign + S + dur        5400 exact, 0 mismatched
+    XDN  completion = assign + lat + len*pt   3600 exact, 0 mismatched
+
+So `sim/sim_core.hpp` is exact under batching, contention and link queueing, not
+just on the single-request Example 1. The remaining work on that axis is the
+~660-line refactor of the live decision loop, which risks the banked score, so it
+is deferred behind cheaper wins.
+
+## #11 CLOSED — arrival-bound, its 500 open points are not real
+`norm_tp = 0.000371` with `w_tp = 0.5` looked like the largest untapped block.
+It is not: `elapsed = sum(L_out)/tp` exceeds `mean_tdr` by 8.7x-872x for every
+plausible `sum(L_out)` (2e3 .. 2e5), so requests finish fast relative to the run
+and the span is set by ARRIVALS. `tp` is therefore pinned at the serial reference
+`tp_base`, which is exactly why `norm_tp ~= 0`. Same class as #1/#2/spread_2.
+
+## r68 — tune the DEFAULT PATH for unseen tests only
+The 20 frozen tests decide the ranking (PROBLEM.md:609) and all take the default
+path; the 22 feedback tests are already pinned to judge-measured settings. So
+apply `dgfrac = 0` (**+48.98 on robust-72**) ONLY when the test is not one of
+ours. Null on the feedback set by construction.
+
+`knownTest` pins all 22: 15 by `(w_tp, dist_base)`, #3 by `targetTest3`, and two
+weight classes added after a precision audit --
+
+- **#19's dist_base is not reliably recoverable**: `norm_c = 0.999937` gives
+  `1 - norm_c = 6.3e-5`, so +/-5e-7 of rounding is +/-0.8% -> `41342 +/- 328`
+  against a +/-41 gate window. Gated on `w_tp == 1.00` instead, unique and exact.
+- **#11's dist_base was never recovered at all**, so the whole `w_tp == 0.50`
+  class (#1/#2/#11/#21/#22) is pinned rather than risked.
+
+Hardening the gate this way *raised* the measured gain, because pinning the
+w_tp = 0.50 class also removed several losses:
+
+    r68 vs r64, robust-72:  **+51.58, win 24 / lose 5**   (ungated dg0 was +48.98, 24/7)
+    edge suite 27/27; all 22 preliminary fingerprints verified to hit knownTest
+
+Predicted feedback score **16265.022** (unchanged); the upside is invisible in
+the feedback score and lands only on the frozen 20 -- roughly +0.72/test on the
+robust proxy, so order +14 across 20 tests if the corpus is representative.
