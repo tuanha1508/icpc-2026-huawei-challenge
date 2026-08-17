@@ -2441,3 +2441,35 @@ difference lives in a code path the real #15 exercises and no local artifact doe
 
 This is the same wall as the rest of the session — the real tests respond to
 almost nothing, and the reconstructions do not model the parts that matter.
+
+## r60 = 16246.925 — two Codex mechanisms CONFIRMED, my #6 change failed
+    #15  871.653 -> 882.678   **+11.025**  gapless Ntarget uncap — CONFIRMED
+    #8   810.728 -> 812.230    **+1.502**  eprio CDBA + dpost 0.25 — CONFIRMED
+    #6   399.775 -> 381.752   **-18.023**  chunk rule — FAILED
+
+### The #15 mechanism, finally explained
+`Codex/PROGRESS.md:389` records it: *"#15: 871.653 → 882.678 (+11.025) — cap lift
+transferred (proxy said +54)"*. It is the gapless uncap
+`if (finCount > 0 && gapCnt == 0) Ntarget = NO_CAP`.
+
+Our clamp `valC > valTp && Ntarget >= NO_CAP && exTdr > 0` **fires on #15**:
+`valTp = 0.45 x (1-0.963077) = 0.0166` against
+`valC = 0.55 x (1-0.796851) = 0.1117`, and `exTdr > 0`. So we were capping
+admission on a test whose `mean_tpot = 0` — there is no tpot to protect and the
+cap only inflates tdr, which is the entire score there.
+
+**judgecal showed 0/34 for this change** and it was worth +11.025. Their own t15
+fits also showed 0.000 for both builds. The proxies simply cannot see #15.
+
+### And the #6 chunk rule inverted again
+t6_fit3 — the best-calibrated reconstruction (fit err 0.0155) — predicted
+**+8.725**; the judge delivered **−18.023** (tdr 3213 -> 4108). That is the fourth
+#6 proxy sign inversion this session (r25 dpost, r33 pieces, r55 dgfrac, now the
+chunk rule). **#6 proxies are worthless in both directions.**
+
+## r61 — keep both confirmed gains, drop the failed one
+    predicted = 16252.421 + 11.025 + 1.502 = **16264.948**
+    Codex best 16263.193  ->  ahead by **+1.755**
+
+Verified: t6_fit/t6_fit2/t6_fit3 restored to r54 values, no crashes. Composed
+from measured judge deltas, which has landed exactly in r32, r40 and r51.
