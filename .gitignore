@@ -11,3 +11,4 @@ __pycache__/
 /data/generated/
 /data/stress/
 /data/sweep/
+data/corpus/

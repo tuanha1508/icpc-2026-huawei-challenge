@@ -2645,3 +2645,58 @@ is unreachable on any test with L_out > 1.** norm_tp = 1 is not attainable; the
 "open tp points" computed from tp_UB are systematically overstated. This is the
 single explanation covering #6 (0.334), #5 (0.360), #14 (0.210) and the cliff
 tests at once, and it is consistent with every floor proof found so far.
+
+## r63 — disable the adaptive-N admission controller (nfactor default 1.0 -> 0.0)
+First change this session justified by a LARGE GENERATED corpus rather than
+hand-fitted proxies, and independently predicted by `docs/PLATEAU_RESEARCH.md`.
+
+One line: `double nfactor = 1.0;` -> `0.0`. That disables all three pieces of the
+adaptive-N controller — the initial `Ntarget` cap (line 202) and both shrink
+branches (826, 839).
+
+### Why
+`docs/PLATEAU_RESEARCH.md` names this exact mechanism: deterministic point
+estimates are systematically biased in the direction of the objective's
+selection operator, because substituting the mean ignores that the downstream
+optimizer selects the cheap realizations. **"Our adaptive-N controller is
+exactly such a tuned point estimate."** It also warns that any second controller
+on the same variable interacts destructively with it.
+
+### Evidence
+| corpus | n | result |
+|---|---|---|
+| robust (generated) | 66 | **+387.64, win 14 / lose 0** — never hurts |
+| corpus504 (generated) | 100 so far | +262.46, win 26 / lose 17 (+2.62/test) |
+| judgecal (hand-fitted, real weights) | 34 | +151.62, win 8 / lose 3 |
+| #19-regime pure-throughput | 12 | exactly 0.00 (inert) |
+
+The one large negative is `t3_real` at **-375.68**, but the `t3_*` family
+disagrees violently with itself (+62.5, -375.7, +6.4, +60.8) and the real #3 is
+proven contention-free with all 16 knobs exact no-ops — as is #14, whose two
+proxies also show small losses. Those are the hand-fitted proxies the research
+indicts, not evidence about the judge.
+
+### Verification
+- compiles; stripped **38,989 bytes** of 65,535
+- distinct SHA from r62 (differs by exactly one line)
+- behaviourally identical to `r62 A_NFACTOR=0` on all 34 judgecal proxies
+- edge suite **27/27 pass**, no crash or timeout
+
+### Risk and the fallback rule
+This is a genuine bet, not a composed prediction: it may move the preliminary
+score down. `PLATEAU_RESEARCH.md` §6 confirms **only the LATEST positive-scoring
+submission is evaluated on the frozen tests**, so r63 replaces r62 as our final
+entry the moment it is submitted. r62's exact source is preserved at
+`submit/rounds/r62_t10_package.cpp` and can be resubmitted at any time to
+re-become the selected entry.
+
+### Oracle diagnostic that motivated this (the "is compute worth anything" check)
+Per-test best-of-31-configs vs one global config, 66 robust tests:
+
+    baseline (one global config)   34275.82
+    ORACLE per-test best config    34726.16   gain +450.34 (+1.31%), +6.82/test
+
+Scaled to 22 tests that is ~+150. **85% of it is a single config, nfac0**
+(8 tests, mean +48.12); everything else is small change (dg0 +2.10, dp1 +2.79).
+So per-test policy selection is worth real points, and almost all of the
+currently reachable part is this one setting — which is what r63 ships.
