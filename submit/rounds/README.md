@@ -2213,3 +2213,22 @@ The evidence, in order of strength:
 **16300 is not reachable by tuning or restructuring this solver.** The gap is
 +48; the entire accessible surface has now been measured and yields fractions of
 a point. Best build is **r54, predicted 16252.421**.
+
+## r55 — batch 3, new levers on the tests that responded
+r52/r53 showed #10 and #12 are inert under every lever (capacity- and
+arrival-bound), so they are dropped. #4, #9, #13, #17 all moved, so each gets a
+lever it has not seen; #18 and #22 get first probes.
+
+| test | open | new probe |
+|------|------|-----------|
+| #4 | 194 | `dgfrac` 0.60 -> **0.80** (opposite of the 0.15 loss) |
+| #9 | 264 | `maxg` -> **32** |
+| #13 | 271 | `dgfrac` -> **0.40** |
+| #17 | 110 | `rprio` -> **'D'** |
+| #18 | 84 | `dgfrac` -> **0.00** (first probe) |
+| #22 | 81 | `rporder` -> **'L'** (first probe) |
+
+    judgecal   -0.803 (t13_fit only; the other five are unmeasured locally)
+    crashes    none
+
+Six more independent per-test measurements.
