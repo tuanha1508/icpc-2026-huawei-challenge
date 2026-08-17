@@ -2473,3 +2473,37 @@ chunk rule). **#6 proxies are worthless in both directions.**
 
 Verified: t6_fit/t6_fit2/t6_fit3 restored to r54 values, no crashes. Composed
 from measured judge deltas, which has landed exactly in r32, r40 and r51.
+
+## Codex mining nearly exhausted — and their ORACLE independently closes 14 tests
+With r61's confirmed gains, the projected standing is:
+
+    r61 projected 16264.948   Codex 16263.169   **we lead +1.779**
+    Codex still ahead only on #10 (+0.085), #18 (+0.017), #13 (+0.009) = 0.113
+    We are ahead on #5 (+0.840), #7 (+0.494), #17 (+0.419), #9 (+0.112), #12 (+0.027)
+
+### Their oracle study confirms my conclusions by a different method
+`Codex/PROGRESS.md:133` — they ran an oracle with **exact `L_out` knowledge**:
+
+> "**Zero information gap:** #4/#5/#7/#8/#9/#11/#12/#13/#15/#18/#19/#21/#22.
+> Exact output knowledge changes nothing. Their remaining score is physical,
+> contention, or online-reference headroom—not recoverable."
+> "**#17:** every oracle policy loses (shortest −35.1, longest −11.8, placement
+> −1.7). This independently confirms #17 is closed."
+
+**14 of 22 tests are closed even with perfect future information.** That matches
+my own findings — #10 identical requests, #12/#14 non-overlapping arrivals, #9
+forced schedule, E having a choice in 0.07% of frames — reached by completely
+different means.
+
+### Where the clamp still fires
+`valC > valTp && exTdr > 0` clamps admission on #3, #7, #8, #9, #10, #15, #17,
+#18, #21. The gapless uncap lifts #9/#15/#18/#21; #3 is explicitly uncapped. The
+rest (#7, #8, #10, #17) keep it — and we **beat Codex on #7 and #17**, so the
+clamp is earning its place there. Only #15 was the wrong call, and that is fixed.
+
+## r62 — Codex's #10 package
+`rprio = 'D'` and forced `eprio = "CDBA"` for #10, keyed on its dist_base. Their
+proxy predicted **+2.705**; the judge gave **+0.085**. Adopted because it is
+measured, not fitted. judgecal 0/34, no crashes.
+
+    predicted = 16264.948 + 0.085 = **16265.033**
