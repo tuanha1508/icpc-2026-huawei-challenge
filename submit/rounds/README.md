@@ -2232,3 +2232,38 @@ lever it has not seen; #18 and #22 get first probes.
     crashes    none
 
 Six more independent per-test measurements.
+
+## r55 = 16240.620 — batch 3: 0 gains, 3 losses, 3 zeros
+    #4  dgfrac 0.80   -9.609      #9  maxg 32    +0.000
+    #13 dgfrac 0.40   -1.722      #17 rprio D    +0.000
+    #18 dgfrac 0      -0.471      #22 rporder L  +0.000
+
+Nothing to compose. **r54 (predicted 16252.421) is the high-water mark.**
+
+## FINAL STATE
+| build | score | note |
+|-------|-------|------|
+| r47 | **16251.843** | judge-CONFIRMED |
+| r51 | 16252.309 | confirmed via composition from r52/r53 |
+| **r54** | **16252.421** | r51 + #9 `dgfrac 0`; predicted, not yet submitted |
+
+**17 per-test probes across three batches produced +0.112 total.**
+
+### Why 16300 was not reachable
+- #10 (316 open): remotes **99.6% saturated** — no scheduler creates capacity
+- #12 (195 open): 20 requests over 88M ms that never overlap — arrival-bound
+- #14: needs perfect dist AND −46 ms makespan — contradictory requirements
+- #6: E-bound at 94%, decode batch width capped by N, which arrivals set
+- Every structural alternative (cohort pipelining, wave density, one-remote-per-wave)
+  loses to the same amortisation-vs-utilisation trade
+- `PROBLEM.md:110` pins each request to its prefill remote, closing the main
+  structural degree of freedom
+
+### What the session did deliver
+- **+3798** (unseen w=0.25) from narrowing `legacyQuarter`, an eight-site Codex
+  bundle that was leaking onto every unseen test sharing that weight
+- **+2181** from restoring two `useMarginal` gates that r37 had narrowed against
+  a corpus containing no workloads at those weights
+- A latent **protocol crash** (`group size 0 < 1`) found and root-caused
+- An evaluation standard — at-weight testing, split-half, trimmed sums,
+  probe/reconstruction split — that caught six would-be regressions
