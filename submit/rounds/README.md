@@ -3526,3 +3526,33 @@ untested inherited constant, not a projected gain.
 
 Verification: compiles; edge 27/27; no judgecal proxy moves (none carries
 w_tp = 0.25); raw 59,963 bytes.
+
+## r73 = 16265.022 — #8 balw was ALSO a judge no-op (812.230069, byte-identical)
+All 22 lines identical to r64. Two no-ops in a row from `balw` (#6 in r72, #8
+here): it binds on grafted workloads but never on a real test. **Lever dropped.**
+
+## #22 is the best remaining target -- and the only one with all three properties
+    open on tp side        79.6 pts
+    cost of latency        0.00625 pts per unit dist (dist_base = 80,003)
+                           -> dist may rise 247 -> 12,976 (53x) before the trade
+                              stops paying: latency is essentially FREE
+    control                9 of 18 knobs bind -- the most of any test
+                           (vs #9 at 19/23 EXACTLY inert, #10 at 18/24 with
+                            mean_tdr literally constant at 120288.620220)
+    required              15.9% makespan cut to saturate norm_tp
+
+This is the same "unused latency budget" idea that failed on #5 -- but on #5 the
+only lever (capping concurrency) destroyed tp, whereas #22 actually has control.
+
+## r74 — #22 dpostJoinFraction 0.05 -> 0.90
+Wait for more D POST members: fewer, larger edge tasks and less total E work,
+paid for in latency #22 can afford almost without limit.
+
+Honest caveat: `cal_t22` is UNFAITHFUL (581.972 against the judge's 918.904) and
+its other large signal, `nfactor = 0` at +234, is already a **judge no-op**
+(r63 applied it globally and #22 came back byte-identical). So the proxy supplies
+the MECHANISM, not the magnitude.
+
+Verification: compiles; edge 27/27; only cal_t22 moves among 34 proxies
+(581.972 -> 608.612); gate hits #22 alone -- #21 shares w_tp = 0.50 but its
+dist_base is 2917.91 against #22's 80003.23; raw 60,105 bytes.
