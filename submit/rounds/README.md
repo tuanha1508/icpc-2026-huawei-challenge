@@ -4239,3 +4239,32 @@ showed a partial signal, and stacking them added nothing.
 
     preliminary  16301.792  (r93, new best -- only #17 moved, +0.018)
     corpus       +459.51 t=+2.45 vs r78, which is what the 20 frozen tests run
+
+## THE CORPUS WAS WRONG — every default-path conclusion needs redoing
+Compared `data/corpus` against the parameter distribution of the real 22:
+
+                     REAL 22                          data/corpus (504)
+    w_tp values      17 distinct (0, .05, .15, .25,   only 5 (0,.25,.5,.75,1)
+                     .3, .38, .45, .5, .58, .65,
+                     .67, .75, .8, .9, .98, .99, 1)
+    dist_base = 0    **0 of 18**                      **153 of 504 (30%)**
+    dist_base median 400.4 (max 8e4)                  32.95 (max 1.2e4)
+
+**30% of the corpus was a `dist_base = 0` cliff regime that occurs in ZERO real
+tests**, where comp_c is all-or-nothing and behaves nothing like real scoring.
+And dist_base was an order of magnitude too small, making latency far more
+expensive in the corpus than in reality.
+
+Built `data/corpus2`: 351 tests, cliff cases dropped, w_tp resampled from the
+real 17 values. Re-measured r93 on it:
+
+    old corpus:  +459.51  t=+2.45          <- what I called "validated"
+    corpus2:     +160.47  t=+0.77  win 94 / lose 35  top1 **83.4%**
+
+Still positive with a good 2.7:1 win ratio, but one test carries 83% of the sum
+and it is NOT statistically established. **I overstated r93's evidence.** It is
+worth keeping (zero preliminary cost, leans positive) but is not proven.
+
+Consequently every default-path verdict so far -- "dgfrac and pfval are
+substitutes", "balw is noise", "dpost 0.08 is the peak" -- was measured on the
+flawed corpus and is being re-decided on corpus2 with those candidates restored.

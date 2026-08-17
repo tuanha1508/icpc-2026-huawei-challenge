@@ -14,3 +14,4 @@ __pycache__/
 data/corpus/
 .cf_creds
 .cf_creds.sh
+data/corpus2/
