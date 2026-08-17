@@ -2984,3 +2984,41 @@ record: **provably null on the 22 feedback tests, positive on generated
 corpora** -- it cannot cost the banked 16265.022, and the frozen 20 (which alone
 determine the ranking, PROBLEM.md:609) are unseen-style. r26, r27 and r64 are all
 of this type and all landed as predicted.
+
+## Safe-change search — the knob space is exhausted even for SAFE changes
+Criterion: exactly null on all 34 judgecal proxies AND positive on robust-72.
+
+    config     jc_delta  jc_nonzero    robust   win/lose
+    ruse0        +0.00        0        +0.39      2/0     <== only qualifier
+    dg0         +10.21       12       +48.98     24/7
+    eCDBA        -1.71        1        +1.85      4/0
+    dp1        -745.91       18     -2507.36     11/43
+    pieces2    -340.16       27      -189.96      7/43
+
+`dg0` carries the only real unseen gain (+48.98) but touches 12 proxies, and the
+judge has already priced it: r65 measured #6 dgfrac->0.05 at **-12.239** and #13
+at **-20.115**, and #16 would surrender its measured +3.84. Globally it costs
+~40 on the feedback set. Rejected.
+
+The sole qualifier is `ruse0`, which does not change `ruse` at all (already K) --
+it disables `radapt` through the `getenv` test on line 503. Worth **+0.39 across
+72 tests**, i.e. noise. Not shipped: a no-op round wastes a submission.
+
+## The in-solver simulator — `sim/sim_core.hpp` (step 1 of the last open axis)
+The reason every proxy has failed is now precise: **we invent the workload.** An
+in-solver simulator does not -- it runs on the real observed arrivals, real
+L_in, and the real cost table, so only the FUTURE is uncertain. On #5 all 300
+requests have arrived by t=2192 of a 25774 run, so **91% of that run carries zero
+arrival uncertainty**. That is a fundamentally different error profile from
+t5_fit, which missed #5's throughput by 2.6 points with the wrong sign.
+
+`sim/sim_core.hpp` implements the judge's cost model exactly: `S + dur` per task,
+`transfer(len) = latency + len * 8*bytes_per_token/(bw*1e6)`, independent serial
+FIFO UP/DOWN links, one edge, K remotes, piecewise-linear curves.
+
+**Validated: `sim/validate_example1.cpp` reproduces all 10 published Example 1
+timestamps exactly** (4, 10, 21, 27, 30, 32, 35, 40, 43, 45) -- the gate the
+research plan sets before any rollout work.
+
+Remaining for this axis: refactor the policy to run against simulated state, then
+mid-run config selection (the oracle diagnostic put per-test selection at +1.31%).

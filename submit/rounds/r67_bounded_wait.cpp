@@ -510,6 +510,12 @@ int main() {
     if (const char *e = getenv("A_BW"))       bwEnable = atoi(e) != 0;
     if (const char *e = getenv("A_BWTARGET")) bwTarget = atof(e);
     if (const char *e = getenv("A_BWFRAC"))   bwBudget = atof(e) * SLO2;
+    bool  bpEnable = false;
+    double bpTarget = 0.25;
+    double bpBudget = SLO2;
+    if (const char *e = getenv("A_BWPOST"))       bpEnable = atoi(e) != 0;
+    if (const char *e = getenv("A_BWPOSTTARGET")) bpTarget = atof(e);
+    if (const char *e = getenv("A_BWPOSTFRAC"))   bpBudget = atof(e) * SLO2;
 
     // PROBE A. `legacyQuarter` (w_tp == 0.25) is an eight-site compatibility
     // bundle inherited from the Codex base, and it is the ONLY thing still
@@ -669,6 +675,8 @@ int main() {
     long long decTotal = 0;
     double    dgWaitStart = -1.0;   // when the current group first deferred
     long long dgWaitPeak  = -1;     // pool size at the last deferral
+    double    dpWaitStart = -1.0;
+    long long dpWaitPeak  = -1;
     const long long decodePoolCap = targetTest3 ? 1 : NO_CAP;
     long long decActive = 0;
     vector<double> procWork(K, 0.0);
@@ -1153,7 +1161,20 @@ int main() {
                     long long dpostPool = max((long long)bDpostRdy.size(),
                                               min(decTotal, decodePoolCap));
                     long long futureDpost = dpostPool - (long long)bDpostRdy.size();
-                    if (dpostJoinFraction > 0.0 && futureDpost > 0 &&
+                    if (bpEnable && futureDpost > 0) {
+                        long long ready = (long long)bDpostRdy.size();
+                        bool wantMore = (double)ready < bpTarget * (double)dpostPool;
+                        if (dpWaitStart < 0.0) {
+                            dpWaitStart = t; dpWaitPeak = ready;
+                            if (wantMore) continue;
+                        } else {
+                            bool growing = ready > dpWaitPeak;
+                            if (growing) dpWaitPeak = ready;
+                            bool inBudget = (t - dpWaitStart) < bpBudget;
+                            if (wantMore && inBudget && growing) continue;
+                        }
+                        dpWaitStart = -1.0; dpWaitPeak = -1;
+                    } else if (dpostJoinFraction > 0.0 && futureDpost > 0 &&
                         (double)bDpostRdy.size() < dpostJoinFraction * (double)dpostPool) {
                         continue;
                     }
