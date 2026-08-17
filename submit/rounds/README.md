@@ -4155,3 +4155,34 @@ story for it ("the pool can fill a bigger batch"). That story is now falsified:
 the win is idiosyncratic to #22 itself.
 
 Kept in the tree as a negative result; not shipped.
+
+## r93 — the DEFAULT D POST join fraction 0.05 -> 0.08
+First change since r62 that can move the actual ranking, because the frozen set
+only ever runs the default path.
+
+Full 30-config default-path sweep on the honest 504-test corpus produced exactly
+two candidates clearing three of the four pre-registered criteria:
+
+    dpost 0.08   sum +459.51  t=+2.45  win 75 / lose 42 (1.79x)  top1 31.2%
+    dgfrac 0.25  sum +415.82  t=+2.39  win 104 / lose 81 (1.28x) top1 27.8%
+
+Both fail only `wins >= 2x losses`. On a 196-test subset dpost 0.08 passes that
+(29/14 = 2.07x) while its t drops to 1.85, so it is borderline on both samples
+but positive on both, with the gain SPREAD (top1 ~31%) rather than carried by a
+few tests. Mean +0.91/test = order **+18 across 20 frozen tests**.
+
+They do NOT stack: dpost 0.08 + dgfrac 0.25 scores +65.73 on the subset against
++68.76 for dpost alone, so dpost 0.08 ships alone.
+
+Everything else in the sweep is noise or negative -- `balw` at all five values has
+top1 shares of 42-196% (one test carrying the whole sum), `pfair 0.25` is exactly
+inert, `dgfrac 0.05/0.10` and `dpost 0.02` are negative.
+
+**Bonus: this finally buys real judge evidence about a default.** Most of the 22
+preliminary tests use the default dpost, so their response is 22 genuine
+measurements of a default-path change -- far stronger than any corpus.
+
+Verification: compiles; edge 27/27; the three confirmed dpost winners intact;
+raw 62,342 bytes. Only 1 of 35 judgecal proxies moves, because nearly all of
+them are #3/#5/#6/#12/#14 reconstructions that carry per-test gates -- the real
+preliminary set has far more default-path tests than the proxy set does.
