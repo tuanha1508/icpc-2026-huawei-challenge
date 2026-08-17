@@ -2700,3 +2700,44 @@ Scaled to 22 tests that is ~+150. **85% of it is a single config, nfac0**
 (8 tests, mean +48.12); everything else is small change (dg0 +2.10, dp1 +2.79).
 So per-test policy selection is worth real points, and almost all of the
 currently reachable part is this one setting — which is what r63 ships.
+
+## r63 = 16097.160 FAILED — -167.862, ALL of it on #15
+    #15  882.678 -> 714.815   -167.862   (tdr 7.74M -> 19.30M, norm_c .801 -> .496)
+    all other 21 tests byte-identical -> isolation exact
+
+**This is the most informative failure of the session.** It proves:
+
+1. **The adaptive-N controller exists for #15 and nothing else.** On the other 21
+   preliminary tests disabling it was a byte-identical no-op — including #14 and
+   #12, whose proxies had predicted losses/gains. The judge says those proxies
+   are wrong, again.
+2. **The generated corpora cannot see #15's regime either.** They said +387.64
+   (win 14 / lose 0). Switching from hand-fitted to generated proxies fixed the
+   *distribution* problem but not the *coverage* problem — #15 is a
+   massively-overloaded L_out=1 test (mean_tdr 7.7M) and nothing local reproduces
+   it. A `single`-profile corpus at #15's exact weights sweeps nfactor 0->16 with
+   a total spread of 5 points in 6036 (0.08%); the judge's spread is 167.9.
+3. **The mechanism is now understood.** Line 927 uncaps once the first request
+   finishes; with mean_tdr = 7.7M that happens very late, so the early admission
+   cap governs most of #15's run. Judge ordering:
+
+       uncap-after-first-FIN (r62)   882.678
+       always-cap            (r47)   871.653
+       never-cap             (r63)   714.815
+
+   There is an interior optimum and r62 already sits at the best of the three
+   available triggers. Uncapping *earlier* than the first FIN is what r63 did and
+   it is catastrophic. **No blind nfactor probe on #15 — nothing local can score it.**
+
+## r64 — keep the controller only where latency carries the score
+`w_c >= w_tp` added to both shrink-branch guards. Nothing else changes.
+
+- **r64 == r62 on all 22 preliminary tests, proven by r63's isolation**: #15 has
+  w_c 0.55 >= w_tp 0.45 so the controller stays on (restores the 167.862); and on
+  the other 21, r63 showed disabling it entirely is byte-identical, so disabling
+  it on the w_tp > w_c subset is also a no-op. Predicted **16265.022**.
+- **Unseen upside**: +13.19 on 72 robust tests, **win 8 / lose 0 / tie 64**.
+- edge suite 27/27; compiles; distinct SHA.
+
+The 3 differing proxies (cal_t14_b1 -9.75, cal_t14_b2 -6.50, t12_fit +0.83) are
+refuted directly by r63's judge isolation, which showed #14 and #12 unchanged.
