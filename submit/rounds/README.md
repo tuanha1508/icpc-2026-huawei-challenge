@@ -4217,3 +4217,25 @@ default-path improvement.
 Rest of the 30-config sweep: `balw` at all five values is concentration noise
 (top1 42-196%), `pfair` exactly inert at both values, `pfval 2` negative,
 `pfval 6` +56.92 but top1 70.9%.
+
+## `pfval` also fails to stack — three knobs, ONE underlying effect
+`pfval 8` was the only config in the 30-config sweep to pass all four criteria
+standalone (+123.12, t=+2.26, win 17/5, top1 31.9%). Re-measured on top of r93:
+
+    on r93:  pfval 6   +40.84  t=+0.97  top1 100.1%
+             pfval 8   +54.58  t=+1.32  top1  73.1%
+             pfval 10  +55.84  t=+1.32  top1  71.1%
+             pfval 12  +69.42  t=+1.57  top1  58.7%
+
+The gain halves and concentration jumps to 58-100% -- one test carrying it. Same
+substitute behaviour as `dgfrac 0.25` (+415.82 standalone -> **-3.03** on r93).
+
+**So `dgfrac`, `pfval` and `dpost` are three handles on the SAME underlying
+effect, and `dpost 0.08` captures it best.** That explains why the default path
+looked barren for so long: measured one at a time against the old base each knob
+showed a partial signal, and stacking them added nothing.
+
+**Default path conclusion: r93 is the improvement. It is complete.**
+
+    preliminary  16301.792  (r93, new best -- only #17 moved, +0.018)
+    corpus       +459.51 t=+2.45 vs r78, which is what the 20 frozen tests run
