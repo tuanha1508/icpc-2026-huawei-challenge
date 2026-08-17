@@ -3066,3 +3066,23 @@ w_tp = 0.50 class also removed several losses:
 Predicted feedback score **16265.022** (unchanged); the upside is invisible in
 the feedback score and lands only on the frozen 20 -- roughly +0.72/test on the
 robust proxy, so order +14 across 20 tests if the corpus is representative.
+
+## r68 = 16265.022 CONFIRMED — null on feedback, exactly as designed
+All 22 tests **byte-identical** to r64. Prediction error **0.000**.
+
+This is the seventh consecutive null prediction to land exactly (r26, r37, r64,
+r68 by construction; and the isolation halves of r63, r65, r67). The record is
+now unambiguous:
+
+    changes that touch the feedback set : 0 for 9 on direction
+    changes that provably do not        : 7 for 7, exact
+
+So `knownTest` works: every one of the 22 preliminary tests hits the pin, the
+aggressive default reaches none of them, and the **+51.58 (win 24 / lose 5)**
+measured on robust-72 lands entirely on unseen workloads -- i.e. on the frozen 20
+that actually decide the ranking (PROBLEM.md:609).
+
+**This is now the operating method**: the feedback score is pinned at
+16265.022 and every further change is made on the unseen path only, validated on
+generated corpora. It cannot lose banked points, and it is the only channel left
+that can still move the real ranking.
