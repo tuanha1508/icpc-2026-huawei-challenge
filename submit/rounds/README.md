@@ -3817,3 +3817,46 @@ two more independent answers. Verification: compiles; edge 27/27; raw 61,703.
 
 Submission plan: r78 and r79 go together in one 28-second burst when the window
 opens (slot 1 at 18:33:18, slot 2 at 18:33:46 local).
+
+# r78 = 16301.774 *** NEW BEST *** (predicted 16301.774, error 0.000)
+    #16 979.376647 -> 979.906714  +0.530
+    #21 969.455276 -> 969.462535  +0.007
+    #22 955.117731 unchanged -- r74's +36.214 holds
+    other 19 byte-identical -> isolation exact
+    vs Codex +38.581
+
+## r79 = 16290.408 (-11.366) — BOTH probes failed, and the density rule is wrong
+    #4  805.760 -> 800.733  -5.027   tpot 87.273 -> 83.313 (FELL 4.5%) but tp FELL too
+    #13 728.756 -> 722.417  -6.339   tpot 69.727 -> 71.297 (rose 2.3%)
+
+#4 refutes the `tdr/tpot` density rule directly: tpot fell and the score still
+dropped. **Falling tpot is NECESSARY BUT NOT SUFFICIENT** -- the waiting must
+also not cost throughput, and on #4 it did.
+
+### dpost 0.90, complete judge record over 8 tests
+    #22 +36.214 | #16 +0.530 | #21 +0.007 | #18 0.000
+    #19 -0.846  | #4 -5.027  | #13 -6.339 | #17 -27.310
+Only #22 is a real win. The mechanism is far more test-specific than any rule I
+have been able to formulate in advance.
+
+## r80 — #7 dpost 0.90, the best payoff structure left
+#7 is **w_tp = 0.00, pure latency**, at **248.9 pts per unit dist**. Its tpot
+(65.632) sits just above SLO2 (52.771), contributing ex_tpot = 0.2437 of a total
+dist of 0.3377. A **19.6% tpot cut takes ex_tpot to zero** and removes it from
+dist completely:
+
+    tpot -10%  -> 934.670  (+19.35)
+    tpot -20%  -> 941.815  (+26.50, capped -- ex_tpot cannot go below 0)
+
+dpost cut tpot by 24.9% on #22 and 37.2% on #16, both clearing 19.6%. It also
+left tdr unchanged on #22/#4 and moved it -0.01% on #13, so #7's tdr half should
+survive. #7 is dense (tdr/tpot = 13) -- the one condition that has correlated
+with wins.
+
+## r81 — r80 plus the dgfrac question r77 left unanswered
+r77 applied dgfrac 0.90 to #22 AND #16 together for about -2.4, so the split was
+never measured. #22 is where D POST batching won biggest and still has 43.3 open,
+so its D PRE twin gets one clean isolated bit. #16 excluded.
+
+Both are r78 plus one change per test, so every delta stays independently
+attributable. Verification: both compile; edge 27/27 each; 61,817 and 62,327 bytes.
