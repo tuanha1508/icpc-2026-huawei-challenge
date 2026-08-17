@@ -4132,3 +4132,26 @@ the DEFAULT path.
 feedback number and left the actual score untouched. All remaining effort should
 go to the defaults, validated on `data/corpus` (504 tests, the honest corpus),
 which is what the 30-config sweep now running does.
+
+## r92 — generalising #22's win to the default path: REJECTED on measurement
+r86 had a design bug: it only ever LOWERED patience (`pool < min -> 0.05`) and
+the default is already 0.05, so on the default path it did nothing. The
+direction that could reach frozen tests -- RAISING patience when the pool is fat
+-- had never been tried. r92 does that, gated on `dpostPool >= dpostFatPool`.
+
+Verified off-by-default (0/35 proxies differ), then swept on 196 corpus tests:
+
+    fatPool>=2     -2766.96  t=-2.61  win 31 lose 82
+    fatPool>=4      -581.26  t=-0.46  win 25 lose 62
+    fatPool>=8      -548.97  t=-2.98  win 19 lose 49
+    fatPool>=16     -438.80  t=-2.63  win 21 lose 39
+    fatPool>=32     -369.39  t=-2.46  win 21 lose 25
+    fatPool>=64     -241.21  t=-1.94  win 16 lose 20
+    fatPool>=128    -126.54  t=-1.37  win  5 lose 13
+
+Negative at every threshold, tending to zero only as the rule stops firing.
+**#22's +36.214 does not generalise by pool size** -- which was my entire causal
+story for it ("the pool can fill a bigger batch"). That story is now falsified:
+the win is idiosyncratic to #22 itself.
+
+Kept in the tree as a negative result; not shipped.
