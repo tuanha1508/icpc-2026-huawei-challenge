@@ -3458,3 +3458,43 @@ against the +100.2 needed. No proxy direction is used -- #6 proxies have inverte
 six times.
 
 Verification: compiles; edge 27/27; only t6_fit2 moves among all 34 proxies.
+
+## r72 = 16265.022 — #6 balw was a judge NO-OP (399.774864, byte-identical)
+Predicted from the binding audit: balw moved only 2 of 5 #6 proxies. It moved
+zero of the real one. Lever eliminated, nothing lost.
+
+## WHY WE CANNOT IMPROVE: the big tests have NO CONTROL SURFACE
+Ran a binding audit -- does a knob change the score AT ALL -- on the tests with
+the most open points. This is not about direction; it asks whether our solver has
+any decision to make.
+
+    #9  (262 open)  19 of 23 knobs EXACTLY inert
+                    only PIECES (worse both ways), RPRIO=D (worse), RUSE=1 (fatal)
+    #10 (315 open)  18 of 24 knobs EXACTLY inert, and mean_tdr is LITERALLY
+                    identical (120288.620220) across nearly every setting
+    #13 (271 open)   4 of 18 bind, all small, mostly negative
+    #22 ( 81 open)   9 of 18 bind -- but its proxy is unfaithful (581.972 vs the
+                    judge's 918.904) and its biggest signal, nfactor=0 at +234,
+                    is a JUDGE NO-OP (r63 applied it globally; #22 unchanged)
+
+So the two largest open blocks, #9 and #10, are **forced schedules**: the input
+structure leaves essentially no scheduling freedom, which is exactly why #9's
+11-probe campaign returned +0.112 and #10's Codex package returned +0.085.
+
+### Answer to "is it our solver or the problem?"
+**The problem.** Evidence, graded:
+- PROVEN #14: decode floor `3(5+49.126)+2(10+1) = 184.378` vs judge
+  `mean_tpot = 184.378198`; arrival span is 99.6% of elapsed. tp is a constant of
+  the input; any solver scores the same.
+- PROVEN #9/#10: no knob binds. There is no decision to get right.
+- STRONG #5: `tp = N/tpot`, N = 75.62 fixed by the input; the only tpot lever
+  (capping concurrency) cuts tpot 62.5 -> 18.6 exactly as theory says but
+  collapses tp 0.72 -> 0.19.
+- LIKELY #6: capacity asymptote 0.7503 tok/unit from `T(N) = 2.804 + 1.3328N`;
+  we are at 96% of it, so +13 is the whole prize.
+- STRUCTURAL, all tests: `tp_UB` is computed WITHOUT the intra-request serial
+  decode dependency -- on `small_2` it implies a makespan of 425.3 against a
+  physical minimum of 567.3. `norm_tp = 1` is unreachable for anyone whenever
+  `L_out > 1`, so these tests are built to score low on throughput.
+- CORROBORATION: Codex converged to 16263.193 from a different codebase; we are
+  at 16265.022. Two independent implementations, same wall.
