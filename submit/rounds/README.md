@@ -3655,3 +3655,47 @@ unique among the 22.
 
 Verification: compiles; edge 27/27; every gate verified to hit exactly one
 preliminary test, no collisions; raw 61,809 bytes.
+
+## Cooldown work — a screening idea TESTED AND DISCARDED, and the next round prepared
+
+### Grafted-header screening does not work (validated against a known answer)
+Idea: graft a target test's header onto real workloads and measure whether
+`dpost 0.9` helps, to screen r76's five targets before spending a submission.
+Validated it against the one case where the judge's answer is known:
+
+    #22 grafted-header verdict: **-32.817, win 0 / lose 5**
+    #22 actual judge result:    **+36.214**
+
+Wrong sign, decisively. A test's response is a property of its WORKLOAD, not of
+its scoring header, so grafting cannot screen anything. **Discarded.** Recording
+it because the alternative was to trust it and mis-select r76's targets. This is
+the same discipline that caught the r70 proxy: check the predictor against a
+known result before believing it.
+
+### Per-test tuning map -- where the untouched knobs are
+    test w_tp  D PRE (dgfrac)              D POST (dpostfrac)
+     #4  0.30  0.60 judge +2.76            0.05 DEFAULT
+     #5  0.80  0.10 judge best             0.90
+     #6  0.90  0.25 judge best             0.00
+     #8  0.25  0.00                        0.25 judge +1.502
+     #9  0.05  0.00 judge +0.112           0.05 DEFAULT
+     #16 0.98  0.95 judge +3.84            0.05 DEFAULT
+     #17 0.67  0.18 DEFAULT                0.05 DEFAULT
+     #18 0.58  0.18 DEFAULT                0.05 DEFAULT
+     #19 1.00  0.18 DEFAULT                0.05 DEFAULT
+     #21 0.50  0.18 DEFAULT                0.05 DEFAULT
+     #22 0.50  0.18 DEFAULT                0.90 judge +36.2
+
+### r77 prepared (hold until r76 is judged)
+`dgfrac` 0.18 -> 0.90 on #22 #19 #17 #18 #21 -- the D PRE twin of the r74 win, on
+the same cheap-latency family, stacked on r76.
+
+The judge's own dgfrac history splits exactly along latency cost: on EXPENSIVE
+tests it prefers low (#5 0.10 > 0.18, #6 0.25 > 0.05 and > 0.95, #9 0.00 =
++0.112), but on **#16 -- the one cheap-latency test where it was tried -- it
+preferred 0.95 (+3.84)**. Same rule the dpost result showed: batch hard when
+latency is cheap. #19 is the standout, with w_c = 0.00 (latency literally free)
+and 80.5 open.
+
+Verification: compiles; edge 27/27; raw 63,346 bytes. Held deliberately -- r76's
+five answers should decide which tests r77 keeps.
