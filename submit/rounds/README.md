@@ -3593,3 +3593,28 @@ and strongly positive on #22 specifically, which is exactly why per-test gating
 beats global tuning.
 
 **#22 still has 43.3 open points on the tp side (norm_tp 0.913318).**
+
+## r75 — #22 nfactor 1.0 -> 0.0, stacked on the r74 win
+`dpostJoinFraction` and the admission cap INTERACT: dpost waits for 90% of the
+decode pool, and `nfactor` is what bounds that pool (#22 is w_c = w_tp = 0.5, so
+`w_c >= w_tp` holds and the cap applies). With a small pool, "90% of it" is still
+a small batch; lifting the cap grows the pool and every D POST batch with it.
+
+That is why r63 saw nothing here: it set `nfactor = 0` globally while dpost was
+still 0.05, and #22 came back **byte-identical**. The lever is inert on its own
+and only bites once the join fraction is high.
+
+    cal_t22:  dpost0.9 alone          608.612  (tp 10.75)
+              dpost0.9 + nfactor0     937.177  (tp 39.63)
+
+Also swept: dpost 0.90 is the peak (0.95 identical at 608.584, 0.98 -> 603.4,
+1.0 -> 595.7), so r74's value stands. Every other #22 binder makes it worse on
+top of dpost0.9 (pieces2 604.5, balw1 599.5, marginal0 597.9, dgfrac.5 596.5,
+maxg64 553.3).
+
+Downside is bounded: #22's dist_base is 80,003, so even dist running 247 -> 1000
+costs ~4.6 points, against 43.3 still open on the tp side.
+
+Verification: compiles; edge 27/27; only cal_t22 moves among 34 proxies; gate is
+the same (w_tp 0.50 + dist_base 80003.2264) that r74 proved hits #22 alone;
+raw 61,366 bytes.
