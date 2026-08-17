@@ -9,18 +9,38 @@ exact accepted-at time the web UI does not show you.
 Usage:
     python3 tools/cooldown.py <handle> [--cooldown 900] [--contest 2251] [--watch]
 """
-import argparse, json, sys, time, urllib.request
+import argparse, hashlib, json, os, random, string, sys, time, urllib.parse, urllib.request
 
-API = "https://codeforces.com/api/user.status?handle={h}&from=1&count={n}"
+BASE = "https://codeforces.com/api/"
 
-def fetch(handle, n=20):
-    req = urllib.request.Request(API.format(h=handle, n=n),
-                                 headers={"User-Agent": "cooldown-check/1.0"})
-    with urllib.request.urlopen(req, timeout=25) as r:
-        d = json.load(r)
+def call(method, **params):
+    """Codeforces API call. Signs the request when CF_KEY/CF_SECRET are set,
+    which is required for gym contests and contest.status."""
+    key, sec = os.environ.get("CF_KEY"), os.environ.get("CF_SECRET")
+    params = {k: v for k, v in params.items() if v is not None}
+    if key and sec:
+        params["apiKey"] = key
+        params["time"] = str(int(time.time()))
+        rand = "".join(random.choice(string.digits) for _ in range(6))
+        # apiSig = rand + sha512( rand/method?<params sorted by (key,value)>#secret )
+        qs = "&".join(f"{k}={params[k]}" for k in sorted(params, key=lambda k: (k, params[k])))
+        sig = hashlib.sha512(f"{rand}/{method}?{qs}#{sec}".encode()).hexdigest()
+        params["apiSig"] = rand + sig
+    url = BASE + method + "?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, headers={"User-Agent": "cooldown-check/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=25) as r:
+            d = json.load(r)
+    except urllib.error.HTTPError as e:
+        d = json.load(e)
     if d.get("status") != "OK":
-        raise SystemExit(f"API error: {d.get('comment')}")
+        raise SystemExit(f"API error on {method}: {d.get('comment')}")
     return d["result"]
+
+def fetch(handle, n=20, contest=None):
+    if contest:
+        return call("contest.status", contestId=contest, handle=handle, **{"from": 1, "count": n})
+    return call("user.status", handle=handle, **{"from": 1, "count": n})
 
 def fmt(sec):
     sec = int(sec)
@@ -63,7 +83,7 @@ def main():
     a = ap.parse_args()
     while True:
         try:
-            left = report(a.handle, a.cooldown, a.contest, fetch(a.handle))
+            left = report(a.handle, a.cooldown, a.contest, fetch(a.handle, 40, a.contest))
         except Exception as e:
             print(f"  fetch failed: {e}")
             left = 60

@@ -12,3 +12,5 @@ __pycache__/
 /data/stress/
 /data/sweep/
 data/corpus/
+.cf_creds
+.cf_creds.sh
