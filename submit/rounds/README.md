@@ -2611,3 +2611,37 @@ statement states the general rule:
 So norm_tp measures overlap achieved over serial, and #1/#2's ~1000 apparent
 points do not exist. Combined with the #14 floor proof, every large block of
 "open" tp points examined so far is unreachable.
+
+## The dist_base = 0 cliff, and why tp_UB is not a reachable target
+`interactor.py:637`: when `dist_base == 0`, `comp_c` is a STEP function — 1.0 iff
+`dist == 0`, else 0.0. **24 of 72 robust tests (33%) are these cliff tests.** The
+solver models the latency objective as linear there (line 1030 substitutes
+`distanceBase = 1.0`), i.e. the wrong SHAPE on a third of workloads.
+
+Edge suite: 27/27 pass, no crash or timeout on r62 (checked because a crash on a
+frozen test costs the whole test).
+
+Cliff status on the robust corpus: **PASS 20, FAIL 4** (the 4 are one workload,
+`large_1`, replicated at four weights). On the failures `tdr/SLO1 = 0.21` — huge
+slack — while `tpot/SLO2 = 1.77` blows the cliff; no knob recovers it (best is
+`DGFRAC=0`, 180.19 -> 180.02, needing 101.89).
+
+### tp_UB ignores the serial decode chain — the key structural fact
+On the passing cliffs `comp_tp` is ~0 with `tdr/SLO1` only 0.19-0.25, which looks
+like 10,615 open points. It is not. Three of the four base workloads are
+arrival-bound (spread_2 99.83% of elapsed is arrival span, large_1 99.96%,
+prefill_1 97.8%) — closed exactly like #14. The fourth, `small_2`, is R=2 and
+fully solvable by hand:
+
+    decode chain/token = (S+1.342) + 22.775 + (S+1.914) + 22.775 + (S+0.601)
+                       = 70.197            S = 6.9295, transfers latency-bound
+    req0: L_out=7 -> 7 * 70.197 = 491.4 SEQUENTIAL, after prefill 75.9
+    minimum makespan  = 567.3
+    our elapsed       = 593.07   (4.5% above optimum)
+    tp_UB implies      425.30    <- BELOW the physical minimum
+
+**`tp_UB` is computed without the intra-request serial decode dependency, so it
+is unreachable on any test with L_out > 1.** norm_tp = 1 is not attainable; the
+"open tp points" computed from tp_UB are systematically overstated. This is the
+single explanation covering #6 (0.334), #5 (0.360), #14 (0.210) and the cliff
+tests at once, and it is consistent with every floor proof found so far.
