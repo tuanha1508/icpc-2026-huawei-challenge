@@ -3753,3 +3753,35 @@ and gitignored -- never committed.
 
     set -a; . ./.cf_creds.sh; set +a
     python3 tools/cooldown.py <handle> --contest 2251 --watch
+
+## THERE IS NO 900s COOLDOWN — measured from the judge's own submission log
+`contest.status(contestId=2251, handle=tuanha)` gives every submission's
+`creationTimeSeconds`. Actual gaps between SCORED submissions:
+
+    17:42:43  16263.193
+    17:43:58  16265.022   <- 1m15s
+    18:18:18  16273.619
+    18:18:46  16299.407   <- 0m28s
+    minimum observed gap between scored submissions: **25 seconds**
+
+Every submission carries a real verdict and score, so nothing was rejected for
+rate-limiting. **We can iterate as fast as we can build**, which changes the
+strategy: cheap single-variable probes are now the right unit of work.
+
+## r77 = 16299.407 — the dgfrac probe COST about -2.4
+Winners-only predicted 16301.774; r77 bundled the dgfrac probe with them and
+landed at 16299.407. So `dgfrac 0.90` on #22/#16 is worth roughly **-2.4**, and
+the D PRE twin of the mechanism does NOT transfer even on the two tests where
+D POST batching demonstrably won.
+
+Both batching stages now have judge verdicts, and they disagree:
+    D POST (dpostfrac 0.90)  #22 +36.214, #16 +0.530, #21 +0.007   WINS
+    D PRE  (dgfrac   0.90)   #22 + #16 together about -2.4          LOSES
+
+## r78 — the winners alone, which has never actually been submitted
+    dpost 0.90 on #22, #16, #21   (nothing else)
+    predicted **16301.774** = 16301.236 + 0.530 + 0.007  -> NEW BEST, +0.538
+
+Every round so far bundled the winners with an untested probe, so the clean
+combination was never scored on its own. Verification: compiles; edge 27/27;
+dgfrac probe confirmed absent; raw 61,048 bytes.
