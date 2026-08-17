@@ -3407,3 +3407,54 @@ dressed up. It is the only direction with judge evidence behind it.
 
 Verification: compiles; edge 27/27; only the #5 proxies move; raw 59,731 bytes.
 No proxy was used to justify this change.
+
+## r71 = 16264.750 — #5 dgfrac 0.00 is -0.272; the axis now has an interior optimum
+    dgfrac 0.18 -> 486.332   (-0.840)
+    dgfrac 0.10 -> 487.172   <- OPTIMUM, current
+    dgfrac 0.00 -> 486.900   (-0.272)
+Bracketed on both sides by the judge. Closed.
+
+## #5 IS TPOT-PINNED — proved from the judge's own four probes
+    build                    tp        tpot    tp predicted by const/tpot   err
+    r64 (current)        1.210093   62.4873          1.210093             +0.00%
+    r67 bounded-wait     1.208971   62.6415          1.207114             -0.15%
+    r71 dgfrac 0         1.208971   62.6415          1.207114             -0.15%
+    r70 pieces2+barrier  1.153253   66.0373          1.145042             -0.71%
+
+`tp = const / tpot` holds to **<0.8% across a 5.7% swing in tpot**, so
+`elapsed = max_Lout * tpot`: #5's makespan is ONE request decoding serially,
+exactly like #14. Consistency check: `sumLout/max_Lout = tp*tpot = 75.6`, well
+inside the statement's `sum(L_out) <= 2e5, L_out <= 512`.
+
+Reaching 500 needs tpot 62.487 -> 59.867 (-4.19%). **r64 already achieves the
+lowest tpot ever measured**; every probe raises it, because each adds per-task
+overhead to the decode wave, and `maxg` is unbounded so batching is already
+maximal. **#5 cannot reach 500.**
+
+## #6 fails the same test — its makespan IS schedulable
+    #6 r64          tp 0.720082  tpot 69.7920
+    #6 dgfrac 0.05  tp 0.691655  tpot 69.8076   tpot flat (+0.02%), tp fell 3.9%
+If #6 were tpot-pinned tp would have moved 0.02%. It moved 3.9%, so #6 is
+contention-bound. It needs +100.225 = a **24.4% makespan cut** (keeping norm_c;
+norm_c is only worth 99.2 points in total, so sacrificing it cannot fund the gap).
+
+### Binding audit on #6 (does a knob change ANYTHING, before spending a judge bit)
+    binds 5/5: MAXG=64, MARGINAL=0, RUSE=1, PIECES=2, DPOSTFRAC=0.5
+    binds 4/5: PFVAL=2
+    binds 2/5: BALW, ORDER=F, PFAIR
+    binds 0/5: EPRIO CDBA/DCBA, RPORDER=F, CHUNK=1
+Of the 5/5 binders every one is already judge-refuted on #6 (pieces r33, dpost
+-24.53, chunk -18.023) or structurally bad (RUSE=1 was -60% elsewhere;
+MARGINAL=0 disables the prefillBoost=14 that #6 depends on).
+
+`prefillBoost` is closed too: 14 is **judge-confirmed +1.64** over the default 4,
+and above 14 the proxies saturate (t6_fit identical at 14/20/28/40) matching the
+ledger's "prefillBoost 1->64 globally: inert (0.4 spread)".
+
+## r72 — #6 balw 4.0 -> 8.0
+The only untested, non-refuted lever left on #6. Stated honestly: it binds on
+only 2 of 5 #6 proxies, so it may be a judge no-op, and its magnitude is small
+against the +100.2 needed. No proxy direction is used -- #6 proxies have inverted
+six times.
+
+Verification: compiles; edge 27/27; only t6_fit2 moves among all 34 proxies.
