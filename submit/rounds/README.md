@@ -4094,3 +4094,41 @@ them.
 Both keep the three confirmed dpost winners. Both compile; edge 27/27.
 Running tally of per-test probes: dpost 9 tests, order 6, eprio 7, dgfrac 6,
 nfactor 22 (via the r63 global), balw 2, maxg 1, pieces 3.
+
+## Statement update 2026-08-17 — EDITORIAL ONLY
+The diff is a single cross-reference rename, "Legend" -> "Output Steps", inside
+the transfer-time sentence. The formula is unchanged and our implementation
+still matches it exactly:
+
+    transfer = latency_in_ms + 8*data_bytes/(bandwidth_gbps*1e6),
+    data_bytes = len * bytes_per_token
+    solver line 173 and sim line 93 both compute 8*bpt/(bw*1e6)
+    Example-1 check reproduces the statement's 3 ms and 6 ms
+
+(I initially flagged "YES, THERE WILL BE A SYSTEM TEST" as new; it is simply
+absent from our abridged local copy, not part of this update.)
+
+## r91 = 16295.185 (-6.589) — `pieces` closed
+    #9 -6.6147 | #12 -0.0015 | #13 0.0000 | #15 -0.0002 | #17 **+0.0273**
+Only #17 gains, by 0.027. Negligible. r78 = 16301.774 remains best.
+
+# THE POINT I SHOULD HAVE LED WITH
+The ranking is the arithmetic mean of the **20 frozen tests**; the 22
+preliminary are feedback only. r78 carries **20 `nearBase()` gates**, each keyed
+to a preliminary test's `dist_base` with a 1e-3 window -- a frozen test will
+essentially never match one, so on the frozen set every gate falls through to
+the DEFAULT path.
+
+**Therefore every per-test gain measured so far is worth ZERO on the ranking:**
+
+    #22 dpost +36.214 | #16 dpost +0.530 | #21 dpost +0.007
+    #8 eprio +1.502   | #6 rprio +3.18   | #4 dgfrac +2.76
+    #9 dgfrac +0.112  | #16 dgfrac +3.84 | #10 package +0.085
+
+    preliminary 16301.774   <- what we have been optimising
+    frozen mean             <- set ONLY by the default path
+
+**The default path has not changed since r62.** Every round since has moved the
+feedback number and left the actual score untouched. All remaining effort should
+go to the defaults, validated on `data/corpus` (504 tests, the honest corpus),
+which is what the 30-config sweep now running does.
