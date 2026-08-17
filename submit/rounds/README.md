@@ -3952,3 +3952,37 @@ not saturated like #22 did, more remains. A 0.000 result closes the mechanism.
 r85: #22 pieces 2, the last untested binder on the only responsive test. cal_t22
 scores it -4, but that proxy has predicted movement three times where the judge
 returned exactly 0.000, so its losses are not trustworthy either.
+
+## Nothing ships this round — three candidates built, validated, and REJECTED
+New standing rule from the user: every delivered file must be a real improvement
+attempt; never hand over something that will score byte-identical. Applying it:
+
+- **r84 (#16 dpost 0.90 -> 0.95)** -- REJECTED. On 8 workloads carrying #16's
+  header the step is identical on **7 of 8**, and the one that moves goes
+  NEGATIVE (235.487 -> 234.362). Same saturation as #22. Deleted.
+- **r85 (#22 pieces 2)** -- REJECTED. #22 is demonstrably saturated (tpot 6.008
+  identical at dpost 0.90/0.95/0.98, mean_tdr fixed at 1858.000000) and cal_t22
+  scores pieces at -4. A likely loss, not an improvement. Deleted.
+- **r86 (ADAPTIVE dpost)** -- built and REJECTED on measurement. The judge data
+  said dpost wins on fat pools (#22 -24.9% tpot, #16 -37.2%) and loses on thin
+  ones (#17 +49.4%, #7 +2.1%), and a fixed fraction cannot distinguish them, so
+  patience was gated on ABSOLUTE pool size. Verified off-by-default
+  (byte-identical to r78 on all 35 proxies), then swept:
+
+        minPool    cal_t22   t5_true   t5_fit
+           0       608.612   487.596   274.648   (= r78)
+           4       592.508   487.555   273.321
+          16       595.104   487.300   269.867
+          64       596.941   485.000   265.617
+
+  Worse at every threshold on every test -- those pools are already fat enough
+  that waiting for 90% is right. Kept in the tree as a negative result.
+
+### #12 also closed
+Its faithful proxy is `t12_fit` (tp = 0.000024, matching the judge exactly), and
+on that proxy NOTHING binds: `order='F'` gives 820.582 both ways. The +4.23 came
+from `t12_het`, whose tp is 0.015 against #12's 0.000024 -- 600x off, not #12.
+#12 joins #9, #10 and #3 as a forced schedule.
+
+**Current position: r78 = 16301.774 submitted and best. No positive-EV file
+exists right now, so nothing is being handed over.**
