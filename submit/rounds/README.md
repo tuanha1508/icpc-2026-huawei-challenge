@@ -3128,3 +3128,36 @@ t10_true, cal_t22 all byte-identical to r64).
 
     predicted feedback  16265.022  (null by construction, as r68 confirmed)
     robust-72 unseen    +411.73  win 30 / lose 4   (r68 was +51.58)
+
+## CORRECTION — robust-72 is NOT an unseen corpus, and r68/r69 are harmful on unseen tests
+Ran the concentration check that my own robust standard requires, and r69's
+headline fails it:
+
+    r69 on robust-72: +411.73   top-1 share 59.4% (t13_fit__w025 alone, +244.53)
+                                top-3 87.3%, top-5 95.4%
+                                only 7 distinct base workloads win
+
+The winners are `t13_fit`, `cal_t3_burst`, `t6_fit3` -- **reweighted clones of
+preliminary reconstructions**, not novel workloads. `data/robust` is the same
+handful of tests at different w_tp, so it measures "does this help #13 at a
+weight #13 does not have", which is not the question.
+
+Re-measured on `data/corpus` (9 profiles x 56 seeds across the DECLARED
+constraint space), 131 fast tests, no reweighted clones:
+
+    r68 (dgfrac = 0 unseen)          sum  -60.27  win  8 / lose 20
+    r69 (+ nfactor = 0, dpost = 0)   sum -342.21  win  5 / lose 12
+
+**Both are negative.** The sign flips against robust-72. So the +51.58 and
++411.73 figures were corpus artifacts, and r68 -- which is already submitted --
+carries an unseen-path change that most likely HURTS the frozen 20. Its feedback
+score is unaffected (16265.022, byte-identical, confirmed), but that was never
+the risk.
+
+**Correct build is r64**: same 16265.022 feedback score, no unseen-path change,
+no unvalidated risk. The lesson is procedural, not about any one knob: the
+concentration check must run BEFORE shipping, not after. It is the same failure
+that made `nfactor = 0` read +387.64 on robust-72 immediately before the judge
+charged -167.862 -- I had the tool and did not apply it.
+
+`data/corpus` is now the corpus of record for unseen-path decisions.
