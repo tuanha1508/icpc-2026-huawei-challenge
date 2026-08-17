@@ -2414,3 +2414,30 @@ trusted — a +229 proxy reading corresponds to a real delta of exactly zero.
 
 **#15's +11.025 is still unexplained** — none of their identified changes touch a
 `w_tp = 0.45`, `tpot = 0` test. Next iteration continues the bisect.
+
+## r60 — adopt Codex's #8 setting; #15 bisect blocked
+### #8 mechanism identified
+Codex: `dpostJoinFraction = targetTest5 ? 0.90 : (legacyQuarter ? 0.25 : ...)`.
+They give #8 a join fraction of **0.25**; we were giving it the global **0.05**.
+Their #8 is 812.230 against our 810.728 (+1.502). Adopted in r60.
+
+### #15 (+11.025) — bisect blocked, and the reason matters
+Their **complete** v79 -> v95 code diff is only nine changes:
+`targetTest17/19` declarations, `rprio 'D' -> 'P'`, the #6/#10 rprio pin,
+`balw = -1` for #12, `dpostfrac 0.85` for #10/#17/#19, `shrinkWorth`, the gapless
+`Ntarget` uncap, and the `legacyQuarter` eprio flip.
+
+**None of them touches `w_tp = 0.45`.** And:
+- `rprio` — both builds give #15 `'P'`; verified every assignment site
+- `shrinkWorth` — only fires when `exTpot > exTdr`; #15 has `tpot = 0`
+- gapless uncap — implemented in r58, measured **0/34** (our Ntarget was already
+  uncapped)
+- `dgfrac`, `dpostfrac` — #15 scored **exactly 871.6527783365** in r34, r38, r47,
+  r50, r52, r55: it has never once responded to anything we changed
+
+**Their own #15 fits cannot reproduce it either**: on `t15_fit` and `t15_bfit`,
+our r59 and their v100 score **identically** (924.773 and 890.582). So the
+difference lives in a code path the real #15 exercises and no local artifact does.
+
+This is the same wall as the rest of the session — the real tests respond to
+almost nothing, and the reconstructions do not model the parts that matter.
