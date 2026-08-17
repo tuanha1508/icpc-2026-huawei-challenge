@@ -3285,3 +3285,41 @@ earlier). It is only reachable by *evaluating* candidate configs, i.e. simulatio
 corpus in under 3 minutes.
 
 **The knob space is closed at full statistical power. r64 stands at 16265.022.**
+
+## Rollout premise tested BEFORE building it — REFUTED (-94.9% of oracle)
+The tractable form of rollout needs no future prediction at all: at a checkpoint,
+replay the OBSERVED PAST under each candidate config (arrivals, L_in and finished
+L_out are all known exactly) and keep the winner. Built `sim/prefix_interactor.cpp`
+(validated: full-length runs still reproduce fast_interactor exactly) and measured
+whether a 30%-prefix score predicts the final ranking, over 60 corpus tests x 14
+configs:
+
+    base (r64 default)         44933.64
+    PREFIX-SELECTED config     44886.25   -47.40  (-0.790/test)
+    ORACLE (final-score best)  44983.60   +49.96  (+0.833/test)
+    -> prefix selection captures **-94.9%** of the oracle
+
+Early behaviour is **anti-correlated** with which config finally wins. Of the 13
+tests where prefix-selection deviated from base, 8 chose `dp.9` -- a config that
+is -2593 globally. This was the *favourable* variant, requiring no prediction;
+a future-simulating rollout is strictly harder, and prediction is already refuted
+(parameter-based selection CV -0.757/test).
+
+**The rollout axis is closed.** The oracle gain of +2.836/test is real but is not
+reachable by any observable signal we have: not test parameters, not early
+runtime behaviour, and not any global setting.
+
+Cost of learning this: ~10 minutes, because the premise was tested before the
+~660-line refactor rather than after. That is the one procedural lesson from this
+session worth keeping.
+
+# FINAL STATE
+    submitted build : r64  (submit/rounds/r64_shrink_gate.cpp)
+    judge score     : **16265.022**  -- session best, +1.829 over Codex's 16263.193
+    goal 16300      : not reached (-34.978); no validated route was found
+
+Closed by proof rather than exhaustion: #1 #2 #3 #11 #14 (exact physics or
+arrival-bound arithmetic), #5 bounded at ~+2.6%, tp_UB unreachable for L_out>1,
+both proxy families refuted for direction, per-test knobs at judge-confirmed
+optima, 504-test sweep with pre-registered criteria yielding no survivor, and the
+rollout premise refuted.
