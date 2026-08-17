@@ -2926,3 +2926,31 @@ identical numbers, which is never a real response surface.
 Verification: compiles; edge 27/27; **unseen exposure exactly 0.00
 (win 0 / lose 0)**; isolation exact -- t5_fit is the only proxy that moves;
 stripped 40,170 bytes.
+
+### Follow-ups to r67 — the #5 ceiling is now bounded
+Three extensions tested, all refuted, and together they bound what #5 can reach:
+
+1. **Bounded-wait on the D POST group** (the LARGER edge cost: 28.85% against
+   22.65%, and all 5.7% of the avoidable idle). Much worse at every setting:
+   -7.30% at bwPTarget 0.9/0.95, -9.69% at 0.5, -12.71% at 0.99, against r64.
+   The existing `dpostJoinFraction = 0.9` fraction rule beats it -- the
+   "growth stalled" signal fires too early for D POST. Reverted.
+2. **`prefillBarrierFraction` retune** on top of r67: 0.3 gives +2.63% against
+   r67's +2.48%. Rejected as overfitting -- at pfbarrier 0.3 every
+   (bwTarget, bwFrac) pair collapses to the identical 25095.684, a degenerate
+   plateau of the same kind that exposed the r67 state-machine bug.
+3. **Clock-only waiting** (drop the "still growing" requirement, wait purely on
+   the budget): +2.63% at bwFrac 18 -- the same ceiling, reached a different way.
+
+**Why they all stop at ~2.6%: mean decode group only moves 7.38 -> 8.1 no matter
+how long we wait.** Group size is decode_concurrency / 8 (8 pipeline stages) and
+concurrency averages 58.7, so ~7.3 per stage. Waiting cannot manufacture members
+that have not arrived; the pool refills at the rate prefill releases requests.
+Reaching group 64 (E-cost/token 0.61) would need ~512 concurrent decoders and #5
+has **R = 300 in total**, of which never more than a fraction are in decode at
+once. The batching axis is therefore bounded at roughly
+
+    +2.6% makespan  ->  +7.6 pts  ->  #5 ~= 494.8      (500 needs +12.83 = 4.19%)
+
+**#5 cannot cross 500 by decode batching.** r67 captures the reachable part
+(+2.48%, ~+7.3); the remaining ~5 points are not in this axis.
