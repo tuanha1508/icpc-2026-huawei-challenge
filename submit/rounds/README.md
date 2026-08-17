@@ -4012,3 +4012,36 @@ Verified to actually bite before shipping, per the new standing rule:
 headers are refuted for direction -- they scored #22's dpost at -32.8 when the
 judge paid +36.2. They are trustworthy for BINDING only. So this is a genuine
 coin flip with a judge-derived rationale, not a projected gain.
+
+## r87 = 16301.774 — #4 maxg 32 was a judge NO-OP (805.760463, byte-identical)
+This invalidates my pre-ship verification method. I checked that r87 "moves 4 of
+5 #4-gated workloads" and shipped on that basis; the real #4 did not move at all.
+
+**Grafted headers do not predict real-test BINDING, not just direction.** The
+full record of that method:
+
+    grafted says BINDS -> judge says NO-OP:  balw on #6 (r72), balw on #8 (r73),
+                                             maxg on #4 (r87)
+    grafted direction wrong by 69 points:    dpost on #22 (grafted -32.8,
+                                             judge +36.2)
+
+So a workload carrying a test's scoring header behaves nothing like that test.
+The only offline check that has ever held is a proxy fitted to the test's own
+tp/tdr/tpot -- and those exist for barely a handful of tests (t12_fit, cal_t14_u,
+t5_true). For every other test there is NO valid offline verification at all.
+
+### What the accumulated judge record actually says
+Per-test knob changes on the real tests are overwhelmingly NO-OPS:
+
+    no-op: #4 maxg, #6 balw, #8 balw, #22 nfactor, #22 nfactor+dpost,
+           #22 dgfrac, #16 dpost 0.95, #18 dpost, #22 dpost 0.95/0.98
+    loss : #17 -27.3, #13 -6.3, #4 -5.0, #7 -4.5, #19 -0.8, and every
+           earlier campaign
+    win  : #22 dpost +36.214, #16 dpost +0.530, #21 dpost +0.007
+
+The preliminary tests are far less responsive than any local model suggests --
+consistent with the binding audits on the FAITHFUL proxies, where t12_fit shows
+nothing binding at all. Only #22 ever had real freedom.
+
+**Position: 16301.774. No verified candidate exists, and for most tests no valid
+offline verification is even possible.**
