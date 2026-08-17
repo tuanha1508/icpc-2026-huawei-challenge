@@ -3368,3 +3368,42 @@ stripped 39,251 bytes.
 
     predicted #5: 487.172 -> ~487.8 (ensemble mean) .. 490.1 (best-fit instance)
     predicted total: 16265.022 -> ~16265.7 .. 16268.0
+
+## r70 = 16251.226 FAILED — -13.797 on #5, and it refutes proxy fitting entirely
+    #5  487.172 -> 473.375   -13.797   (tp 1.210093 -> 1.153253, -4.7%)
+
+The proxy behind r70 was the most rigorously validated artifact of the session:
+
+    t5_true matched the judge to 0.44% on tp / tdr / tpot
+    t5_true independently reproduced the judge's KNOWN #5 dgfrac ordering
+    60-instance ensemble, t = +3.28, win 42 / 18, top1 13.8%
+    all four pre-registered criteria passed
+    judge verdict: -13.797
+
+**A metric-faithful proxy still inverted.** The reason is identifiability: three
+aggregate numbers cannot pin down a workload with ~12 structural parameters. Many
+different workloads produce the same (tp, tdr, tpot) and respond OPPOSITELY to a
+policy change. Matching the operating point is not matching the *response*, and
+no amount of ensemble statistics fixes that -- the statistics were computed on an
+object whose only claim to being #5 was three numbers.
+
+**Consequence: proxy-based prediction for #5 is closed, at every level of rigour
+tried.** Only the judge's own per-test measurements are admissible.
+
+### The complete admissible record for #5
+    dgfrac 0.18                486.332
+    dgfrac 0.10   (r64)        487.172   <- best, current
+    bounded-wait D PRE (r67)   486.899   -0.273
+    pieces2 + barrier.15 (r70) 473.375  -13.797
+
+Every probe moves tp DOWN. r64 is a local optimum for #5 throughput, and the only
+judge-positive move ever found is dgfrac 0.18 -> 0.10 (+0.840).
+
+## r71 — #5 dgfrac 0.10 -> 0.00, single variable
+The endpoint of the one measured-positive gradient, never judged on #5 (r66
+carried it but was never submitted). Linear extrapolation of +0.840 per -0.08
+suggests order **+1**, not the +12.8 needed for 500 -- stated plainly rather than
+dressed up. It is the only direction with judge evidence behind it.
+
+Verification: compiles; edge 27/27; only the #5 proxies move; raw 59,731 bytes.
+No proxy was used to justify this change.
