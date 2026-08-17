@@ -2954,3 +2954,33 @@ once. The batching axis is therefore bounded at roughly
 
 **#5 cannot cross 500 by decode batching.** r67 captures the reachable part
 (+2.48%, ~+7.3); the remaining ~5 points are not in this axis.
+
+## r67 = 16264.750 — bounded-wait REFUTED on the judge (-0.273, all on #5)
+    #5   487.172 -> 486.899   -0.273
+    all other 21 byte-identical (and #6/#13/#15 back at r64 values)
+
+    proxy said:  elapsed 25774.5 -> 25134.1 = +2.48% makespan, score +3.99
+    judge says:  tp 1.210093 -> 1.208971    = -0.093%  (makespan slightly WORSE)
+
+**The key methodological result.** I shipped this arguing that MAKESPAN
+predictions should transfer better than latency ones, because `tp = tokens /
+elapsed` is arithmetic rather than a queueing guess. **They do not.** t5_fit
+misses the throughput quantity by 2.6 percentage points and with the wrong sign.
+Local modelling of #5 is finished -- no further #5 probe may be built on it.
+
+Judge-confirmed state of #5 (487.172, needs +12.828):
+  - dgfrac 0.10 (487.172) > 0.18 (486.332); 0.95 much worse
+  - dpostJoinFraction 0.9 in place
+  - bounded-wait D PRE: **-0.273**
+  - batching ceiling proven ~+2.6% by the concurrency/8 argument
+Every mechanism tried on #5 has now failed on the judge.
+
+### Consequence for strategy
+Both proxy families are now refuted for directional prediction: hand-fitted
+(t5/t6/t13/t3) and generated (robust-72 said nfactor=0 was +387.64 win14/lose0;
+the judge charged -167.862). The judge is the only oracle and costs one round per
+bit. The remaining defensible class of change is therefore the one with a clean
+record: **provably null on the 22 feedback tests, positive on generated
+corpora** -- it cannot cost the banked 16265.022, and the frozen 20 (which alone
+determine the ranking, PROBLEM.md:609) are unseen-style. r26, r27 and r64 are all
+of this type and all landed as predicted.
