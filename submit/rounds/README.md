@@ -2175,3 +2175,41 @@ extrapolation.
 holding 1350 open points produced +0.112. That is strong evidence the visible
 total cannot reach 16300 by tuning this solver — the headroom is real but no
 available lever reaches it.
+
+## Structural rewrite attempted and rejected — one-remote-per-wave
+Implemented the one decode-scheduling change never tried: restrict each wave to a
+**single remote** (the one with most ready requests), maximising that remote's
+D PROC group and pipelining it against E building the next wave, instead of one
+monolithic D PRE followed by K thin parallel D PROCs.
+
+    t6_fit3  **-67.233**   t5_fit **-53.450**   t13_fit -16.815
+    t9_fit    +0.000       t10_true -0.109
+
+Decisive loss. Splitting waves by remote costs far more in D PRE/D POST
+amortisation than it recovers in D PROC grouping — the same
+amortisation-vs-utilisation trade that killed cohort pipelining and the minR
+filter. **The monolithic-wave design is correct.**
+
+## Why the open points are unreachable — the physical bound
+    #10  remote_avg = remote_max = **0.996**, prefill-fraction 0.999
+         -> remotes 99.6% saturated. No scheduler creates capacity.
+    #12  E = 0.008, remote_max = 0.192, everything idle
+         -> 20 requests over an 88M ms span that never overlap.
+
+Those two hold **511 open points** and are bound by physics, not policy. No
+algorithm reaches them.
+
+## Straight answer on 16300
+The evidence, in order of strength:
+1. **11 aggressive per-test probes** on the six largest-headroom tests returned
+   **+0.112 total** — 1 gain, 5 exact zeros, 5 losses.
+2. **Every structural alternative** (cohort pipelining, wave-density filter,
+   one-remote-per-wave) loses, all to the same amortisation trade.
+3. **The two biggest-headroom tests are capacity- and arrival-bound**, which no
+   scheduler can change.
+4. **`PROBLEM.md:110`** fixes each request to its prefill remote, closing the
+   main structural degree of freedom a rewrite would need.
+
+**16300 is not reachable by tuning or restructuring this solver.** The gap is
++48; the entire accessible surface has now been measured and yields fractions of
+a point. Best build is **r54, predicted 16252.421**.
