@@ -3244,3 +3244,44 @@ clones, and the config-selector was cross-validated 2-fold on a 131-test sample.
 Neither shortcut was necessary -- they were forced by a 45-minute sweep cost.
 With the full corpus at 3 minutes, every future claim can carry a concentration
 check and proper k-fold CV before it is shipped.
+
+## FULL 504-test sweep, pre-registered criteria — NO config survives
+Criteria fixed in writing BEFORE the numbers were seen: sum > 0, t > 2.0,
+wins >= 2x losses, and top-1 share < 35%.
+
+    config      sum        t     win  lose  top1%
+    dg.5     +288.29    +1.27     51    75   43.0
+    dp.25    +168.01    +1.02     59    45   69.2
+    dg.3     +136.80    +0.97     63    52   63.6
+    eCDBA     +82.58    +1.54     15     7   46.9
+    balw8     +51.69    +0.66     34    30  137.0
+    balw2      +3.10    +0.05     30    28 1479.1
+    dp0       -35.28    -0.54     26    33
+    pieces2  -186.67    -1.22     41    80
+    rprioD   -348.98    -2.59      9    37
+    dg0      -541.43    -2.06     31    73
+    orderF  -1706.29    -2.11     31    71
+    dp.9    -2593.10    -2.12     40    95
+    nf0     -2822.04    -2.25     24    37
+
+**survivors: NONE.**
+
+`dg.5` shows why the criteria matter: **+288.29 total on 51 wins against 75
+losses** -- the sum is carried by a few large wins while the majority of tests
+get worse. And `dg.5` was **-103.36** on the 131-test subset two rounds ago, so
+it flips sign with sample size; the subset was never adequate either.
+
+`nf0`, which r69 shipped on robust-72's "+358.75, win 24 / lose 5", is
+**-2822.04** here. robust-72 was not merely noisy, it was inverted.
+
+### The oracle is stable and real; no fixed config reaches it
+    oracle over 504 tests: +1429.19 = **+2.836 pts/test**
+    (131-test estimate was +2.567 -- consistent)
+
+So ~+57 across 20 frozen tests exists, it is not reachable by any global setting,
+and it is not predictable from test parameters (CV -0.757/test, measured
+earlier). It is only reachable by *evaluating* candidate configs, i.e. simulation
+-- which is now cheap: `sim/fast_interactor.cpp` is exact and runs the full
+corpus in under 3 minutes.
+
+**The knob space is closed at full statistical power. r64 stands at 16265.022.**
