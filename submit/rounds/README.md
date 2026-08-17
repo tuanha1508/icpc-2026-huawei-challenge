@@ -2300,3 +2300,45 @@ across a 64x range. Only `rprio = 'D'` moves it, and worse (5609.257).
 **Conclusion:** `floor_gap`'s "reachable" figure is a *resource* bound that
 assumes ordering has leverage. Direct measurement shows it does not on either
 test. **Truly reachable headroom across all 22 tests is approximately zero.**
+
+## ROOT CAUSE FOUND — E almost never has a choice
+`docs/OPTIMIZATION_RESEARCH.md` ranks its experiment plan with **"Dynamic `E`
+action index — highest expected score gain"** at #2 and **"Depth-2 rollout"** at
+#4. Both are controllers that pick among the legal actions available whenever E
+is free. I measured the premise directly.
+
+Instrumented the interactor to count, at every frame where E is idle, how many
+**distinct action types** (P PRE / P POST / D PRE / D POST) are legally available:
+
+    test        free-E frames   >=2 types      >=3 types
+    t6_fit3          2867        0  (0.0%)      0 (0.0%)
+    t5_fit           5625       13  (0.2%)      0 (0.0%)
+    t13_fit          3299        0  (0.0%)      0 (0.0%)
+    t9_fit           1615        0  (0.0%)      0 (0.0%)
+    t10_true          344        0  (0.0%)      0 (0.0%)
+    t12_fit          5903        0  (0.0%)      0 (0.0%)
+    TOTAL           19653       13 (0.07%)      0 (0.00%)
+
+**In 99.93% of free-E frames exactly one action type is legal.** The dependency
+structure (P PRE -> UP -> P PROC -> DOWN -> P POST, then D PRE -> D PROC ->
+D POST) serialises so tightly that the scheduler is presented with a forced move
+almost every time.
+
+### This retroactively explains the entire session
+- **r34** SJF admission on #8/#7 — byte-identical output. Nothing to sort.
+- **r35** eprio `ABDC` on #5 — byte-identical. Nothing to order.
+- **All 24 eprio permutations** on t6_fit3 — identical score, tp, tpot, group
+  size and E work.
+- **#9**: `order` F/H/S, `rporder` F/L/S, `pfval`, `balw` all give tdr 5472.666.
+- **The idle-E audit**: E idles only where no legal work exists.
+- **Every ordering/priority knob measuring inert.**
+
+### And it closes the docs' plan
+Items 2 and 4 of the ranked experiment plan — the two highest-value proposals —
+**cannot work on this problem**, because a controller that selects among
+available actions has a single option 99.93% of the time. Item 5
+(survival-based remote load) is placement, which #10 proves invariant when
+requests are identical, and #9 proves forced.
+
+The solver's remaining freedom is **how much to batch**, not **what to run
+next** — and every batching knob has now been swept to its measured optimum.
