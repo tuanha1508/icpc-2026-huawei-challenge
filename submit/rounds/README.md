@@ -3225,3 +3225,22 @@ Parameter-based selection is closed. The oracle gain is only reachable by
 actually *evaluating* configs, i.e. simulation -- which is the rollout axis, and
 the one thing this result does NOT close, because a rollout identifies the config
 by running it rather than by predicting it from features.
+
+## `sim/fast_interactor.cpp` — C++ replacement for the 706-line Python interactor
+Same event model, same tie-breaking (heap key `(t, ord, seq)`, ORD TDN<XDN<ARR),
+same frame batching on exact float equality, same scorer.
+
+**Validated exact** against `tools/interactor.py` on eight tests spanning every
+regime -- cal_t14_u 555.074, t5_fit 274.648, t6_fit3 367.713, t13_fit 552.334,
+t12_fit 820.582, t9_fit 718.397, t10_true 645.469, cal_t22 581.972 -- all match
+to the printed digit.
+
+    heaviest single test   python 11.9s  ->  c++ 4.7s      (harness component ~3.7x)
+    FULL 504-test corpus, 8-way parallel:  **2m55s**
+
+That is the fix for the actual root cause of this session's two errors. Both came
+from thin evidence: r68/r69 were shipped on a 72-test corpus of reweighted
+clones, and the config-selector was cross-validated 2-fold on a 131-test sample.
+Neither shortcut was necessary -- they were forced by a 45-minute sweep cost.
+With the full corpus at 3 minutes, every future claim can carry a concentration
+check and proper k-fold CV before it is shipped.
