@@ -4318,3 +4318,23 @@ r94 bundled two knobs and lost 13.7 with no way to tell which; split them:
     r95 = nfactor 4 only   (prefillBoost restored to 4)
     r96 = pfval 14 only    (nfactor restored to 1.0)
 Both verified behaviourally distinct from r93, from r94, and from each other.
+
+## r95 / r96 JUDGE — clean attribution of r94's -13.706
+    r95  nfactor 4 only  = 16288.087   <- reproduces r94's ENTIRE loss
+    r96  pfval 14 only   = 16301.792   <- EXACT no-op on all 22 preliminary
+Diffing r96 against r94 per-test: the ONLY test that moves is #15
+(868.972 -> 882.678, +13.705). So:
+  * **nfactor 4 = -13.706, 100% of it on #15.** Rejected.
+  * **pfval 14 = 0.000 on preliminary** yet it binds on other workloads
+    locally, so it is a free option: no measured downside, possible frozen-set
+    upside. r96 is the new best-tied build (16301.792) and carries it.
+
+### #15 is the next lever
+nfactor 4 made BOTH of #15's metrics worse (norm_tp 0.982->0.965,
+norm_c 0.801->0.790). More concurrency degraded throughput as well as latency
+= queueing thrash, so the cap is NOT too tight there. Probe the other way:
+    r97 = pfval 14 + nfactor 0.75
+    r98 = pfval 14 + nfactor 0.50
+pfval 14 is a proven preliminary no-op, so bundling it is free and any delta
+from 16301.792 is attributable to nfactor alone. nf0.75 verified to bind on
+12 of 40 sampled corpus2 tests. #15 has 117 pts of headroom, mostly norm_c.
