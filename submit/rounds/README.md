@@ -4440,3 +4440,22 @@ Binding is the strongest of any probe this session: 23/60 and 33/60 overall,
 6/18 and 8/18 on the starving w_tp>=0.75 class (pfTdr managed 4/60).
 The prefill chunk/split axis is NOT retried: pieces defaults to 1 already and
 splitting measured -18.023 on #6 on the judge, so default is the good end.
+
+## r103 / r104 JUDGE — *** FIRST GAIN: 16303.718, new best ***
+    r103  balw  8.0            -> 16281.165   -20.63
+    r96   balw  4.0 (default)  -> 16301.792
+    r104  balw -1.0            -> 16303.718   **+1.926  NEW BEST**
+Monotone in balw all the way down. And balw < 0 is not merely a smaller number:
+it takes a structurally DIFFERENT branch -- balance remotes by request COUNT
+(`load[k]`), ignoring the procWork estimate entirely. The work-weighted
+heuristic was actively hurting. This is the first axis all session that moved
+the score UP, and it is the one the starvation diagnosis pointed at: remote
+selection governs the serial blocking that leaves the engine idle.
+
+## r105 / r106 — walk the rest of the ladder
+    r105 = balw 0.0  (else-branch, pure procWork balancing, decoder term zeroed)
+    r106 = balw 2.0  (weaker decoder penalty than the old default 4)
+Note balw 0 is NOT the same as balw -1: 0 balances by accumulated work, -1 by
+request count. Both are distinct policies and both must be measured.
+Binding: r105 15/25 and r106 10/25 vs r96; they differ from r104 on 14/25 and
+13/25, so neither can come back byte-identical to the new best.
