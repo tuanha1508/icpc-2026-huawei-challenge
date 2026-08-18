@@ -4537,3 +4537,29 @@ Global default 0.08 (line 598). r113 = 0.20, r114 = 0.02.
 An eprio-fallback probe ("CDAB" -> "CDBA" globally, line 1173) was built and
 DISCARDED: it binds 0/25, so the fallback ordering only matters when the
 top-choice action is unexecutable, which is evidently rare. Not shipped.
+
+## r113 / r114 JUDGE — dpost 0.08 is optimal too; ALL scalar knobs now closed
+    dpost 0.02 -> 16303.534  -0.184
+    dpost 0.08 -> 16303.718  *** best ***
+    dpost 0.20 -> 16303.277  -0.441
+A shallow interior optimum at the default. Every tunable scalar is now sitting
+at a judge-verified local optimum: nfactor, pfval, pfTdr, balw, dgfrac, dpost.
+
+### Binding audit of everything still unexplored, on top of r104 (25 tests)
+    RUSE 1     20/25     PIECES 0   20/25     PIECES 3  19/25
+    ORDER L    18/25     ORDER R    16/25     MAXG 8    14/25
+    MAXG 64     8/25     RPORDER L   4/25     RPORDER N  4/25
+    RPORDER C   3/25     EPRIO DCAB  3/25
+    no-ops: RADAPT 0, CHUNK 4, PFAIR 0.5, STRICTPF 1, PFBARRIER 1,
+            RPORDER I, DSPLIT 4   <- never ship these, they are byte-identical
+
+## r115 / r116 — two POLICY changes rather than another scalar
+r115 = order 'R': the highest-response-ratio branch, key = (t - arrivalT)/svcEst,
+  which is unreachable by default. Rationale: 'S' (SJF) minimises MEAN flow
+  time, but dist = sqrt(ex_tdr^2 + ex_tpot^2) with each excess clamped at zero
+  is nonlinear in the tail, so a few starved long requests can hurt it in a way
+  SJF does not price. HRRN ages waiters.
+r116 = maxg 8: decode group size is UNBOUNDED by default (4e18) and nothing
+  caps the tail, yet dgfrac 0.32 measured -13.60 -- over-large groups are the
+  expensive direction.
+Bind 16/25 and 14/25 respectively.
