@@ -4480,3 +4480,23 @@ count primary -- it is the criterion that wins -- and resolve ties:
            term whose removal cost 26.8 points at balw 0, and it targets the
            serial-blocking stall that starves the engine)
 Differ from r104 on 11/25 and 16/25, so neither can return byte-identical.
+
+## r107 / r108 JUDGE — the lowest-index tie-break is a FEATURE
+    r104  ties -> remote 0 (incumbent) -> 16303.718  *** best ***
+    r107  tie-break by procWork        -> 16299.596   -4.12
+    r108  tie-break by decCnt          -> 16285.298  -18.42
+I assumed the index bias was a defect; it is not. Both "fairer" tie-breaks lose,
+and the one that spreads decoders apart loses by 4x. On top of count-balancing,
+CONCENTRATING work on low-index remotes beats spreading it -- packing lets
+prefill batch, while even spreading fragments the batches. Note this also kills
+the decCnt idea a second time from the opposite side: balw 0 (removing decCnt)
+cost 26.8, and r108 (adding decCnt as a tie-break) cost 18.4. The decoder count
+belongs in the work formula, not in the count-balancing branch.
+
+## r109 / r110 — push concentration further
+Generalise in the direction that helped: take the lowest-indexed remote whose
+load is within SLACK of the minimum.
+    r109 = SLACK 1        r110 = SLACK 2
+A SLACK-0 build was compiled and verified score-IDENTICAL to r104 on 25/25
+tests, so the rewrite is a true generalisation of the incumbent rather than a
+behaviour change. r109/r110 differ from r104 on 20/25.
