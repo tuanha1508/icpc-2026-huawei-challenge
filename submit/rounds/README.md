@@ -4677,3 +4677,33 @@ space at all -- that is now measured, not guessed.
     r122 = r121 plus #22 balw 0, #12 and #18 dgfrac 0.32 (+3.92 expected)
 Both differ from r104 on 0/25 corpus2 tests, confirming the gates are correctly
 test-specific and cannot leak onto unseen workloads.
+
+## r121 / r122 JUDGE — *** 16307.631, NEW BEST *** and the oracle is PREDICTIVE
+    r121  #13 gate only  -> 16307.292  +3.574  (predicted +3.57)
+    r122  all four gates -> 16307.631  +3.913  (predicted +3.92)
+Oracle predicted 16307.638; judge returned 16307.631. **Off by 0.007.**
+This is the first predictive method of the session. Every local proxy failed
+(t5_fit, robust-72, corpus2, the #3 reconstructions); per-test judge data works
+because it IS judge data. Consequences for how to run experiments:
+  * a globally-LOSING config still contains per-test winners that can be gated,
+    so bad submissions are still informative and nothing is wasted;
+  * the oracle accumulates monotonically -- every config ever measured stays in
+    it -- so the right move is to sample config-space CORNERS not yet visited
+    and harvest the per-test wins afterwards.
+
+### Correction to an earlier claim in this file
+I wrote that six of the seven laggards were "bit-identical across every config".
+That was wrong. Their SPREAD across the 21 configs is large:
+    #1 500.00   #3 307.89   #5 143.88   #6 97.29   #14 63.67
+    #2 0.00     #11 0.00    <- only these two never move
+What is actually true is narrower: r104/r122 already sits at the best OBSERVED
+value for nearly all of them and every direction probed goes downhill. They are
+at a well-defended local optimum, not frozen.
+
+## r123 / r124 — corner sampling for oracle input
+Both grouping knobs pushed outside every value sampled so far, in both
+directions at once, to maximise new information per submission:
+    r123 = dgfrac 0.45, dpost 0.35     r124 = dgfrac 0.03, dpost 0.005
+Sampled range to date was dgfrac [0.10, 0.32], dpost [0.02, 0.20]. These may
+well lose overall -- that is fine and expected; the value is the per-test rows
+they add to the oracle. Bind 17/25 and 16/25 vs r122.

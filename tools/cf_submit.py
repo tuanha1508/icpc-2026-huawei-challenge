@@ -78,7 +78,18 @@ def submit(page, contest, problem, path, lang_match, do_submit):
     page.select_option("select[name='programTypeId'], select#programTypeId", chosen[0])
     print(f"  language: {chosen[1]}")
 
-    # Codeforces renders a plain textarea; the ACE editor mirrors into it.
+    # The page overlays an ACE editor on #sourceCodeTextarea and copies the
+    # EDITOR's content into the textarea on submit -- so a value injected into
+    # the textarea alone is overwritten and the form posts empty. Turn the
+    # editor off first (that is what the toggle is for), then the plain
+    # textarea is the source of truth.
+    try:
+        cb = page.locator("#toggleEditorCheckbox")
+        if cb.count() and cb.is_checked():
+            cb.uncheck()
+            page.wait_for_timeout(300)
+    except Exception as e:
+        print(f"  [warn] could not toggle the editor off: {e}")
     page.evaluate(
         """([code]) => {
             const ta = document.querySelector('#sourceCodeTextarea')
@@ -87,6 +98,10 @@ def submit(page, contest, problem, path, lang_match, do_submit):
             ta.value = code;
             ta.dispatchEvent(new Event('input',  {bubbles: true}));
             ta.dispatchEvent(new Event('change', {bubbles: true}));
+            if (window.ace) {
+                const host = document.querySelector('#editor');
+                if (host) { try { window.ace.edit(host).setValue(code, -1); } catch (e) {} }
+            }
         }""", [code])
     got = page.evaluate(
         "() => (document.querySelector('#sourceCodeTextarea')"
@@ -97,17 +112,18 @@ def submit(page, contest, problem, path, lang_match, do_submit):
         return 4
 
     if not do_submit:
-        print("  DRY RUN -- form is filled, nothing sent.")
+        print("  FORM READY -- problem, language and source are set.")
+        print("  Click Submit in Chrome to send it. The Cloudflare Turnstile check")
+        print("  on this form is bot-detection, so the submit click stays yours.")
         return 0
 
-    page.click("input.submit, input[value='Submit'], div.submit input[type='submit']")
-    page.wait_for_load_state("domcontentloaded", timeout=60000)
-
-    err = page.locator("span.error").first
-    if err.count() and (err.text_content() or "").strip():
-        print(f"  REJECTED: {err.text_content().strip()}", file=sys.stderr)
-        return 5
-    print(f"  SUBMITTED -> {page.url}")
+    # Intentionally NOT clicking submit. This form carries a Cloudflare
+    # Turnstile token field (input[name=turnstileToken]); posting it from a
+    # script means getting past bot-detection the site deliberately deployed.
+    # An earlier version clicked here, reported "SUBMITTED", and nothing
+    # actually landed -- the post was rejected and the false success was worse
+    # than the failure. Fill the form; let the human click.
+    print("  FORM READY -- click Submit in Chrome to send it.")
     return 0
 
 
