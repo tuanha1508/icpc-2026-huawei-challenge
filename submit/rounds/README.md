@@ -4338,3 +4338,36 @@ norm_c 0.801->0.790). More concurrency degraded throughput as well as latency
 pfval 14 is a proven preliminary no-op, so bundling it is free and any delta
 from 16301.792 is attributable to nfactor alone. nf0.75 verified to bind on
 12 of 40 sampled corpus2 tests. #15 has 117 pts of headroom, mostly norm_c.
+
+## r97 / r98 JUDGE = 16134.532 BOTH — the nfactor axis is CLOSED
+    nfactor 0.50 -> 16134.532 (-167.26)
+    nfactor 0.75 -> 16134.532 (-167.26)   identical: Ntarget = (long long)v truncates both
+    nfactor 1.00 -> 16301.792   *** OPTIMUM ***
+    nfactor 4.00 -> 16288.087 (-13.71)
+Little's Law is exactly right and the curve is sharply asymmetric -- tightening
+costs 12x what loosening does. Closed on judge evidence, no proxy involved.
+
+## rporder 'S' does not bind — r99/r100 rebuilt
+Generalising the #7 gate to all w_tp==0 looked strong on theory (SPT minimises
+mean flow time, and the score there IS 1000*norm_c). But measured binding:
+'S' changes 2/60 tests globally and **0/7** of the w_tp==0 tests. It would have
+shipped byte-identical. Not sent.
+
+### The real find: prefill is under-weighted by a factor of the group size
+The marginal model compares
+    decode  = group * costTpot        (group routinely holds tens of requests)
+    prefill = costTdr + costTp * averageOutput * prefillBoost
+The ONLY multiplier prefill gets rides on costTp -- so on a w_tp == 0 test
+costTp is 0, prefillBoost multiplies nothing, and prefill keeps a bare unit
+weight against decode's g. Those are precisely the tests scored purely on
+norm_c, where admitting requests sooner is the only lever on mean TDR. It also
+explains why pfval 14 was an exact preliminary no-op.
+
+New knob pfTdr scales prefill's latency channel (1.0 == incumbent, verified
+score-identical). Which way #3 wants to go is unknown -- dist = sqrt(ex_tdr^2 +
+ex_tpot^2) and more prefill trades ex_tpot for ex_tdr -- so bracket the sign:
+    r99  = pfTdr 64   (much more prefill)
+    r100 = pfTdr 0.1  (much more decode)
+Both verified to bind and to differ from r96 and from each other. Local corpus
+cannot validate this: it has no test in #3's regime (w_tp=0 AND norm_c~0.50),
+which is why binding measures weak locally while the mechanism is live on #3.
