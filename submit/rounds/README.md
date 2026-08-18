@@ -4371,3 +4371,30 @@ ex_tpot^2) and more prefill trades ex_tpot for ex_tdr -- so bracket the sign:
 Both verified to bind and to differ from r96 and from each other. Local corpus
 cannot validate this: it has no test in #3's regime (w_tp=0 AND norm_c~0.50),
 which is why binding measures weak locally while the mechanism is live on #3.
+
+## r99 / r100 JUDGE — the pfTdr axis is INERT (both no-ops)
+    r99   pfTdr 64  (more prefill) -> 16301.793   no change
+    r100  pfTdr 0.1 (less prefill) -> 16301.793   no change
+A 640x swing in prefill's latency weight moved ZERO of the 22 tests, and #3
+stayed at 500.568. More informative than a loss: the marginal model's prefill
+arms (consider(2) and consider(3)) never win the argmax on any preliminary
+test, so prefill scheduling is decided entirely by the eprio / forcePrefill
+path, NOT by the cost comparison. The "prefill is under-weighted by the group
+size" theory is sound on paper and refuted on the judge. Do not retry it via
+the cost model; any prefill change must go through eprio/forcePrefill.
+
+Also note: rporder 'S' generalisation was killed before submission (binds
+2/60 globally, 0/7 on w_tp==0) -- it would have been byte-identical.
+
+## r101 / r102 — the concurrency GATE, not the factor
+`if (w_c >= w_tp && nfactor > 0.0)` restricts the Little's-Law cap to
+w_tp <= 0.5, so the heaviest throughput tests run with unbounded admission:
+    CAPPED   (w_tp<=0.5): #1 #2 #3 #4 #7 #8 #9 #10 #11 #15 #20 #21 #22
+    UNCAPPED (w_tp >0.5): #5(.80) #6(.90) #12(.99) #13 #14(.65) #16 #17 #18 #19
+#5, #6 and #14 -- the three throughput-starved laggards, holding 1600+ points
+of headroom -- are ALL uncapped. #15 already demonstrated that excess
+concurrency degrades throughput as well as latency (both metrics fell), i.e.
+thrash rather than a trade. So drop the gate and bound concurrency everywhere:
+    r101 = cap everywhere, nfactor 1.0
+    r102 = cap everywhere, nfactor 2.0  (throughput tests may want more slack)
+r101 binds 7/27 of the newly-capped sampled tests; r102 binds 15/60.
