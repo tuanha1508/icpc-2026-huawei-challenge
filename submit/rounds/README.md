@@ -4563,3 +4563,25 @@ r116 = maxg 8: decode group size is UNBOUNDED by default (4e18) and nothing
   caps the tail, yet dgfrac 0.32 measured -13.60 -- over-large groups are the
   expensive direction.
 Bind 16/25 and 14/25 respectively.
+
+## r115 / r116 JUDGE — both closed, one catastrophically
+    r115 HRRN ordering -> 16298.622     -5.10
+    r116 maxg 8 cap    -> 15272.744  -1030.97
+maxg 8 destroys throughput: large decode groups are ESSENTIAL, and dgfrac tunes
+what fraction joins a group rather than capping the group itself. Do not cap
+maxg. HRRN losing confirms SJF is genuinely correct for `order`, as the mean
+flow-time theory predicts -- so both the ordering and the group-size axes are
+closed at their defaults.
+
+## r117 / r118 — the ADAPTIVE split, the last untested mechanism
+pieces = 0 selects pieceCountFor's adaptive branch, p = dur/(chunk*S): split a
+prefill in proportion to how long it actually runs. Every previous splitting
+attempt used a FIXED count (pieces 2 lost on corpus2; dsplit measured -18.023
+on #6 on the judge), and a fixed count pays extra S even on short prefills that
+block nothing. The adaptive rule splits only the long ones, which is the stated
+purpose of the chunk rule -- stopping a long serial P PROC from blocking every
+decoder pinned to that remote, i.e. the exact stall behind the 49% engine idle.
+It also makes `chunk` live; with pieces = 1 chunk is never read, which is why
+A_CHUNK alone measured as a no-op.
+    r117 = adaptive, chunk 4 (default)      r118 = adaptive, chunk 12 (coarser)
+Bind 20/25 and 19/25 vs r104, and differ from each other on 16/25.
