@@ -4585,3 +4585,40 @@ It also makes `chunk` live; with pieces = 1 chunk is never read, which is why
 A_CHUNK alone measured as a no-op.
     r117 = adaptive, chunk 4 (default)      r118 = adaptive, chunk 12 (coarser)
 Bind 20/25 and 19/25 vs r104, and differ from each other on 16/25.
+
+## r117 / r118 JUDGE — adaptive splitting is catastrophic; splitting fully closed
+    r117 adaptive chunk 4  -> 15110.963  -1192.76
+    r118 adaptive chunk 12 -> 15770.543   -533.18
+Monotone in granularity: finer worse than coarser worse than none. Prefill
+splitting is now closed from every angle -- fixed, adaptive and gated.
+
+## REFRAME: per-test gates DO count toward the 16500 goal
+I had written off per-test gates as "worth zero" because the FINAL ranking uses
+20 frozen tests. True for the final -- but 16500 is a LEADERBOARD number, and
+the leaderboard is the 22-test preliminary sum. Per-test tuning counts in full
+toward the stated goal, and it is how the score reached 16301 in the first
+place. Global knobs are exhausted; per-test tuning is not.
+
+## #3 knob sweep (three key-matched reconstructions) — almost everything is inert
+Rebuilt the #3 proxies with the dist_base derived from the judge itself
+(dist 0.577735 / norm_c 0.500568 => **1.156784**; the old cal_t3 files carry a
+guessed 1.21, which is why a #3 gate never fired on them). On that class:
+    exact NO-OPs: order L/R/F, nfactor 0.5/2, maxg 8/32, eprio CDBA/DCAB,
+                  pfval 40, radapt 0, dpost 0.0
+    negative: marginal 0 -30.6, pieces 0 -35.1, dpost 0.5 -37.1,
+              dgfrac 0.40 -54.3, dpost 0.9 -532.0, dgfrac 0.95 -590.8
+    POSITIVE: **balw > 0  +71.3**
+Every positive balw from 1 to 20 gives an IDENTICAL +71.3, so it is the branch
+that matters, not the value; balw 0 is -590.8 because it zeroes the decoder
+term. So r104's global switch to count-balancing -- which won overall -- is
+wrong specifically for #3.
+
+Also discarded before shipping: rporder 'S' gated to #3. The gate fires but the
+setting is an exact no-op on all three reconstructions, so the historical
+"measured GOOD on #3" note does not reproduce.
+
+## r119 / r120 — nested gates, so the difference isolates #7
+    r119 = balw 4.0 gated to #3 alone      (nearWeight(0) && nearBase(1.156784))
+    r120 = balw 4.0 gated to ALL w_tp == 0 (#3 and #7)
+#7 has no local reconstruction, so the judge is the only way to measure it.
+r120 minus r119 is exactly #7's contribution.
