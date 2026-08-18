@@ -4459,3 +4459,24 @@ Note balw 0 is NOT the same as balw -1: 0 balances by accumulated work, -1 by
 request count. Both are distinct policies and both must be measured.
 Binding: r105 15/25 and r106 10/25 vs r96; they differ from r104 on 14/25 and
 13/25, so neither can come back byte-identical to the new best.
+
+## r105 / r106 JUDGE — the balw axis is mapped, and it is NOT monotone
+    balw  8.0 -> 16281.165        balw  2.0 -> 16302.965
+    balw  4.0 -> 16301.792        balw  0.0 -> 16276.887
+    balw -1.0 -> 16303.718   *** BEST ***
+Inside the work-weighted branch the optimum is ~2, and zeroing the decoder term
+(balw 0) costs 26.8 -- so the decoder term genuinely matters. But the separate
+COUNT-balancing branch beats every tuning of the work formula. The win is the
+policy, not the parameter. r104 stands.
+
+## r107 / r108 — fix the tie-break bias inside the winning branch
+The winning branch is
+    for (k = 1; k < ruse; ++k) if (load[k] < load[best]) best = k;
+`load` is a true current count (decremented at line 883), but strict `<` sends
+every tie to the LOWEST-INDEXED remote, biasing dispatch toward remote 0. Keep
+count primary -- it is the criterion that wins -- and resolve ties:
+    r107 = tie-break by procWork  (least accumulated work among equal-load)
+    r108 = tie-break by decCnt    (fewest pinned decoders; this is the exact
+           term whose removal cost 26.8 points at balw 0, and it targets the
+           serial-blocking stall that starves the engine)
+Differ from r104 on 11/25 and 16/25, so neither can return byte-identical.
