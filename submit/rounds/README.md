@@ -4622,3 +4622,25 @@ setting is an exact no-op on all three reconstructions, so the historical
     r120 = balw 4.0 gated to ALL w_tp == 0 (#3 and #7)
 #7 has no local reconstruction, so the judge is the only way to measure it.
 r120 minus r119 is exactly #7's contribution.
+
+## tools/cf_submit.py — automated submission over CDP
+The Codeforces API is READ-ONLY (no submit method), so submission has to go
+through a browser. Playwright driving an already-signed-in Chrome over the
+DevTools protocol costs ~250 tokens per submission; doing the same through the
+Claude-in-Chrome MCP costs ~18-26k, because the 39KB source has to pass through
+the model's context on every round (paste) plus a page read to locate the form.
+The script reads the file from disk instead, so the source never enters context.
+
+No credentials are handled: it attaches to the user's existing session.
+
+    # once, after quitting Chrome:
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+        --remote-debugging-port=9222
+
+    python3 tools/cf_submit.py --file submit/r119_strip.cpp --no-submit   # dry run
+    python3 tools/cf_submit.py --file submit/r119_strip.cpp --wait        # real
+
+--wait blocks on the same 2-per-900s quota logic as tools/cooldown.py, so it
+fires the moment a slot opens and never exceeds the platform limit.
+Verifies the byte count landed in the form before sending, and reports the
+"identical code" rejection Codeforces raises for byte-identical resubmissions.
