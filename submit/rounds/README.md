@@ -4398,3 +4398,45 @@ thrash rather than a trade. So drop the gate and bound concurrency everywhere:
     r101 = cap everywhere, nfactor 1.0
     r102 = cap everywhere, nfactor 2.0  (throughput tests may want more slack)
 r101 binds 7/27 of the newly-capped sampled tests; r102 binds 15/60.
+
+## r101 / r102 JUDGE — capping concurrency everywhere is CATASTROPHIC
+    r101 cap all, nfactor 1.0 -> 14985.8    -1315.99
+    r102 cap all, nfactor 2.0 -> 16168.529   -133.26
+    r96  gate kept as-is      -> 16301.792   *** best ***
+Perfectly monotone: the less concurrency is constrained, the better. The
+`w_c >= w_tp` gate is CORRECT and must stay. The concurrency axis is closed.
+
+### Why: the engine STARVES, it does not thrash
+Instrumented the marginal argmax (counts, not inference). On the #5/#6 class
+(w_tp >= 0.75), of 416,439 idle decisions -- moments when the engine is free:
+    requests admitted and in flight  99.8%
+    work pending                     10.1%
+    genuinely nothing in the system   0.2%
+The engine is essentially never idle for lack of work; it is idle because the
+work is all sitting at the serial remotes. No admission policy can fix that,
+which is exactly why r101 lost 1316.
+
+Argmax winners, same instrumentation:
+                        w_tp==0 (#3)   w_tp>=0.75 (#5/#6)
+    dpost                  44.7%            24.0%
+    decode                 23.9%            25.8%
+    prefill (both arms)     1.1%             1.2%      <- why pfTdr was inert
+    nothing available      30.3%            49.0%
+
+### CORRECTION: not bandwidth-bound
+Xlink is the smallest of (XE, XR, Xlink) on 82% of tests, and I briefly called
+the system bandwidth-bound. That was WRONG. Xest only feeds the Ntarget cap;
+the scoring target tp_UB sits ~150x BELOW the link ceiling (tp_UB/Xlink median
+0.0067, only 2/60 above 1.0). Bandwidth has enormous headroom and is not what
+caps the score. The bubble is remote round-trip latency plus serial remotes.
+
+## r103 / r104 — remote SELECTION, the one untested lever in that area
+balw weights a remote's queued prefill work against the decoders pinned to it
+(`procWork[k] + decCnt[k]*dproc1*balw`), i.e. it governs exactly the serial
+blocking that starves the engine. Default 4.0.
+    r103 = balw 8.0   (avoid remotes with decoders more strongly)
+    r104 = balw -1.0  (structurally different: pure load balancing by count)
+Binding is the strongest of any probe this session: 23/60 and 33/60 overall,
+6/18 and 8/18 on the starving w_tp>=0.75 class (pfTdr managed 4/60).
+The prefill chunk/split axis is NOT retried: pieces defaults to 1 already and
+splitting measured -18.023 on #6 on the judge, so default is the good end.
