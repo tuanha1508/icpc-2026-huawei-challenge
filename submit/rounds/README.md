@@ -4500,3 +4500,26 @@ load is within SLACK of the minimum.
 A SLACK-0 build was compiled and verified score-IDENTICAL to r104 on 25/25
 tests, so the rewrite is a true generalisation of the incumbent rather than a
 behaviour change. r109/r110 differ from r104 on 20/25.
+
+## r109 / r110 JUDGE — strict load balancing is required
+    r104  slack 0 (incumbent) -> 16303.718  *** best ***
+    r109  slack 1             -> 16083.526  -220.19
+    r110  slack 2             -> 15830.876  -472.84
+"Push concentration further" was wrong. The lowest-index TIE-BREAK helps, but
+real imbalance is catastrophic and monotone in slack. Remote dispatch is a
+sharp local optimum at r104; the axis is closed in every reachable direction:
+    tie-break by work  -4.12     slack 1  -220.19
+    tie-break by decCnt -18.42   slack 2  -472.84
+
+Also checked and NOT probed: `order` is already 'S' (SJF) whenever w_c > 0
+(line 505), which is the theoretically optimal policy for mean flow time, so
+the main-queue ordering is already at its best setting. Only w_c == 0 (#19
+alone, w_tp = 1.00) runs FIFO, and makespan is near order-invariant there.
+
+## r111 / r112 — decode group fraction, bracketing the global default
+dgfrac (line 452) defaults to 0.18 for non-gated tests. Bracket it:
+    r111 = 0.32     r112 = 0.10
+NOTE: a first attempt at this pair was built with sed targeting the wrong
+identifier (`decodeGroupFraction` instead of `dgfrac`) and produced two
+byte-identical no-op builds. The 0/25 binding check caught it before delivery.
+The corrected builds differ from r104 on 14/25 each.
