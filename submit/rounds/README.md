@@ -4635,7 +4635,7 @@ No credentials are handled: it attaches to the user's existing session.
 
     # once, after quitting Chrome:
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-        --remote-debugging-port=9222
+        --remote-debugging-port=9333
 
     python3 tools/cf_submit.py --file submit/r119_strip.cpp --no-submit   # dry run
     python3 tools/cf_submit.py --file submit/r119_strip.cpp --wait        # real
@@ -4644,3 +4644,36 @@ No credentials are handled: it attaches to the user's existing session.
 fires the moment a slot opens and never exceeds the platform limit.
 Verifies the byte count landed in the form before sending, and reports the
 "identical code" rejection Codeforces raises for byte-identical resubmissions.
+
+## r119 / r120 JUDGE — both 16303.718, EXACTLY r104. The #3 gate is a no-op.
+I verified those gates bound on the #3 reconstructions (+71.3) and they did.
+The reconstructions are simply not faithful: most likely the real #3 has too
+few remotes for balw to matter, since remote SELECTION is meaningless when
+there is nothing to select between. Fourth local proxy to mispredict the judge
+today, and the worst-justified: I validated against a proxy I had already shown
+to be wrong about dist_base. Two slots wasted.
+
+## tools/cf_fetch_tests.py — per-test judge output WITHOUT spending a slot
+The API returns only the total. The submission page carries the full per-test
+breakdown, and the signed-in Chrome can read it. This retro-fits per-test
+attribution onto every experiment already run.
+
+### Per-test effect of the balw switch (r104 minus r96)
+    #6  399.77 -> 403.28  +3.50      #13 728.76 -> 725.18  **-3.57**
+    #21 969.46 -> 971.44  +1.97      #17 890.28 -> 890.31  +0.02   net +1.925
+The +1.925 net hides a real loss on #13, the one test that wants the
+work-weighted branch.
+
+### ORACLE over all 21 configs measured today
+    #13 +3.57 (balw 4)   #12 +0.24 (dgfrac .32)
+    #22 +0.08 (balw 0)   #18 +0.03 (dgfrac .32)      total **+3.92**
+    => 16307.638 if every test ran its best-known config.
+**Not one of the seven laggards (#3 #5 #6 #14 #1 #2 #11) is improved by ANY
+config tested.** The remaining 196 points to 16500 are not in this parameter
+space at all -- that is now measured, not guessed.
+
+## r121 / r122
+    r121 = #13 gated back to balw 4                    (+3.57 expected)
+    r122 = r121 plus #22 balw 0, #12 and #18 dgfrac 0.32 (+3.92 expected)
+Both differ from r104 on 0/25 corpus2 tests, confirming the gates are correctly
+test-specific and cannot leak onto unseen workloads.

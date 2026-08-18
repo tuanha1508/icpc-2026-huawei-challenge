@@ -7,7 +7,7 @@ by this script.
 
   Start Chrome once (quit it first if it is already running):
     /Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome \\
-        --remote-debugging-port=9222
+        --remote-debugging-port=9333
 
   Dry run (fills the form, never sends):
     python3 tools/cf_submit.py --file submit/r119_strip.cpp --no-submit
@@ -118,7 +118,7 @@ def main():
     p.add_argument("--problem", default="A")
     p.add_argument("--handle", default="tuanha")
     p.add_argument("--lang", default="G++23", help="substring match on the language name")
-    p.add_argument("--cdp", default="http://localhost:9222")
+    p.add_argument("--cdp", default="http://localhost:9333")
     p.add_argument("--no-submit", action="store_true", help="fill the form but do not send")
     p.add_argument("--wait", action="store_true", help="block until a rate-limit slot frees up")
     p.add_argument("--max-wait", type=float, default=1800)
@@ -144,15 +144,20 @@ def main():
             browser = pw.chromium.connect_over_cdp(a.cdp, timeout=15000)
         except Exception as e:
             print(f"cannot reach Chrome at {a.cdp}: {e}\n"
-                  f"Quit Chrome, then relaunch it with --remote-debugging-port=9222",
+                  f"Quit Chrome, then relaunch it with --remote-debugging-port=9333",
                   file=sys.stderr)
             return 7
         ctx = browser.contexts[0] if browser.contexts else browser.new_context()
-        page = ctx.new_page()
+        # Reuse an existing tab. Opening a new one activates Chrome and steals
+        # focus from whatever the user is doing; navigating a tab that already
+        # exists does not. Never call page.bring_to_front() here.
+        page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        opened = not ctx.pages or page not in ctx.pages
         try:
             return submit(page, a.contest, a.problem, a.file, a.lang, not a.no_submit)
         finally:
-            page.close()
+            if opened:
+                page.close()
 
 
 if __name__ == "__main__":
