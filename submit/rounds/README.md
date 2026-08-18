@@ -4294,3 +4294,27 @@ Why each is principled rather than fitted:
 Verified 12/12 score-identical to the measured `A_PFVAL=14 A_NFACTOR=4` config.
 Caveat: t=1.49 and top1=46% both miss the pre-registered bar; the sum is real
 and broad (73 tests move) but a few large tests carry much of it.
+
+## r94 JUDGE = 16288.086  (-13.706 vs r93) — corpus2 does NOT transfer either
+corpus2 predicted +37; the judge gave -13.7. That is now THREE local proxies in
+a row that mispredicted the judge (t5_fit, robust-72, corpus2). Per-test run
+saved to data/judgefeedback/run_r94_16288.086.txt.
+
+Two dead hypotheses, recorded so they are not retried:
+1. **Little's-Law cap throttles the zero-TPOT tests.** Disabling it on all 56
+   such tests in corpus2: +4.58, 7W/7L — noise. #21 refutes it outright: same
+   w_tp=0.50, same tpot=0, cap equally active, yet norm_tp=0.990.
+2. **We under-weight throughput in the cost model.** The tpExp sweep shows
+   exponents 0.25/0.5/0.75/1.5 are EXACT no-ops (zero tests move), which can
+   only happen if `normTpNow` is binary 0/1 for the whole run. So costTp is
+   already at FULL weight on #5/#6 and they still only reach norm_tp~0.34.
+   The laggards are a CAPABILITY limit (under-batching), not a weighting one.
+   tpexp 0 loses -145 (5W/31L), confirming the saturation damping is correct.
+
+### Method change: the judge is the oracle, not the proxy
+2 submissions / 15 min = ~192 per day. We are NOT slot-limited. Since every
+local proxy has failed to transfer, attribute on the judge instead of guessing.
+r94 bundled two knobs and lost 13.7 with no way to tell which; split them:
+    r95 = nfactor 4 only   (prefillBoost restored to 4)
+    r96 = pfval 14 only    (nfactor restored to 1.0)
+Both verified behaviourally distinct from r93, from r94, and from each other.
