@@ -4523,3 +4523,17 @@ NOTE: a first attempt at this pair was built with sed targeting the wrong
 identifier (`decodeGroupFraction` instead of `dgfrac`) and produced two
 byte-identical no-op builds. The 0/25 binding check caught it before delivery.
 The corrected builds differ from r104 on 14/25 each.
+
+## r111 / r112 JUDGE — dgfrac 0.18 is already optimal
+    dgfrac 0.10 -> 16302.204   -1.51
+    dgfrac 0.18 -> 16303.718   *** default ***
+    dgfrac 0.32 -> 16290.119  -13.60
+Interior optimum at the default, asymmetric: over-large decode groups cost 9x
+what under-large ones do. Not worth refining; the local gradient is fractions
+of a point.
+
+## r113 / r114 — bracket the OTHER decode-grouping knob, dpostJoinFraction
+Global default 0.08 (line 598). r113 = 0.20, r114 = 0.02.
+An eprio-fallback probe ("CDAB" -> "CDBA" globally, line 1173) was built and
+DISCARDED: it binds 0/25, so the fallback ordering only matters when the
+top-choice action is unexecutable, which is evidently rare. Not shipped.
