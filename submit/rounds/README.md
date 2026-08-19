@@ -4829,3 +4829,20 @@ So the laggards are not mis-scheduled: #3 is against a bandwidth wall and #5/#6
 against a latency wall. That is why 28 configurations across 15 axes moved them
 by nothing, and it retires the "we are leaving points on the table" framing for
 those tests specifically.
+
+## Addressable headroom on the MID-TIER (walls excluded), current build
+    #10 314.7 LATENCY   #13 232.6 THROUGHPUT   #9 261.9 LATENCY
+    #12 188.8 THROUGHPUT #4 155.3 THROUGHPUT   #8 112.9 LATENCY
+The two biggest are #10 and #9 -- and BOTH are excluded from the marginal cost
+model purely by WEIGHT (nearWeight(0.05) for #9, nearWeight(0.15) for #10), so
+they run the legacy path and have never been measured with the model ON.
+The ledger's earlier note on this axis concerns a DIFFERENT change: narrowing
+the exclusion so it no longer covered other tests at those weights, measured on
+the local corpus, which has since mispredicted the judge five times.
+
+## r129 / r130 — turn the marginal model on for the two biggest blocks
+    r129 = #9  exempted from the exclusion  (dist_base 33.8522)
+    r130 = #10 exempted from the exclusion  (dist_base 388.8822)
+Each keeps the class exclusion intact for every other test at that weight.
+Mechanism verified live: toggling useMarginal binds 4/14 on w_tp<=0.20
+workloads. Gates are single-test, so 0/30 on corpus2 is the correct result.
