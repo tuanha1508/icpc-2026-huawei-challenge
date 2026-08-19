@@ -5181,3 +5181,23 @@ dies by -- and it has never been set per-test. costTp on #12 is enormous
     r155 = #12 prefillBoost 2   (less prefill: free E for decode)
     r156 = #12 prefillBoost 40  (more prefill: clear the backlog faster)
 Default is 14. The two directions bracket the balance.
+
+## r155 / r156 JUDGE — prefillBoost is INERT on #12 in both directions
+    r155 (#12 pfval 2)  -> 16308.545  exact no-op
+    r156 (#12 pfval 40) -> 16308.545  exact no-op
+r155's no-op was itself the diagnosis: lowering the boost can only matter if
+the prefill arm currently WINS the argmax, so a no-op proves it does not, and
+only the upward direction could bind. It did not either. **#12's engine
+contention is not decided by the marginal cost model at all** -- matching the
+global r99/r100 result where prefill arms win only ~1.2% of the argmax and
+pfTdr was inert in both directions.
+
+## r157 / r158 — eprio, the path that actually orders E
+Forcing eprio bypasses the dynamic choice. Action codes: A = D POST, B = D PRE,
+C = P POST, D = P PRE. The dynamic fallback is "CDAB" -- prefill FIRST, which
+is the opposite of what an engine-bound throughput test wants, since P PRE and
+P POST are unbatchable while D PRE/D POST carry whole groups.
+    r157 = #12 eprio "ABCD"  token-emitting steps first, prefill last
+    r158 = #12 eprio "BACD"  D PRE ahead of D POST, prefill still last
+#5 and #13 already carry forced eprio gates ("ABDC", "DCBA"), so the mechanism
+is established; #12 has simply never had one.
