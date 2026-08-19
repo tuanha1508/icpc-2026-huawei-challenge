@@ -5286,3 +5286,36 @@ leverage. #3's "insensitive across all 39 configs" does NOT contradict this:
 every one of those 39 changed a knob VALUE, none changed a gating CONDITION.
 w_c 1.00 >= w_tp 0.00, so r166 reaches #3 as well; r167 additionally covers
 #5 and #6.
+
+## r167 / r163 JUDGE — #3 CLOSED at the mechanism level
+    r167 (forcePrefill on TDR-dominant) -> 16302.991   #6 -5.55, nothing else
+    r163 (#12 kitchen sink)             -> 16306.870   #12 -1.67, nothing else
+**#3 did not move at all**: mean_tdr identical to three decimals (1329.850),
+dist identical, score identical. forcePrefill never fired there, because it also
+requires prefill work to be AVAILABLE (!bPostRdy.empty() || !bArrived.empty())
+at the moment E is free -- and on #3 that never coincides. Identical root cause
+to pfTdr being inert. **#3's TDR is set upstream in the link/remote pipeline,
+not by anything E orders.** Closed by mechanism, not by "seems insensitive".
+
+r166 was NOT submitted -- provably a no-op: r167 drops the w_c >= w_tp guard so
+its scope is a SUPERSET of r166's, and the only test r167 changed was #6
+(w_tp 0.90), which is OUTSIDE r166's scope. Slot saved.
+
+## WIDE SLO re-fit — all 14 dist-bearing tests now fitted
+The earlier grid was far too narrow (for #10, dist 144 implies SLO1 ~ tdr/145,
+i.e. 0.7% of the range searched). Re-fitted over 1e-4..10x:
+    #10 both (97% TDR)   #12 **TPOT only** (the narrow fit had this BACKWARDS)
+    #16 TDR only         #17 TDR only        #22 TDR only
+Full leverage table:
+    LATENCY pts per 1% tdr        THROUGHPUT pts per 1% tp
+    #3 13.73 max 499 CLOSED       #12 14.8 max 189 CLOSED
+    #14 4.82 max 71 floored       #13  7.2 max 233  <-- BEST REMAINING
+    #10 2.84 max 315              #6   3.1 max 597 (needs 2.9x)
+    #7 2.53, #8 1.70, #17 0.94    #5   2.9 max 513 (needs 2.7x)
+
+## r168 / r169 — #13's ENTIRE engine policy has only ever had one value
+#13 carries useMarginal = FALSE, so eprio is not a fallback there -- it IS the
+whole E policy. And it is "DCBA": prefill-first, decode-LAST, on a test that is
+75% throughput-weighted. Only that one string has ever been tried.
+    r168 = "ABCD" token-emitting first   binds 9/12 on w_tp=0.75, local -0.7
+    r169 = "BACD" D PRE then D POST      binds 10/12,              local -15.3
