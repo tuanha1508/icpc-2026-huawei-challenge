@@ -4951,3 +4951,26 @@ what per-test gating exists for.
     r140 = dgfrac 0.75 + dpost 0.60   binds 21/25, local -604.4 -- pure
            exploration of a region no config has entered; expected to lose the
            total, run for the per-test rows.
+
+## r139 / r140 JUDGE — a config that LOST 169 points contained the best row yet
+    r139 nf0.9+dpost.30    -> 16138.023  -169.7   local said +74.4 (7th miss)
+    r140 dgfrac.75+dpost.60-> 16128.755  -179.0   no per-test wins
+nfactor below 1 collapses to the same tight cap regardless of value: 0.9, 0.75
+and 0.5 all land near 16134, because Ntarget = (long long)(SLO2*Xest*nfactor)
+truncates. dpost 0.30 could not rescue it.
+
+**But r139 won per-test where nothing else has:**
+    #4  805.76 -> 806.04  **+0.28**   the largest per-test gain since r122
+    #18 916.17 -> 916.18   +0.01
+ORACLE = 16308.016 (+0.29 over shipped r137). This is the case FOR running
+probes that are expected to lose the total: the per-test rows are the product.
+
+## r141 / r142
+    r141 = r137 + #4 gated to nfactor 0.9 + dpost 0.30   (+0.28)
+                + #18 gated to ruse 3                     (+0.01)
+           expected ~16308.01
+    r142 = dpost 0.30 ALONE, to attribute #4's +0.28 between the two knobs --
+           if #4 gains here too it is dpost, not the nfactor cap.
+Build note: the #4 nfactor gate first failed to compile because nearWeight /
+nearBase are declared at lines 247/265, AFTER Ntarget is computed at ~210. The
+gate now inlines their exact predicates instead of being moved.
