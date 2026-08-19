@@ -5214,3 +5214,26 @@ is established; #12 has simply never had one.
           dist (worth 3.5 points there in total) can only distort a schedule
           whose score is essentially pure tp. Never probed per-test.
     r153  #12 dgfrac 0.70      peak refinement, lowest priority
+
+## r161 / r162 — least-laxity ordering (order 'K'), a rule the solver never had
+    laxity = (arrival + SLO1 - now) - svcEst  =>  least-laxity-first maximises
+    (svcEst + waiting)
+Distinct from all four existing rules: 'S' minimises svcEst, 'F' maximises
+waiting, the default ratio maximises waiting/svcEst, 'L' ignores waiting.
+NOTE pure EDF is NOT worth implementing here: SLO1 is one per-test CONSTANT, so
+deadline = arrival + SLO1 and earliest-deadline ordering collapses exactly to
+FIFO, which already exists as 'F'. Same for urgency = waiting/SLO1. The
+disaggregation literature's slack rules assume PER-REQUEST deadlines; this
+problem has none. Only the laxity form, which subtracts remaining service,
+is new.
+Local: r161 vs r151 on all 351 corpus2 tests = -1738.00, win 56 / lose 115.
+Local remains untrusted (7 sign errors; it also predicted nothing for r151,
+which is our best build).
+
+## r163 — kitchen sink for #12: every INDEPENDENT lever at once
+    order 'K' (least laxity) + radapt OFF + eprio "ABCD"
+Conflicting variants (eprio ABCD vs BACD, order R vs K, dgfrac 0.60 vs 0.70)
+cannot be bundled and remain separate builds. If r163 beats r151, bisect to
+find which lever did it; if it comes back flat, the entire #12 branch dies in
+ONE submission instead of four. That is the right trade while submissions
+require a human in the loop.
