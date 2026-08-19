@@ -5337,3 +5337,30 @@ them, yet finishing is what releases a request into the decode pool. If #13 is
 prefill-starved, completing prefills should dominate starting them.
     r170 = "CDBA"  P POST first, decode order unchanged   binds 2/12, local +0.1
     r171 = "CDAB"  P POST first, D POST before D PRE      binds 7/12, local -1.7
+
+## r170 / r171 JUDGE — #13's eprio is fully determined by three axes
+    "DCBA" 728.77 BEST | "CDBA" -3.24 | "BACD" -8.57 | "ABCD" -24.39 | "CDAB" -27.13
+The ordering decomposes into three independent, now-measured axes:
+    prefill block before decode block   worth ~9-24
+    P PRE before P POST  (DC > CD)      worth   3.24
+    D PRE before D POST  (BA > AB)      worth  23.89  [CDBA -3.24 vs CDAB -27.13]
+"DCBA" wins on ALL THREE, so every untested permutation is worse by
+composition. #13's eprio is closed WITHOUT spending ten submissions on the
+remaining nineteen. #13's max across all 45 measured configs is 728.77, which
+r151 already achieves.
+
+## r172 / r173 — STATE-DEPENDENT eprio (user's idea, and it is the right one)
+Every eprio measured so far is ONE static string for the entire run, and #13
+has useMarginal = false, so it has ZERO adaptivity -- "DCBA" from first frame
+to last. But the data implies the right order is state-dependent: prefill-first
+wins on #13 because it is prefill-STARVED, and that holds only WHILE the decode
+pool is empty. Once the pool is full, prefill-first spends engine slots that
+should be emitting tokens. A single string cannot serve both regimes, which is
+exactly why the permutation search hit a wall at 728.77.
+    if (!busyE && targetTest13) {
+        pool = bDecRdy.size() + bDpostRdy.size();
+        eprio = (pool < THRESHOLD) ? "DCBA" : "BACD";
+    }
+    r172 THRESHOLD = K    binds 5/12, local **+1.2**
+    r173 THRESHOLD = 4K   binds 3/12, local **+1.2**
+Both LOCALLY POSITIVE, which almost nothing today has been.
