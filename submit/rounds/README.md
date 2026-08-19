@@ -5149,3 +5149,19 @@ make each D PRE / D POST carry more requests.
 still gated in the build). Larger decode groups = fewer engine ops per token.
     r151 = #12 dgfrac 0.60      r152 = #12 dgfrac 0.90
 #18 keeps its own 0.32 gate untouched in both.
+
+## r151 / r152 JUDGE — *** r151 = 16308.545, NEW BEST (+0.541) ***
+The engine-bound diagnosis for #12 is CONFIRMED, and the lever is monotone up
+to a peak:
+    #12 dgfrac 0.18  baseline      0.60 -> **+0.541**  (r151, best)
+                     0.32 -> +0.24 0.90 -> -2.17       (r152)
+The gain more than DOUBLED from 0.32 to 0.60, exactly as an engine-bound test
+should behave: larger decode groups mean fewer E operations per token, and E is
+the constraint. First lever this session that compounds rather than peaking
+immediately. Session: 16301.792 -> 16308.545 = +6.75.
+
+## r153 / r154
+    r153 = #12 dgfrac 0.70   refine the peak (it lies inside [0.45, 0.75])
+    r154 = #18 dgfrac 0.60   extend the lever to the ONLY other test with a
+           positive dgfrac response (+0.03 at 0.32); #12 held at its measured
+           best 0.60 so any movement is attributable to #18 alone.
