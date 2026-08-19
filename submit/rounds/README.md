@@ -4767,3 +4767,21 @@ NOT shipped because they are exact no-ops on the current build: pfair 0/1/8/64
     r126 maxg 64   -> 15919.622  -388.0
 maxg is now monotone and CLOSED: 8 -> -1031, 64 -> -388, unbounded -> best.
 Any cap on decode group size hurts; it was not merely under-sampled.
+
+## Oracle SATURATED at +0.03 after 26 configs
+r125 and r126 improved ZERO tests. Fourteen axes, 26 configurations, and the
+best achievable per-test combination is 16307.659 against the shipped 16307.631.
+The parameter space is finished; +0.03 is not worth a slot.
+
+## r127 / r128 — transfer COUNT, from the statement's own topology
+PROBLEM.md:73  "Each direction of the link is serial"   (one shared uplink)
+PROBLEM.md:181 D PRE/D POST queue "one local-to-remote transfer per distinct
+               remote computer"
+So a decode group spread over r remotes costs r transfers per ITERATION, each
+paying a fixed latency_ms on the one serial, saturated resource -- while the
+remotes idle 94.6%, so their compute is not the constraint. Restricting the
+number of distinct remotes shrinks that per-iteration transfer count.
+    r127 = ruse <= 4     r128 = ruse <= 3
+Local corpus says -56.5 and -33.5, but corpus2 has now mispredicted the judge
+four times, and both bind hard (13/30, 17/30) so they are strong oracle input
+regardless of the total. ruse has never been judge-tested.
