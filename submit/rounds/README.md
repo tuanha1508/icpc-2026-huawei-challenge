@@ -5129,3 +5129,23 @@ Both target the same 189 points from a different direction, so the pair
 distinguishes "order the queue better" from "shorten the queue".
 Build note: r150 hit the nearWeight/nearBase declaration-order problem again
 (they are declared at 247/265, after Ntarget at ~210); predicates inlined.
+
+## r149 / r150 JUDGE — #12's bottleneck localised by ELIMINATION
+    r149 #12 prefill-queue SJF -> 16308.004  exact no-op
+    r150 #12 admission cap     -> 15588.618  **-719.4** (#12 collapses to ~85,
+                                  matching its known floor under r101)
+Together with r147 (decode-cap removal, also an exact no-op) that is three
+hypotheses eliminated on the judge:
+    decode groups never fill      -> NOT decode-bound
+    remote prefill queues empty   -> NOT remote-queue-bound
+    admission must stay unbounded -> flooding is REQUIRED, not harmful
+mean_tdr 1,253,095 with empty remote queues means requests wait BEFORE dispatch:
+**#12 is ENGINE-bound.** E runs one task per frame and P PRE / P POST are
+unbatchable by the statement's grammar, so the only way to buy E capacity is to
+make each D PRE / D POST carry more requests.
+
+## r151 / r152 — the one lever that follows from engine-bound
+#12 already gained +0.24 moving dgfrac 0.18 -> 0.32 (an oracle winner in r122,
+still gated in the build). Larger decode groups = fewer engine ops per token.
+    r151 = #12 dgfrac 0.60      r152 = #12 dgfrac 0.90
+#18 keeps its own 0.32 gate untouched in both.
