@@ -4707,3 +4707,24 @@ directions at once, to maximise new information per submission:
 Sampled range to date was dgfrac [0.10, 0.32], dpost [0.02, 0.20]. These may
 well lose overall -- that is fine and expected; the value is the per-test rows
 they add to the oracle. Bind 17/25 and 16/25 vs r122.
+
+## r123 / r124 JUDGE — corners lose as designed
+    r123 dgfrac .45 / dpost .35  -> 16268.205  -39.4
+    r124 dgfrac .03 / dpost .005 -> 16286.913  -20.7
+Expected. Their value is the per-test rows, not the total.
+
+### Scraper rate limit — my error
+After ~21 rapid submission-page fetches Codeforces began redirecting every
+submission URL to the homepage (session still valid; "tuanha / Logout" present,
+so not an auth failure). That is rate limiting, caused by batching the fetches
+back to back. Fix: space them minutes apart, never batch.
+
+### The API genuinely cannot replace the scraper
+contest.status returns only:
+    verdict, testset, passedTestCount, timeConsumedMillis, memoryConsumedBytes,
+    points          <- the TOTAL only
+There is no per-test field. The tp / mean_tdr / mean_tpot / dist / norm_tp /
+norm_c strings are the checker's per-test comments and exist only in the
+judgement protocol on the submission page. So per-test attribution requires
+either the page or a manual paste; the API is sufficient only for totals and
+for the submission-window timing.

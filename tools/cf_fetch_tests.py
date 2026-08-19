@@ -24,7 +24,7 @@ def main():
         page = ctx.pages[0] if ctx.pages else ctx.new_page()   # reuse: no focus steal
         page.goto(f"https://codeforces.com/contest/{a.contest}/submission/{a.submission}",
                   wait_until="domcontentloaded", timeout=60000)
-        page.wait_for_timeout(1500)
+        page.wait_for_timeout(4000)
         txt = page.inner_text("body")
 
     rows = re.findall(r"points\s+([0-9.]+)\s+tp=([0-9.eE+-]+)\s+mean_tdr=([0-9.eE+-]+)"
