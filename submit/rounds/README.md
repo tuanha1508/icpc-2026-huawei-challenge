@@ -4751,9 +4751,12 @@ for the submission-window timing.
 
 ## r125 / r126 — transfer ordering, the one lever over a saturated FIFO
     r125 = rprio 'D'   (decode-first on a free remote; binds 9/30)
-    r126 = rporder 'C' (reorder a remote's prefill queue only when decode is
-                        also ready, i.e. intervene only in the contention the
-                        FIFO analysis points at; binds 3/30)
+    r126 = maxg 64     (mild cap on decode group size; binds 9/30)
+NOTE: an rporder 'C' build was prepared and DISCARDED. Via A_RPORDER=C it looked
+like it bound 3/30, but as a DEFAULT change it binds 0/30 -- setting the env var
+suppresses the gates that would otherwise set rporder='S', so the 3/30 was
+gate-blocking, not an effect of 'C'. Measuring a knob through its env override
+can therefore overstate binding; default-change builds must be checked directly.
 rprio's prefill-first default dates from r27, on a much older build. Checked and
 NOT shipped because they are exact no-ops on the current build: pfair 0/1/8/64
 (confirming the code's own comment) and rporder 'D'.

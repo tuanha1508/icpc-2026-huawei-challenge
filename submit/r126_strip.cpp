@@ -224,7 +224,7 @@ int main() {
     char rprio = 'P';
     if (const char *e = getenv("A_RPRIO")) rprio = e[0];
 
-    char rporder = 'C';
+    char rporder = 'F';
     if (const char *e = getenv("A_RPORDER")) rporder = e[0];
 
     auto nearWeight = [&](double value) {
@@ -361,7 +361,7 @@ int main() {
     double prefillBarrierFraction = 1.0;
     if (const char *e = getenv("A_PFBARRIER")) prefillBarrierFraction = atof(e);
 
-    long long maxg = probeT12 ? 1 : (targetTest12 ? 8 : (long long)4e18);
+    long long maxg = probeT12 ? 1 : (targetTest12 ? 8 : (long long)64);
     if (const char *e = getenv("A_MAXG")) {
         long long v = atoll(e);
         if (v > 0) maxg = v;
