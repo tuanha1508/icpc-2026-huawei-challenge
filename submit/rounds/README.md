@@ -5165,3 +5165,19 @@ immediately. Session: 16301.792 -> 16308.545 = +6.75.
     r154 = #18 dgfrac 0.60   extend the lever to the ONLY other test with a
            positive dgfrac response (+0.03 at 0.32); #12 held at its measured
            best 0.60 so any movement is attributable to #18 alone.
+
+## r154 JUDGE — the dgfrac lever does NOT generalise
+    r154 (#18 dgfrac 0.60) -> 16308.529, -0.016 vs r151.
+#18's optimum stays at 0.32. #12's appetite for very large decode groups is
+specific to #12, not a property of engine-bound tests in general. Cheap answer.
+
+## r155 / r156 — a DIFFERENT mechanism for #12
+dgfrac is nearly exhausted on #12 (peak ~0.60, sharp fall-off by 0.90), so stop
+shaving it. prefillBoost is the direct control over how E splits its
+one-task-per-frame budget between P PRE / P POST and the D PRE / D POST that
+actually emit tokens -- exactly the contention an engine-bound test lives or
+dies by -- and it has never been set per-test. costTp on #12 is enormous
+(1/(tp_UB - tp_base) = 62500), so this term dominates its cost model.
+    r155 = #12 prefillBoost 2   (less prefill: free E for decode)
+    r156 = #12 prefillBoost 40  (more prefill: clear the backlog faster)
+Default is 14. The two directions bracket the balance.
