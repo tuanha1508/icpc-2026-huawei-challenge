@@ -5040,3 +5040,30 @@ catastrophic ones (adaptive_chunk, maxg 8, capall_nf1, slack 2).
 per-test gates included -- improves any high-headroom test. The 192 points to
 16500 are not in this solver's parameter space.** Further probing of knob values
 is now provably wasted effort; only new CODE PATHS can move these tests.
+
+## r145 / r146 — ALGORITHMIC change: makespan vs mean flow time
+Not a knob value. The scheduling RULE was wrong for one class of test.
+
+    tp = sum(L_out) / (last_token - first_arrival)
+
+depends only on when the LAST token lands, so a throughput-weighted test is a
+MAKESPAN objective. The classic rule for minimising makespan is longest-
+processing-time-first. The solver uses order = 'S' (SJF) for every test with
+w_c > 0; SJF minimises MEAN FLOW TIME, which is correct for the latency-weighted
+tests and wrong for the throughput ones -- short-first clears easy requests
+early and strands a long one at the end, and that straggler sets the makespan.
+
+#6 is the case in point: w_tp 0.90 with 599 points of throughput headroom,
+while norm_c 0.9917 against dist_base 646.9 means latency could degrade ~120x
+before it costs the remaining 100. Trading latency for makespan is nearly free.
+
+I had dismissed order 'L' earlier on the grounds that "SJF is optimal" -- true
+for mean flow time, and the wrong objective for these tests. That was a
+reasoning error, not a measurement one.
+
+    r145 = LPT when w_tp > w_c        binds 5/30
+    r146 = LPT when w_tp >= 0.75      binds 2/30   (narrower threshold)
+Local corpus says -30.5 over 10 throughput tests and -402.5 over 20 latency
+tests. Note the RATIO: -3.0/test vs -20.1/test, i.e. LPT hurts latency tests
+~7x more than throughput tests, which is exactly the direction the theory
+predicts. The corpus is 0-for-7 on sign, so the judge decides.
