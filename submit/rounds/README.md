@@ -4883,3 +4883,28 @@ Build note: the first attempt at this pair failed its patch anchors (one space
 vs two before a trailing comment) and produced no files at all -- the cmp
 guard reported "OK" against non-existent files, which is a false pass. Rebuilt
 and re-verified that both binaries exist and all three pairwise diffs hold.
+
+## r133 / r134 JUDGE — both 16307.672, IDENTICAL to r129. Two more no-ops.
+The gates fire (their keys are the ones already in the code) but useMarginal --
+an entire decision-path switch -- changes nothing on the real #8 and #15,
+despite binding 12/12 and 9/12 on corpus workloads at those same weights.
+
+### RULE: single-test gates cannot be verified, and keep no-opping
+Three for three now: #3 balw (r119/r120), #15 and #8 marginal (r133/r134).
+Verifying a mechanism on proxy workloads AT THE SAME WEIGHT does not predict
+binding on the specific real test, because the real test's workload shape --
+not its weight -- decides whether the branch is ever reached. With no faithful
+reconstruction of any judge test, single-test gates are unverifiable before
+submission and must not be spent on speculatively.
+**Only global changes have verifiable binding.** The reliable loop is therefore:
+ship a GLOBAL config -> scrape per-test -> gate the winners. That loop produced
+every gain this session (r122 +3.91 predicted to 0.007, r129 +0.041).
+
+## r135 / r136 — interaction terms, the last unexplored source of oracle rows
+Every config measured so far changed exactly ONE knob, so the oracle has never
+seen an interaction: a pair can win on a test where neither single does.
+    r135 = balw 4 + dgfrac 0.25    (binds 15/25, local +42.5)
+    r136 = dgfrac 0.25 + dpost 0.15 (binds 14/25, local +26.3)
+Both global, so the binding is verified rather than assumed; they differ from
+each other on 16/25. eprio permutations were swept and REJECTED for this slot --
+the best binds only 3/25.
