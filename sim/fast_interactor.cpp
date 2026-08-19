@@ -52,19 +52,26 @@ struct Sim {
     vector<Req> reqs;
     priority_queue<Ev,vector<Ev>,Cmp> heap; long long seq=0;
     bool busyE=false; vector<char> busyC; double up_free=0,down_free=0;
+    // TIME-weighted occupancy (observation only; never read by the model).
+    // Frame-counting occupancy is misleading -- frames are emitted per event,
+    // so idle stretches produce many short frames and inflate apparent idleness.
+    double edgeBusy=0, upBusy=0, downBusy=0, upPay=0, downPay=0;
+    vector<double> remBusy; long long upN=0, downN=0;
     double perTok=0;
     double transfer(double len) const { return lat + perTok*len; }
     void push(double t,int ord,int kind,Ev e){ e.t=t; e.ord=ord; e.seq=++seq; e.kind=kind; heap.push(e); }
     void startTask(double t,int sv,double dur,const string&spec,
                    function<vector<string>(double)> eff){
-        if(sv<0) busyE=true; else busyC[sv]=1;
+        if(sv<0){ busyE=true; edgeBusy += S+dur; } else { busyC[sv]=1; remBusy[sv] += S+dur; }
         Ev e; e.spec=spec; e.dur=dur; e.eff=eff;
         push(t+S+dur,0,1,e);
     }
     void enqueueTransfer(double t,bool up,int remote,long long ln,const string&kind,vector<int> rids){
         double tt=transfer((double)ln), start, doneT;
-        if(up){ start=max(t,up_free); doneT=start+tt; up_free=doneT; }
-        else  { start=max(t,down_free); doneT=start+tt; down_free=doneT; }
+        if(up){ start=max(t,up_free); doneT=start+tt; up_free=doneT;
+                upBusy += tt; upPay += perTok*(double)ln; ++upN; }
+        else  { start=max(t,down_free); doneT=start+tt; down_free=doneT;
+                downBusy += tt; downPay += perTok*(double)ln; ++downN; }
         Ev e; e.up=up; e.remote=remote; e.size=ln*bpt; e.xk=kind; e.rids=rids;
         push(doneT,1,2,e);
     }
@@ -89,7 +96,7 @@ int main(int argc,char**argv){
     for(int c=0;c<6;++c) s.col[c].done();
     int R; in>>R; s.reqs.resize(R);
     for(int i=0;i<R;++i){ Req&r=s.reqs[i]; r.rid=i; in>>r.arrival>>r.lin>>r.lout; }
-    s.busyC.assign(s.K,0);
+    s.busyC.assign(s.K,0); s.remBusy.assign(s.K,0.0);
     s.perTok = 8.0*(double)s.bpt/(s.bw*1e6);
 
     int toC[2],toP[2];
@@ -217,6 +224,18 @@ int main(int argc,char**argv){
     if(s.tp_UB==s.tp_base) ctp = (tp==s.tp_UB)?1.0:0.0;
     else ctp = max(0.0,min(1.0,(tp-s.tp_base)/(s.tp_UB-s.tp_base)));
     double cc = s.dist_base>0 ? max(0.0,1.0-dist/s.dist_base) : (dist==0?1.0:0.0);
+    if(getenv("UTIL")){
+        double span=lastTok-firstArr;
+        if(span>0){
+            double rsum=0,rmax=0;
+            for(double v:s.remBusy){ rsum+=v; if(v>rmax) rmax=v; }
+            fprintf(stderr,"UTIL span=%.1f edge=%.4f remAvg=%.4f remMax=%.4f up=%.4f down=%.4f "
+                           "upPay=%.4f downPay=%.4f upN=%lld downN=%lld K=%d\n",
+                    span, s.edgeBusy/span, (s.K? rsum/s.K/span:0.0), rmax/span,
+                    s.upBusy/span, s.downBusy/span, s.upPay/span, s.downPay/span,
+                    s.upN, s.downN, s.K);
+        }
+    }
     printf("score=%.3f tp=%.6f tdr=%.6f tpot=%.6f dist=%.4f elapsed=%.3f\n",
            1000.0*(s.w_tp*ctp+s.w_c*cc), tp, tdr, tpot, dist, elapsed);
     return 0;

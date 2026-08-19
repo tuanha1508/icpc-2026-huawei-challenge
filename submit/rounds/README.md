@@ -4801,3 +4801,31 @@ schedulable, so frame-counting inflates apparent idleness. Occupancy must be
 weighted by TIME, not by frame count. Every conclusion drawn from that 94.6%
 figure -- including "everything is waiting on the wire" -- is unsupported.
 The judge's answer is the opposite: remote parallelism is what matters.
+
+## TIME-WEIGHTED occupancy (sim/fast_interactor.cpp, UTIL=1) — the real limits
+Rebuilt occupancy properly: accumulate busy TIME on each resource inside the
+simulator rather than counting frames. Verified score-identical to the validated
+binary on 6 tests, so it observes without perturbing.
+
+    #3 class (w_tp==0)        UPLINK 92.5% median / 99.1% max   SATURATED
+                              payload alone 91.0%
+                              edge 23%, remotes 12%
+    #5/#6 class (w_tp>=0.75)  edge 16%, remotes 19%, link 17%   NOTHING saturated
+    all 50 sampled            busiest: uplink 25, remote 13, edge 12
+
+Two different physical limits, neither of them schedulable:
+* **#3 is uplink-PAYLOAD bound.** 91 of its 92.5 points of link utilisation are
+  payload, not per-transfer latency. This independently explains why ruse
+  failed: cutting the transfer COUNT only attacks the ~1.5% that is latency
+  overhead, while the bytes are fixed by the workload.
+* **#5/#6 have NO saturated resource** -- everything under 20%. With no resource
+  busy, the binding constraint is the CRITICAL PATH: each request needs L_out
+  sequential decode iterations, each a full D PRE -> UP -> D PROC -> DOWN ->
+  D POST round trip, so makespan >= L_out * RTT regardless of parallelism. That
+  is structural to the problem, and it is the same fact that makes norm_tp = 1
+  unreachable whenever L_out > 1 (proved earlier on small_2).
+
+So the laggards are not mis-scheduled: #3 is against a bandwidth wall and #5/#6
+against a latency wall. That is why 28 configurations across 15 axes moved them
+by nothing, and it retires the "we are leaving points on the table" framing for
+those tests specifically.
