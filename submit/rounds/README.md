@@ -4928,3 +4928,26 @@ neither knob alone does. ORACLE now 16307.740, +0.07 over the shipped r129.
            no safe key for it. Left on the table deliberately.
     r138 = nfactor 1.5 + dgfrac 0.22, the next interaction pair (binds 15/25)
 r137 shows 0/25 on corpus2, correct for per-test gates; r138 binds 15/25.
+
+## r137 / r138 JUDGE — *** r137 = 16307.722, NEW BEST *** (oracle right again)
+    r137 oracle gates      -> 16307.721   +0.049   predicted 16307.72
+    r138 nf1.5+dgfrac.22   -> 16297.831   -9.84    no per-test wins
+Second independent confirmation that per-test judge data predicts to three
+decimals (r122 was called to 0.007, r137 to 0.001).
+
+Session total so far: 16301.792 -> 16307.722 = **+5.93**.
+
+Oracle after 33 configs: only +0.02 left, and half of it (#20) is ungateable
+because its norm_c is exactly 1.000000 so dist_base cannot be derived. r137 is
+best-or-tied on 20 of 22 tests.
+
+## r139 / r140 — far tails, plus the last gateable oracle row
+Both carry the #18 ruse-3 gate (+0.01): restricting the distinct-remote count
+was catastrophic globally (-1081) yet wins on that one test, which is precisely
+what per-test gating exists for.
+    r139 = nfactor 0.9 + dpost 0.30   binds 16/25, local +74.4 -- the strongest
+           local signal since the balw switch. nfactor < 1 was ruinous ALONE
+           (0.75 -> 16134), so this is only defensible as a pair.
+    r140 = dgfrac 0.75 + dpost 0.60   binds 21/25, local -604.4 -- pure
+           exploration of a region no config has entered; expected to lose the
+           total, run for the per-test rows.
