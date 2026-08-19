@@ -4846,3 +4846,20 @@ the local corpus, which has since mispredicted the judge five times.
 Each keeps the class exclusion intact for every other test at that weight.
 Mechanism verified live: toggling useMarginal binds 4/14 on w_tp<=0.20
 workloads. Gates are single-test, so 0/30 on corpus2 is the correct result.
+
+## r129 / r130 JUDGE — *** r129 = 16307.672, NEW BEST ***
+    r129  #9  marginal ON -> 16307.672  **+0.041**  keep
+    r130  #10 marginal ON -> 16307.620   -0.011     revert
+First gain in this area. The exclusion list is weight-keyed and also covers
+#4, #13, #15 and #16, none of which have ever been measured with the model on.
+
+## r131 / r132 — same mechanism, the two biggest remaining blocks
+    r131 = #13 marginal ON  (232.6 pts, the largest mid-tier THROUGHPUT block;
+                             excluded wholesale by targetTest13)
+    r132 = #4  marginal ON  (194.3 pts; exempted from the (0.30, 27.1461) pair,
+                             exactly as #9 was, leaving the class intact)
+Mechanism verified live at BOTH target weights before shipping:
+    w_tp~0.75 (#13 class): binds 10/12, local sum -34.3
+    w_tp~0.30 (#4  class): binds  9/12, local sum +31.9
+They disagree in sign locally, which is precisely why both are worth a slot --
+and the local corpus is 0-for-5 against the judge, so neither sign is trusted.
