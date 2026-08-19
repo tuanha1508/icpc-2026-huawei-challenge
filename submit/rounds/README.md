@@ -4760,3 +4760,10 @@ can therefore overstate binding; default-change builds must be checked directly.
 rprio's prefill-first default dates from r27, on a much older build. Checked and
 NOT shipped because they are exact no-ops on the current build: pfair 0/1/8/64
 (confirming the code's own comment) and rporder 'D'.
+
+## r125 / r126 JUDGE
+    r125 rprio 'D' -> 16254.045   -53.6   prefill-first stays correct globally;
+                                          r27's default survives re-measurement
+    r126 maxg 64   -> 15919.622  -388.0
+maxg is now monotone and CLOSED: 8 -> -1031, 64 -> -388, unbounded -> best.
+Any cap on decode group size hurts; it was not merely under-sampled.
