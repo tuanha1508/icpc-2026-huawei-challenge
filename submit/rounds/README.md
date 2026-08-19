@@ -5237,3 +5237,32 @@ cannot be bundled and remain separate builds. If r163 beats r151, bisect to
 find which lever did it; if it comes back flat, the entire #12 branch dies in
 ONE submission instead of four. That is the right trade while submissions
 require a human in the loop.
+
+## SOLVED THE SLOs — dist is TDR-driven almost everywhere
+SLO1/SLO2 are recoverable the same way tp_base/tp_UB were: many
+(mean_tdr, mean_tpot, dist) triples per test across configs, two unknowns.
+Fits verified by reproducing the observed dist to within 10%:
+    RELIABLE: #3 #4 #5 #6 #7 #8 #13 #14 #19
+    (#10 #12 #16 #17 #22 did NOT verify -- their dist is orders of magnitude
+     larger than the fit predicts, so the grid range was inadequate. Not used.)
+Source of dist on the reliable fits:
+    #3 #4 #5 #13 #14  TDR only        #8  92% TDR
+    #7  65% TDR       #6  53% TDR     #19 TPOT only (w_c = 0, so unscored)
+**TDR is the dominant source of dist on essentially every latency-scored test.**
+
+### Scaling costTdr does NOT work -- built and DISCARDED
+costTdr x3 binds 1/30, x0.33 binds 0/30. Root cause: costTdr appears only in
+the PREFILL arms of the argmax, which win ~1.1% of decisions -- the identical
+reason pfTdr was inert in both directions at r99/r100. The cost model has no
+effective lever on TDR at all. Not shipped.
+
+## r166 / r167 — widen forcePrefill, the ONLY real TDR mechanism
+    bool forcePrefill = noGaps && !legacyHalfNoGaps && w_c >= w_tp && (...)
+`noGaps` means gapCnt == 0, i.e. only workloads where every request emits a
+single token -- the narrowest possible trigger, on the solver's only TDR lever.
+The natural trigger is "TDR is the binding excess", already computed two lines
+above as exTdr/exTpot. This changes the ORDER rather than the cost, which is
+why it can bind where costTdr scaling cannot.
+    r166 = (noGaps || exTdr > exTpot), w_c >= w_tp kept    binds 2/30
+    r167 = same, w_c >= w_tp guard DROPPED so #5 and #6 --
+           throughput-weighted but still TDR-driven -- are covered  binds 5/30
