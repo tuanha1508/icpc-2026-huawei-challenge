@@ -5014,3 +5014,29 @@ instead of one. r144 mirrors r143's extremes, so the pair brackets each test:
 16 hypotheses in 2 slots. Both show 0/25 on corpus2, correct for test-specific
 gates. Downside is bounded and reversible: a bad gate costs only its own test
 and is dropped next round; a good one is kept, exactly as #22's was.
+
+## r143 / r144 JUDGE — 16 experiments, ZERO wins, and a decisive negative
+    r143 16194.012   r144 16292.978   (both expected to lose the total)
+Per-test outcome of all 16 gated extremes:
+    #3  dgfrac .05 +0.00 | .60 +0.00      <- INERT
+    #5  dgfrac .60 +0.00 | .05 +0.00      <- INERT
+    #10 dgfrac .05 +0.00 | .60 +0.00      <- INERT
+    #14 dpost  .90 +0.00 | .005 +0.00     <- INERT
+    #17 maxg 32 -0.23    | 4096 +0.00
+    #6  dgfrac .60 -77.53 | .05 -13.69    responds; current value optimal
+    #13 dgfrac .60 -31.16 | .05  -1.30    responds; current value optimal
+Four of the five biggest-headroom tests (#3 #5 #10 #14, 1912 points) are
+completely INSENSITIVE to the grouping knobs -- identical to seven decimals,
+measured on the REAL tests rather than proxies.
+
+### Across all 38 measured configs, every high-headroom test is ALREADY at its max
+    #3 spread 307.89 but only 3 DISTINCT VALUES in 38 configs; max = current
+    #5 143.88 (11 distinct)   #6 97.29 (13)    #10 40.07 (7)
+    #12 719.39 (13)           #13 48.18 (16)   #14 63.67 (4)   #17 596.88 (19)
+Every config that moves them moves them DOWN, and the movers are the
+catastrophic ones (adaptive_chunk, maxg 8, capall_nf1, slack 2).
+
+**CONCLUSION: no combination of existing knobs -- extremes, interactions and
+per-test gates included -- improves any high-headroom test. The 192 points to
+16500 are not in this solver's parameter space.** Further probing of knob values
+is now provably wasted effort; only new CODE PATHS can move these tests.
