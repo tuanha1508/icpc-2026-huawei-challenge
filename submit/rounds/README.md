@@ -4785,3 +4785,19 @@ number of distinct remotes shrinks that per-iteration transfer count.
 Local corpus says -56.5 and -33.5, but corpus2 has now mispredicted the judge
 four times, and both bind hard (13/30, 17/30) so they are strong oracle input
 regardless of the total. ruse has never been judge-tested.
+
+## r127 / r128 JUDGE — ruse reduction is CATASTROPHIC; my inference was wrong
+    r127 ruse <= 4 -> 15540.551   -767
+    r128 ruse <= 3 -> 15226.463  -1081
+Monotone: fewer distinct remotes is far worse. The serial-link transfer-count
+mechanism is real but is dominated many times over by the loss of parallel
+P PROC / D PROC capacity. Remote count is critical. Axis closed.
+
+### METHOD ERROR that produced this: frames are not time
+I measured "remotes idle 94.6%" by counting FRAMES in which busyC[k]==0 and
+concluded remote compute was not the constraint. Frames are emitted per event,
+and long stretches of a run produce many short frames in which nothing is
+schedulable, so frame-counting inflates apparent idleness. Occupancy must be
+weighted by TIME, not by frame count. Every conclusion drawn from that 94.6%
+figure -- including "everything is waiting on the wire" -- is unsupported.
+The judge's answer is the opposite: remote parallelism is what matters.
