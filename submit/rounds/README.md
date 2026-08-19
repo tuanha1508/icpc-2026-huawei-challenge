@@ -5101,3 +5101,31 @@ applied globally measured -1030.97 precisely because small decode groups
 destroy throughput, and #12 is 99% throughput-weighted. Its latency is worth
 3.5 points in total, so the cap protects nothing.
     r147 = cap removed entirely     r148 = cap raised to 64
+
+## r147 JUDGE — no-op, and it localises #12's bottleneck
+    r147 (#12 decode-group cap REMOVED) -> 16308.004, identical to r141.
+Removing the cap entirely changed nothing, so #12's decode groups never reach 8
+in the first place. **r148 was NOT submitted**: if unbounded behaves the same as
+8, then 64 does too -- it is a guaranteed byte-identical build. Slot saved.
+
+That is a useful negative: **#12 is PREFILL-bound, not decode-bound.** Its
+mean_tdr is 1,253,095 -- requests wait over a million ms for a first token --
+so few ever reach decode simultaneously, which is exactly why groups stay small.
+Throughput there is set by how fast requests get THROUGH prefill.
+
+## r149 / r150 — attack #12's actual bottleneck
+    r149 = #12 prefill-queue SJF (rporder 'S'). Ordering a remote's prefill
+           queue shortest-first maximises how many requests reach decode early,
+           which is what raises tp on a prefill-bound test. It binds only 2/60
+           globally because most tests never have more than one prefill queued;
+           #12 has by far the deepest queues, so it has the most room to matter.
+    r150 = #12 gets an ADMISSION CAP. It currently has none -- the cap is gated
+           on w_c >= w_tp, false at w_tp 0.99 -- so every arrival floods the
+           engine with P PRE work competing against the D PRE / D POST that
+           actually emit tokens. Capping globally was ruinous (-1316), but #12
+           is precisely the flooded, prefill-bound case where throttling
+           admission should raise throughput.
+Both target the same 189 points from a different direction, so the pair
+distinguishes "order the queue better" from "shorten the queue".
+Build note: r150 hit the nearWeight/nearBase declaration-order problem again
+(they are declared at 247/265, after Ntarget at ~210); predicates inlined.
