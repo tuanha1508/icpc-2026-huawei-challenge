@@ -5201,3 +5201,16 @@ P POST are unbatchable while D PRE/D POST carry whole groups.
     r158 = #12 eprio "BACD"  D PRE ahead of D POST, prefill still last
 #5 and #13 already carry forced eprio gates ("ABDC", "DCBA"), so the mechanism
 is established; #12 has simply never had one.
+
+## Queue prepared while away (all built, compiled, verified distinct)
+    r157  #12 eprio "ABCD"     token-emitting steps first, prefill last
+    r158  #12 eprio "BACD"     D PRE ahead of D POST
+    r159  #12 order 'R'        HRRN aging branch, unreachable by default.
+          NOT speculative: `order` is known to bind on #12 (LPT measured -1.88
+          there), and with mean_tdr 1,253,095 #12 has the worst waiting in the
+          set -- exactly the condition a highest-response-ratio rule addresses.
+    r160  #12 radapt OFF       the adaptive-concurrency feedback steers N on the
+          two measured excesses; #12 is 99% throughput-weighted, so steering on
+          dist (worth 3.5 points there in total) can only distort a schedule
+          whose score is essentially pure tp. Never probed per-test.
+    r153  #12 dgfrac 0.70      peak refinement, lowest priority
