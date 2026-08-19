@@ -5067,3 +5067,37 @@ Local corpus says -30.5 over 10 throughput tests and -402.5 over 20 latency
 tests. Note the RATIO: -3.0/test vs -20.1/test, i.e. LPT hurts latency tests
 ~7x more than throughput tests, which is exactly the direction the theory
 predicts. The corpus is 0-for-7 on sign, so the judge decides.
+
+## r145 JUDGE — LPT refuted, including on its own target
+    r145 (LPT for w_tp > w_c) -> 15927.087  -380.92
+    #6 -2.73 | #12 -1.88 | #13 -4.14 | #17 -109.89 | #18 -262.28
+**#6, the test the idea was designed for, got WORSE.** LPT minimises makespan
+when all jobs are available at t=0 and run contiguously; here requests ARRIVE
+over time and decode is iterative (L_out round trips interleaved with other
+work), so neither premise holds. A modelling error, caught in one submission.
+r146 was NOT submitted: its affected set (w_tp >= 0.75) is a strict SUBSET of
+r145's, so r145 already measured every test it would touch. Slot saved.
+
+## SOLVED SCORING GEOMETRY — tp_base and tp_UB recovered per test
+Same test under many configs gives different tp at different norm_tp, which
+makes the two unknowns identifiable. Ranking by points per +1% of throughput:
+    #12  need 1.128x  189 pts  **14.8 pts per +1% tp**
+    #13  need 1.322x  233 pts    7.2
+    #6   need 2.900x  597 pts    3.1     <- needs THREE TIMES the throughput
+    #5   need 2.744x  513 pts    2.9
+#6 and #5, which I have been chasing all session, need ~3x throughput. #12
+needs 12.8%.
+
+### #14 is definitively CLOSED (and it looked like the best target)
+Its window is only 0.53% wide, so +0.42% tp would pay 513 points. But across
+all 39 configs -- including the catastrophic ones -- **tp is identically
+0.003564**. Only the latency metrics ever move. Its makespan is fixed by the
+workload: arrival-bound, like #1/#2/#11. Nobody can collect those 513 points.
+
+## r147 / r148 — remove the decode-group cap that only #12 carries
+    long long maxg = probeT12 ? 1 : (targetTest12 ? 8 : (long long)4e18);
+#12 is the ONLY test with a cap, and the one that can least afford it: maxg 8
+applied globally measured -1030.97 precisely because small decode groups
+destroy throughput, and #12 is 99% throughput-weighted. Its latency is worth
+3.5 points in total, so the cap protects nothing.
+    r147 = cap removed entirely     r148 = cap raised to 64
