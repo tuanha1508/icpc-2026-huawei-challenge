@@ -5364,3 +5364,39 @@ exactly why the permutation search hit a wall at 728.77.
     r172 THRESHOLD = K    binds 5/12, local **+1.2**
     r173 THRESHOLD = 4K   binds 3/12, local **+1.2**
 Both LOCALLY POSITIVE, which almost nothing today has been.
+
+## r172 / r173 JUDGE — adaptive eprio: right idea, regime absent on #13
+    r172 (threshold K)  -> 16308.538  -0.007
+    r173 (threshold 4K) -> 16308.545  IDENTICAL to r151
+r173 being byte-identical is the informative half: with the threshold at 4K the
+switch NEVER fired, so #13's decode pool never reaches 4K depth. At threshold K
+it fires occasionally and costs 0.007. **#13 is prefill-starved ~100% of the
+time**, so there is no "pool full" phase for an adaptive rule to exploit -- and
+that is also why static "DCBA" was already optimal. The mechanism is sound; the
+regime does not occur there. Cost 0.007 points to establish.
+
+## DEFAULT-PATH SWEEP — aimed at the FROZEN set, not the leaderboard
+The 20 nearBase() gates key on preliminary dist_base values, so NONE fire on the
+frozen tests. Only default-path settings reach the metric that decides the
+ranking. Since 16301.792 those are just balw -1 and pfval 14.
+Important distinction: corpus2's failures were at predicting GATED PRELIMINARY
+tests. For default-path behaviour on UNSEEN workloads it is the only evidence
+that exists -- and that is exactly what the frozen set is.
+
+Swept vs r151 on all 351 unseen-style tests:
+    dpost 0.12  +33.50 t=0.13 | dgfrac 0.22 +33.39 t=0.17 | pfval 28 +21.97 t=1.37
+    radapt 0 +4.54 | balw 8 -13.7 | nfactor 1.2 -102.9 | dgfrac 0.14 -216.2
+    dpost 0.05 -235.6 | pieces 2 -346.6 | marginal 0 -571.4 | balw 0 -2708.8
+The two larger sums are noise-dominated (t ~ 0.15, a few big moves); pfval 28
+has a TEN TIMES better t-stat. pfval ladder, peak and cliff:
+    8 +4.0 | 20 +5.0 | 24 +18.8 (t=1.40) | 28 +22.0 (t=1.37)
+    then 34 -54.8 | 40 -55.1 | 50 -54.2
+**pfval was an EXACT no-op on the preliminary set** (r155/r156 both returned
+16308.545), so raising it is free on the leaderboard and carries real upside on
+the frozen tests.
+
+## r174 / r175
+    r174 = pfval 28                              leaderboard-safe, binds 4/25
+    r175 = pfval 28 + dgfrac 0.22 + dpost 0.12   max frozen upside, binds 15/25
+r175 also changes two defaults that DO move preliminary, so it may cost
+leaderboard points while helping the ranking. r174 should cost nothing either way.
