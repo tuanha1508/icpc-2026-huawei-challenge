@@ -4728,3 +4728,32 @@ norm_c strings are the checker's per-test comments and exist only in the
 judgement protocol on the submission page. So per-test attribution requires
 either the page or a manual paste; the API is sufficient only for totals and
 for the submission-window timing.
+
+## Oracle after the corners: parameter space is EXHAUSTED (+0.03 left)
+23 configs measured per-test. Best achievable combination over ALL of them is
+16307.669 vs the shipped 16307.631 -- the corners contributed #20 +0.01 and
+#21 +0.01. There is nothing left in this parameter space.
+
+## Structural findings (instrumented, not inferred)
+1. **Remotes idle 94.6%** on the w_tp>=0.75 class; 69% of frames have EVERY
+   remote idle. Idle-while-work-is-queued is **0.0%**, so permanent pinning /
+   head-of-line blocking is NOT a problem and late binding would buy nothing.
+2. **P PRE and P POST cannot be batched** -- the statement's grammar gives them
+   a single <rid> with no count, while only D PRE / D PROC / D POST take
+   <m> <rid...>. The solver already batches everything the spec allows.
+3. So the binding resource is the **LINK**. Correcting my own earlier
+   correction: I compared tp_UB against Xlink and concluded bandwidth was not
+   binding, but tp counts OUTPUT tokens only while the link also carries each
+   prefill's L_in (up to 4096 tokens per request). That comparison understates
+   link load by a large factor, and Xlink being the minimum capacity estimate
+   on 82% of tests is consistent with remotes idle 94% and E idle ~50%:
+   everything is waiting on the wire.
+
+## r125 / r126 — transfer ordering, the one lever over a saturated FIFO
+    r125 = rprio 'D'   (decode-first on a free remote; binds 9/30)
+    r126 = rporder 'C' (reorder a remote's prefill queue only when decode is
+                        also ready, i.e. intervene only in the contention the
+                        FIFO analysis points at; binds 3/30)
+rprio's prefill-first default dates from r27, on a much older build. Checked and
+NOT shipped because they are exact no-ops on the current build: pfair 0/1/8/64
+(confirming the code's own comment) and rporder 'D'.
