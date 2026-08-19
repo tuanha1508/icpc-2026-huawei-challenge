@@ -5319,3 +5319,21 @@ whole E policy. And it is "DCBA": prefill-first, decode-LAST, on a test that is
 75% throughput-weighted. Only that one string has ever been tried.
     r168 = "ABCD" token-emitting first   binds 9/12 on w_tp=0.75, local -0.7
     r169 = "BACD" D PRE then D POST      binds 10/12,              local -15.3
+
+## r168 / r169 JUDGE — prefill-first is CORRECT for #13, monotonically
+Both changed ONLY #13:
+    "DCBA" (current)  tp 0.026991  728.77   BEST
+    "BACD"            tp 0.026665  720.20   -8.57
+    "ABCD"            tp 0.026078  704.37  -24.39
+Moving decode earlier is monotonically worse. Counterintuitive on a 75%
+throughput-weighted test, but consistent: #13 is prefill-STARVED, so
+prioritising prefill is what keeps the decode pool fed. The per-test tp numbers
+confirm the mechanism directly -- it is tp that falls, not a latency trade.
+
+## r170 / r171 — the order WITHIN prefill, the remaining untested axis
+Action codes: A = D POST, B = D PRE, C = P POST, D = P PRE.
+"DCBA" runs P PRE before P POST: it STARTS new prefills ahead of FINISHING
+them, yet finishing is what releases a request into the decode pool. If #13 is
+prefill-starved, completing prefills should dominate starting them.
+    r170 = "CDBA"  P POST first, decode order unchanged   binds 2/12, local +0.1
+    r171 = "CDAB"  P POST first, D POST before D PRE      binds 7/12, local -1.7
