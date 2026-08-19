@@ -5266,3 +5266,23 @@ why it can bind where costTdr scaling cannot.
     r166 = (noGaps || exTdr > exTpot), w_c >= w_tp kept    binds 2/30
     r167 = same, w_c >= w_tp guard DROPPED so #5 and #6 --
            throughput-weighted but still TDR-driven -- are covered  binds 5/30
+
+## LATENCY LEVERAGE TABLE — #3 is to TDR what #12 is to throughput
+Points per 1% reduction in mean_tdr (reliable SLO fits only):
+    #3  13.73  (w_c 1.00, tdr/SLO1 1.588)   -7.3% tdr = +100 pts, max 499
+    #14  4.82                                #7 2.53      #8 1.70
+    #4   0.66   #13 0.54   #5 0.01   #6 0.01
+#3 has TRIPLE the leverage of the next test and w_c = 1.00, so there is no
+throughput trade-off to balance. Compare #12 at 14.8 pts per 1% tp -- these two
+are the best targets on the board, one latency and one throughput.
+
+### Why r166/r167 are aimed exactly at #3
+    #3 mean_tpot = 56.46  => gapCnt > 0 => noGaps FALSE
+       => forcePrefill has NEVER fired on #3
+    #3 exTdr = 0.588, exTpot = 0.000 => exTdr > exTpot TRUE
+       => r166/r167 activate it there for the first time
+The solver's only TDR mechanism has never run on the test with the best TDR
+leverage. #3's "insensitive across all 39 configs" does NOT contradict this:
+every one of those 39 changed a knob VALUE, none changed a gating CONDITION.
+w_c 1.00 >= w_tp 0.00, so r166 reaches #3 as well; r167 additionally covers
+#5 and #6.
