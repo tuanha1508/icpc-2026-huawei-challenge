@@ -4863,3 +4863,23 @@ Mechanism verified live at BOTH target weights before shipping:
     w_tp~0.30 (#4  class): binds  9/12, local sum +31.9
 They disagree in sign locally, which is precisely why both are worth a slot --
 and the local corpus is 0-for-5 against the judge, so neither sign is trusted.
+
+## r131 / r132 JUDGE — the exclusion list is RIGHT for #4 and #13
+    r131 #13 marginal ON -> 16293.203  -14.47   (local said -34.3: sign correct)
+    r132 #4  marginal ON -> 16278.109  -29.56   (local said +31.9: SIGN FLIPPED)
+Sixth corpus miss. #9 was a genuine exception, not the start of a pattern.
+r129 (16307.672) stands.
+
+## r133 / r134 — the two blocks still on the legacy path
+    r133 = #15 marginal ON (109.4 pts, latency-limited)
+    r134 = #8  marginal ON (187.8 pts). legacyQuarter IS #8, and ONLY its
+           useMarginal term is lifted -- #8 keeps dgfrac, eprio, dpost and balw
+           from the legacy bundle, so this isolates the cost model by itself.
+Mechanism binds at both weights:
+    w_tp~0.45 (#15): 12/12, local sum +107.7
+    w_tp~0.25 (#8):   9/12, local sum   +7.9
+Local signs are NOT trusted (0-for-6); the binding counts are the point.
+Build note: the first attempt at this pair failed its patch anchors (one space
+vs two before a trailing comment) and produced no files at all -- the cmp
+guard reported "OK" against non-existent files, which is a false pass. Rebuilt
+and re-verified that both binaries exist and all three pairwise diffs hold.
