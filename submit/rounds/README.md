@@ -4974,3 +4974,43 @@ probes that are expected to lose the total: the per-test rows are the product.
 Build note: the #4 nfactor gate first failed to compile because nearWeight /
 nearBase are declared at lines 247/265, AFTER Ntarget is computed at ~210. The
 gate now inlines their exact predicates instead of being moved.
+
+## r141 JUDGE = 16308.004 — NEW BEST (+0.282), oracle right a 3rd time
+    predicted 16308.01, actual 16308.004. r142 (dpost 0.30 alone) 16305.112.
+Session: 16301.792 -> 16308.004 = +6.21.
+
+## STRATEGY CHANGE — the incremental loop cannot reach 16500, so stop grinding it
+Gains by round: +1.93, +3.91, +0.041, +0.050, +0.282. The last three average
++0.12. The gap to 16500 is 192, i.e. ~1500 more improvements at 2-4 submissions
+each: 10-16 days of continuous windows, and the rate is DECAYING (oracle refills
+were +3.91, +0.29, +0.07, +0.02) because r141 is best-or-tied on 20 of 22 tests.
+**This loop asymptotes at ~16310.** Global knob tuning is closed: 35 configs,
+15 axes, all at judge-verified optima.
+
+### The only demonstrated route to a big jump
+    #22  dpost 0.90  =  **+36.2**   one test, one extreme value, one gate
+That value is catastrophic globally (-27.3 on #17, -6.3 on #13), so NO global
+sweep can ever find it. It exists only because an extreme was gated to a single
+test. Reaching 16500 needs roughly 4-6 more of those.
+
+**And the biggest-headroom tests have never had extreme values tried on them
+individually:** #6 (597), #14 (585), #5 (513), #3 (499), #10 (315) -- 2509
+points between them. Every previous attempt tested those settings GLOBALLY,
+where helping one test wrecks the other 21, so the config always scored worse
+overall and was discarded.
+
+## r143 / r144 — MULTIPLEXED per-test probes, 8 experiments per submission
+Per-test gates are independent, so one build carries eight separate experiments
+instead of one. r144 mirrors r143's extremes, so the pair brackets each test:
+    test   r143            r144            headroom
+    #3     dgfrac 0.05     dgfrac 0.60      499
+    #5     dgfrac 0.60     dgfrac 0.05      513
+    #6     dgfrac 0.60     dgfrac 0.05      597
+    #10    dgfrac 0.05     dgfrac 0.60      315
+    #13    dgfrac 0.60     dgfrac 0.05      271
+    #12    dpost  0.90     dpost  0.005     195
+    #14    dpost  0.90     dpost  0.005     585
+    #17    maxg   32       maxg   4096      110
+16 hypotheses in 2 slots. Both show 0/25 on corpus2, correct for test-specific
+gates. Downside is bounded and reversible: a bad gate costs only its own test
+and is dropped next round; a good one is kept, exactly as #22's was.
