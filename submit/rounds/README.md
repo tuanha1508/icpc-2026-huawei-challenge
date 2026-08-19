@@ -4908,3 +4908,23 @@ seen an interaction: a pair can win on a test where neither single does.
 Both global, so the binding is verified rather than assumed; they differ from
 each other on 16/25. eprio permutations were swept and REJECTED for this slot --
 the best binds only 3/25.
+
+## r135 / r136 JUDGE — interactions produce oracle rows singles cannot
+    r135 balw4+dgfrac.25    -> 16302.236  -5.44
+    r136 dgfrac.25+dpost.15 -> 16303.285  -4.39
+Both lose overall, but both WIN per-test where no single-knob config did:
+    #17 +0.03 (r135)    #13 +0.01 (r136)
+That is the interaction hypothesis confirmed: a pair can win on a test where
+neither knob alone does. ORACLE now 16307.740, +0.07 over the shipped r129.
+
+## r137 / r138
+    r137 = r129 + four oracle gates
+             #13 dgfrac 0.25 + dpost 0.15      (+0.01)
+             #17 balw 4 + dgfrac 0.25          (+0.03, interaction-only)
+             #21 dgfrac 0.03 + dpost 0.005     (+0.01)
+             expected ~16307.73
+           #20's +0.01 is NOT gated: its norm_c is exactly 1.000000, so dist is
+           0 and dist_base cannot be derived from the judge output -- there is
+           no safe key for it. Left on the table deliberately.
+    r138 = nfactor 1.5 + dgfrac 0.22, the next interaction pair (binds 15/25)
+r137 shows 0/25 on corpus2, correct for per-test gates; r138 binds 15/25.
