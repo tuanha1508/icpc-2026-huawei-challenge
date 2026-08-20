@@ -5452,3 +5452,23 @@ decode groups (dgfrac) only pay once dpost lets enough requests JOIN those
 groups -- raise either alone and it costs.
 Others in the sweep: balw 6 +95.6 (t 0.50), pf26+dg.22 +37.6, dgfrac .28 +27.1,
 pfval 30 +10.0, radapt 0 +4.5; negatives rprio D -611, pieces 0 -846.
+
+## r178 JUDGE = 16299.665 (-8.88) — and 98% of it is ONE test
+    #17  890.34 -> 881.64  **-8.70**
+    #12  805.53 -> 805.37   -0.17
+    #15  882.68 -> 882.66   -0.01
+Cause identified rather than guessed: #17 already carries its own dgfrac 0.25
+gate from r137 but has NO dpost gate, so it inherited the new 0.15 default.
+Same for #12.
+
+## r179 = r178 with #17 and #12 handed back dpost 0.08
+Expected preliminary ~16308.5, i.e. back to r176's level, while the dgfrac 0.24
+x dpost 0.15 interaction (+245.52 on 351 unseen-style workloads, t = 1.48)
+stays on the default path for every other test. This is the third time the
+pattern has worked: a globally-losing setting, localised per-test, then gated
+away from the one or two tests it hurts.
+    r174 -5.56 -> all #6  -> r176 zero cost
+    r139 -169  -> #4 +0.28 -> r141 new best
+    r178 -8.88 -> 98% #17 -> r179
+Verified r179 vs r178 differs on 0/25 corpus2 tests (the gates are test-specific
+and cannot leak) and r179 vs r176 on 15/25 (the interaction is retained).
