@@ -5521,3 +5521,16 @@ than toward 0.05, placing the optimum below the midpoint.
     r181 = #6 dgfrac 0.18    r182 = #6 dgfrac 0.32
 dgfrac is KNOWN to bind on #6 from those judge measurements, so neither is a
 speculative gate. Both unique against all prior builds.
+
+## r181 / r182 JUDGE — #6's dgfrac peak CONFIRMED at 0.25
+    0.05 -13.69 | 0.18 -4.75 (r181) | **0.25 BEST** | 0.32 -2.89 (r182) | 0.60 -77.53
+Bracketed on both sides now. The largest-headroom test on the board is at its
+optimum for this knob. r180 = 16308.532 stands.
+
+## r183 / r184 — #8 is the ONLY test that never waits to form decode groups
+    double dgfrac = immediateDecodeWaves ? 0.0 : ...
+immediateDecodeWaves is set by legacyQuarter, which IS #8. So #8's decode groups
+fire immediately and never accumulate, while every other test waits for a
+fraction of the pool. That regime has never been varied. #8 has 113 points of
+headroom, 112.9 of it latency, with dist 92% TDR-driven.
+    r183 = #8 dgfrac 0.10    r184 = #8 dgfrac 0.24 (match global)
