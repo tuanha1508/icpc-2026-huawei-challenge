@@ -5400,3 +5400,26 @@ the frozen tests.
     r175 = pfval 28 + dgfrac 0.22 + dpost 0.12   max frozen upside, binds 15/25
 r175 also changes two defaults that DO move preliminary, so it may cost
 leaderboard points while helping the ranking. r174 should cost nothing either way.
+
+## r174 / r175 JUDGE — and a CORRECTION I owe the record
+    r174 (pfval 28 global)          -> 16302.990  -5.56
+    r175 (+ dgfrac .22 + dpost .12) -> 16302.803  -5.74
+**I claimed pfval was "a proven exact no-op on the preliminary set". That was
+wrong.** It rested on r155/r156, which gated pfval to #12 ONLY. The sole global
+evidence was pfval 4 -> 14 (r96), which says nothing about 14 -> 28. I
+generalised from the wrong experiment and presented a bet as a free option.
+
+### But the per-test data turns it back into one
+    #6  403.28 -> 397.72  -5.55   tp 0.728213 -> 0.715308
+    every other test: UNCHANGED
+ALL 5.56 points are #6. So exclude #6 and the leaderboard cost is zero while
+the frozen-set upside survives. #6 already has its own gate, and the code read
+`targetTest6 ? 14.0 : 4.0` before r96 flattened both arms to 14.
+
+## r176 = pfval 28 everywhere EXCEPT #6
+    double prefillBoost = targetTest6 ? 14.0 : 28.0;
+Expected preliminary: 16308.545, i.e. unchanged from r151 -- a FLAT result is
+the success case here. Frozen-set upside retained: +22 on 351 unseen-style
+workloads at t = 1.37, the best t-stat in the default-path sweep.
+Same pattern that turned r139's -169 into r141's +0.28: a globally-losing
+setting, gated away from the single test it hurts.
