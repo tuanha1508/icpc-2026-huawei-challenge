@@ -66,3 +66,17 @@ richest unexplored surface left on the board.
     r194  eprio "CDBA" -> "ABCD"  #8 is latency-weighted; CDBA is prefill-first
 Each isolates ONE inherited setting, so whichever moves the score identifies
 the component responsible. All six built, compiled and verified unique.
+
+### Decomposition results (judge-measured, one component at a time)
+    useMarginal ON       exact no-op  (r134)
+    radapt ON            **-1.50**    (r192)  -> keep radapt OFF; the bundle is
+                                       right here, despite dist being 92% TDR
+    eprio "ABCD"         exact no-op  (r194)  -> eprio does not bind on #8 at all
+Three of seven components now settled; the bundle is correct on all three.
+Remaining, rebased on r185 (16308.867, current best):
+    r195  legacyDecodeRemote OFF
+    r196  dpost 0.25 -> 0.08
+    r197  immediateDecodeWaves OFF  (this is what pins #8's dgfrac to 0)
+NOTE r191-r194 were built on r180, not on the r185 best -- the component
+comparisons are still valid against that fixed baseline, but they could never
+have set a record. Rebased for the rest.
