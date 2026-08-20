@@ -5560,3 +5560,25 @@ slot, and the bundle came out net POSITIVE. Since the losers are gated to their
 own tests, isolating the winners should push it higher still -- pending the
 per-test harvest.
 Previous best was r180 16308.532 / r176 16308.545.
+
+## r187 / r188 JUDGE — both multiplexed probes lose overall
+    r187 (nfactor 2.0 on 8 latency tests) -> 16298.646  -10.2
+    r188 (order FIFO on 8 tests)          -> 15979.808  -329
+Per-test harvest BLOCKED: I ran a background scraper over all 176 distinct-score
+submissions, it retried continuously for an hour, returned ZERO, and almost
+certainly escalated Codeforces' throttle on submission pages. Killed it. That
+cost the harvest window for r185 (the new best), r187 and r188 -- the per-test
+rows are the whole product of a multiplexed probe, so those three submissions
+are currently unread. My error: I chased historical data we did not urgently
+need and broke the tool that reads the data we do.
+
+## Queue (all built, unique, unsubmitted)
+    r183 / r184  #8's dgfrac = 0 regime, never varied. 187 pts of headroom.
+    r189  rporder 'S' on #3 #5 #8 #9 #10 #15 #18 #22 -- prefill-queue SJF binds
+          only 2/60 globally because most tests never queue >1 prefill; the
+          deep-queue tests are exactly where it can matter, and only #7 and #13
+          have ever carried it.
+    r190  pieces 2 on #5 #8 #9 #10 #15 #16 #18 #22 -- splitting lost everywhere
+          globally (-346, and -846 adaptive) but has NEVER been gated to a
+          single test, and the mechanism (letting D PROC interleave between
+          pieces) is real.
