@@ -78,38 +78,78 @@ def submit(page, contest, problem, path, lang_match, do_submit):
     page.select_option("select[name='programTypeId'], select#programTypeId", chosen[0])
     print(f"  language: {chosen[1]}")
 
-    # The page overlays an ACE editor on #sourceCodeTextarea and copies the
-    # EDITOR's content into the textarea on submit -- so a value injected into
-    # the textarea alone is overwritten and the form posts empty. Turn the
-    # editor off first (that is what the toggle is for), then the plain
-    # textarea is the source of truth.
+    # Use the form's FILE INPUT rather than the textarea. Codeforces overlays
+    # an ACE editor on #sourceCodeTextarea and copies the EDITOR's content into
+    # the textarea when the form posts -- so filling the textarea leaves the
+    # editor holding the PREVIOUS file, and that stale source is what gets
+    # submitted. That is exactly how r179 arrived as a duplicate of r178.
+    # set_input_files drives input[name='sourceFile'] through CDP: no OS file
+    # dialog, no textarea, no editor involvement, and the file is uploaded
+    # verbatim from disk.
+    # Codeforces PERSISTS the last source per problem in localStorage and
+    # repopulates the ACE editor from it on every page load. The editor then
+    # copies itself into the textarea at submit time and wins over anything we
+    # set -- which is why r179 kept arriving as a duplicate of r178 even with
+    # the file input populated. Clear the stored source, turn the editor OFF via
+    # its own toggle, and blank both surfaces BEFORE attaching the file.
+    page.evaluate("""() => {
+        try {
+            const kill = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (/source|editor|submit|ace/i.test(k)) kill.push(k);
+            }
+            kill.forEach(k => localStorage.removeItem(k));
+            sessionStorage.clear();
+        } catch (e) {}
+    }""")
     try:
         cb = page.locator("#toggleEditorCheckbox")
         if cb.count() and cb.is_checked():
-            cb.uncheck()
-            page.wait_for_timeout(300)
+            cb.uncheck(); page.wait_for_timeout(400)
     except Exception as e:
-        print(f"  [warn] could not toggle the editor off: {e}")
-    page.evaluate(
-        """([code]) => {
-            const ta = document.querySelector('#sourceCodeTextarea')
-                    || document.querySelector("textarea[name='source']");
-            if (!ta) throw new Error('source textarea not found');
-            ta.value = code;
-            ta.dispatchEvent(new Event('input',  {bubbles: true}));
-            ta.dispatchEvent(new Event('change', {bubbles: true}));
-            if (window.ace) {
-                const host = document.querySelector('#editor');
-                if (host) { try { window.ace.edit(host).setValue(code, -1); } catch (e) {} }
-            }
-        }""", [code])
-    got = page.evaluate(
-        "() => (document.querySelector('#sourceCodeTextarea')"
-        " || document.querySelector(\"textarea[name='source']\")).value.length")
-    print(f"  form loaded with {got} bytes")
-    if got != len(code):
-        print(f"  ERROR: form holds {got} bytes, file has {len(code)}", file=sys.stderr)
+        print(f"  [warn] editor toggle: {e}")
+    page.evaluate("""() => {
+        const ta = document.querySelector('#sourceCodeTextarea')
+                || document.querySelector("textarea[name='source']");
+        if (ta) { ta.value = ''; ta.dispatchEvent(new Event('input', {bubbles:true})); }
+        if (window.ace) {
+            const h = document.querySelector('#editor');
+            if (h) { try { window.ace.edit(h).setValue('', -1); } catch (e) {} }
+        }
+    }""")
+
+    fi = page.locator("input[name='sourceFile']")
+    if not fi.count():
+        print("  ERROR: no file input on the submit form", file=sys.stderr)
         return 4
+    fi.set_input_files(os.path.abspath(path))
+    page.wait_for_timeout(500)
+    val = page.evaluate(
+        "() => { const f = document.querySelector(\"input[name='sourceFile']\");"
+        " return f && f.files && f.files.length ? f.files[0].name + ':' + f.files[0].size : ''; }")
+    print(f"  file input holds: {val}")
+    if not val.endswith(str(len(code))):
+        print(f"  ERROR: file input reports {val}, expected size {len(code)}", file=sys.stderr)
+        return 4
+    # Re-assert emptiness AFTER upload: ACE can restore asynchronously.
+    page.wait_for_timeout(600)
+    leftover = page.evaluate("""() => {
+        const ta = document.querySelector('#sourceCodeTextarea')
+                || document.querySelector("textarea[name='source']");
+        let n = ta ? ta.value.length : 0;
+        if (window.ace) {
+            const h = document.querySelector('#editor');
+            if (h) { try {
+                const e = window.ace.edit(h);
+                if (e.getValue().length) { e.setValue('', -1); }
+                n += e.getValue().length;
+            } catch (e) {} }
+        }
+        if (ta && ta.value.length) { ta.value=''; ta.dispatchEvent(new Event('input',{bubbles:true})); }
+        return n;
+    }""")
+    print(f"  stale source cleared (was {leftover} chars)")
 
     if not do_submit:
         print("  FORM READY -- problem, language and source are set.")

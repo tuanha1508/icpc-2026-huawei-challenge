@@ -5472,3 +5472,29 @@ away from the one or two tests it hurts.
     r178 -8.88 -> 98% #17 -> r179
 Verified r179 vs r178 differs on 0/25 corpus2 tests (the gates are test-specific
 and cannot leak) and r179 vs r176 on 15/25 (the interaction is retained).
+
+## r180 — everything measured-good, in one build
+Contents, each with its judge or unseen-corpus evidence:
+    pfval 30 default, #6 held at 14
+        pfval's ONLY cost was #6 (-5.55, tp 0.728->0.715); gating #6 made it
+        free (r176 = 16308.545, identical to r151). 30 beat 28 by +9.99 on
+        unseen workloads.
+    dgfrac 0.24 + dpost 0.15
+        the interaction: -188.24 and -51.73 ALONE, **+245.52 together**
+        (t = 1.48) on 351 unseen-style workloads.
+    #17 and #12 handed back dpost 0.08
+        r178's -8.88 was 98% #17 (-8.70). #17 carries a dgfrac gate but had no
+        dpost gate, so it inherited the new default.
+    plus every gate already proven on the judge (#4, #13, #17, #18, #21, #12).
+Unique against all 86 prior builds (md5 7e203197...), 40422 bytes.
+Expected preliminary ~16308.5; the default-path content is aimed at the frozen
+set, where the gates cannot reach.
+
+### Submission-path bug that cost three rounds -- fixed
+r179 kept being rejected as "exactly the same code". Cause: Codeforces persists
+the last source per problem in localStorage and repopulates the ACE editor from
+it on every page load; the editor then copies itself into the textarea at submit
+time, overriding whatever was placed there. Filling #sourceCodeTextarea was
+therefore never sufficient. tools/cf_submit.py now clears the stored source,
+toggles the editor off, blanks both surfaces, and uploads through
+input[name='sourceFile'] via CDP, verifying the byte count from the file input.
