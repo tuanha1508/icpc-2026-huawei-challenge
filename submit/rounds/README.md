@@ -5534,3 +5534,20 @@ fire immediately and never accumulate, while every other test waits for a
 fraction of the pool. That regime has never been varied. #8 has 113 points of
 headroom, 112.9 of it latency, with dist 92% TDR-driven.
     r183 = #8 dgfrac 0.10    r184 = #8 dgfrac 0.24 (match global)
+
+## r185 / r186 — MULTIPLEXED: 15 experiments in 2 slots
+Per-test gates are independent, so one submission carries a separate experiment
+on every listed test. This is the same trick as r143/r144 but applied across the
+whole board instead of eight tests.
+    r185 = dpost 0.40 on #5 #6 #7 #9 #10 #15 #16 #18
+           (the eight tests that carry NO dpost gate, so 0.40 is untested there)
+    r186 = balw 4.0 on #8 #9 #10 #12 #15 #18 #21
+           (the work-weighted branch. Global default is -1, count balancing,
+            which won overall at r104 -- but only #17 and #13 have ever been
+            gated back to the work branch, where #17 gains +0.03)
+Harvest per-test afterwards: keep whichever tests won, drop the rest. Losing
+totals are expected and irrelevant -- the per-test rows are the product, exactly
+as with r139 (-169 overall, yet it produced #4 +0.28 and the r141 best).
+Build note: the first attempt placed both gate blocks before balw and
+dpostJoinFraction are declared and failed to compile; anchors moved after the
+existing gates for each variable.
