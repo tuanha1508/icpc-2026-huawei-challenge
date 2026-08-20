@@ -5498,3 +5498,26 @@ time, overriding whatever was placed there. Filling #sourceCodeTextarea was
 therefore never sufficient. tools/cf_submit.py now clears the stored source,
 toggles the editor off, blanks both surfaces, and uploads through
 input[name='sourceFile'] via CDP, verifying the byte count from the file input.
+
+## dgcap — new mechanism, built and REFUTED
+The decode-group trigger is `ready >= dgfrac * decTotal`: a FRACTION of the pool
+with no absolute ceiling, so when decTotal is large the group waits for an
+unbounded count. Added dgcap to bound that wait (0 = exact current behaviour,
+verified: dgcap 0 reproduces r180 at 246081.08 identically).
+    dgcap 4 -290.71 | 8 -462.80 | 16 +15.37 (t 0.11, noise) | 32 -149.00 | 64 -74.99
+Capping loses everywhere. The fraction trigger is correct as designed.
+
+Also considered and rejected WITHOUT building: restricting D PRE groups by
+remote affinity to cut transfer count. The statement says a group spanning r
+remotes queues the same r transfers as r separate groups would, but pays S once
+instead of r times -- so cross-remote grouping is strictly better and the
+current `tmp = bDecRdy.v` is already optimal.
+
+## r181 / r182 — refine #6, the largest headroom on the board (597 pts)
+#6's dgfrac has three judge points and has never been refined between them:
+    0.05 -> -13.69 | 0.25 -> current | 0.60 -> -77.53
+Peak is bracketed in [0.05, 0.60], and the fall-off toward 0.60 is much steeper
+than toward 0.05, placing the optimum below the midpoint.
+    r181 = #6 dgfrac 0.18    r182 = #6 dgfrac 0.32
+dgfrac is KNOWN to bind on #6 from those judge measurements, so neither is a
+speculative gate. Both unique against all prior builds.
