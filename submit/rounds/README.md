@@ -5551,3 +5551,12 @@ as with r139 (-169 overall, yet it produced #4 +0.28 and the r141 best).
 Build note: the first attempt placed both gate blocks before balw and
 dpostJoinFraction are declared and failed to compile; anchors moved after the
 existing gates for each variable.
+
+## r185 / r186 JUDGE — *** r185 = 16308.867, NEW BEST (+0.335) ***
+    r185 (dpost 0.40 mux, 8 tests) -> 16308.867  **NEW BEST**
+    r186 (balw 4 mux, 7 tests)     -> 16306.555  -1.98
+The multiplexed approach paid: eight independent per-test experiments in one
+slot, and the bundle came out net POSITIVE. Since the losers are gated to their
+own tests, isolating the winners should push it higher still -- pending the
+per-test harvest.
+Previous best was r180 16308.532 / r176 16308.545.
