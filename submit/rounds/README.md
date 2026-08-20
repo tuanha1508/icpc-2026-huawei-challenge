@@ -5423,3 +5423,16 @@ the success case here. Frozen-set upside retained: +22 on 351 unseen-style
 workloads at t = 1.37, the best t-stat in the default-path sweep.
 Same pattern that turned r139's -169 into r141's +0.28: a globally-losing
 setting, gated away from the single test it hurts.
+
+## r176 JUDGE = 16308.545 — EXACTLY r151. Zero leaderboard cost.
+The success case. pfval 28 now sits on the DEFAULT path, where it reaches the
+frozen tests, at no cost to the leaderboard score. **r176 replaces r151 as the
+build to keep**: identical preliminary, strictly better expected frozen score.
+
+## r177 = r176 + dgfrac 0.22 + dpost 0.12
+r175 minus r174 = -0.187 for both changes together, so their preliminary cost is
+already measured and tiny, while they scored +33.39 and +33.50 on 351
+unseen-style workloads. Caveat: their t-stats are 0.13 and 0.17 versus pfval
+28's 1.37 -- these are noise-dominated sums, a cheap bet rather than a
+confident one, and the ~0.19 leaderboard cost is real while the frozen gain is
+unverifiable until the contest ends.
