@@ -5436,3 +5436,19 @@ unseen-style workloads. Caveat: their t-stats are 0.13 and 0.17 versus pfval
 28's 1.37 -- these are noise-dominated sums, a cheap bet rather than a
 confident one, and the ~0.19 leaderboard cost is real while the frozen gain is
 unverifiable until the contest ends.
+
+## r177 JUDGE = 16308.358, -0.187 — predicted EXACTLY
+r175 minus r174 forecast -0.187 and the judge returned -0.187. The arithmetic
+decomposition of stacked default changes is reliable to the thousandth.
+
+## r178 — a real INTERACTION on the default path
+Swept 18 configs vs r176 on 351 unseen-style workloads:
+    dgfrac 0.24 ALONE   -188.24
+    dpost  0.15 ALONE    -51.73
+    BOTH TOGETHER      **+245.52**  t = +1.48, 111W / 89L
+Both clearly negative alone, strongly positive together. No single-knob sweep
+could find this, which is why 40+ configs walked past it. Mechanism: larger
+decode groups (dgfrac) only pay once dpost lets enough requests JOIN those
+groups -- raise either alone and it costs.
+Others in the sweep: balw 6 +95.6 (t 0.50), pf26+dg.22 +37.6, dgfrac .28 +27.1,
+pfval 30 +10.0, radapt 0 +4.5; negatives rprio D -611, pieces 0 -846.
