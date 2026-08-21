@@ -234,3 +234,22 @@ Losers: #4 -15.6, #9 -6.0, #16 -3.6, #21 -1.2.
            string today; on #13 the decode-order axis alone was worth 23.89, so
            a fixed order is not a neutral choice.
 After these, every knob in the solver has been swept per-test.
+
+## CAMPAIGN COMPLETE — every knob swept per-test across all 22 tests
+    r250 marginal OFF on 11  -9.47    only #6 moved (the dpost gain already banked)
+    r251 eprio forced on 11  -19.21   same
+PRODUCTIVE: dpost only -- #8 +17.5, #6 +11.4, #7 +1.1, #22 +36.2 (historic)
+DEAD:       dgfrac maxg rporder balw nfactor order pieces rprio radapt
+            marginal eprio
+
+## What the campaign structurally could NOT see
+Every per-test knob was tested in ISOLATION, and at the dpost values in force at
+the time. Two optima are therefore stale:
+    #6  dgfrac peak 0.25 measured when #6 had dpost = 0.0   -> now 0.20
+    #8  dgfrac = 0 validated when #8 had dpost = 0.25       -> now 0.90
+The global sweep proved dgfrac x dpost is a strong INTERACTION: -188 and -52
+alone, **+245 together**. Larger decode groups only pay once dpost lets enough
+requests JOIN them, so both of those "settled" values were measured under
+conditions that no longer hold.
+    r252 = #8 dgfrac made live (immediateDecodeWaves off) at dpost 0.90
+    r253 = #6 dgfrac 0.40 at dpost 0.20
