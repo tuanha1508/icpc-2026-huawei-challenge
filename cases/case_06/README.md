@@ -105,3 +105,16 @@ under a point, so the knob is done.
           greedy rate-maximiser, and that has never been switched off for it
     r211  eprio forced "CDBA" -- #6 has no forced string; it takes whatever the
           marginal model picks each frame
+
+### Component scorecard — every setting tested individually
+    dpost     peak 0.25   **+11**   <- the ONLY lever that ever moved #6 up
+    dgfrac    peak 0.25, confirmed both sides
+    pfval     14 correct (28 costs 5.55)
+    rprio     'D' correct ('P' -2.44)
+    balw      -1 correct (4 -0.10)
+    marginal  ON correct (OFF -19.7)
+    eprio     forcing CDBA is an exact no-op = matches the model's own choice
+### Remaining
+    r212  order 'S' -> 'F'   SJF minimises MEAN flow time, but #6 is 90%
+                             throughput-weighted and tp depends on the MAKESPAN
+    r213  radapt OFF         the loop steers on dist, worth 10% of #6's score
