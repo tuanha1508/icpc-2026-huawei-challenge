@@ -5607,3 +5607,21 @@ first thing to move it upward.
 immediateDecodeWaves was the strongest "unexamined default" argument available
 -- #8 is the only test whose decode groups never accumulate -- and removing it
 COSTS 1.50. The legacy bundle is a tuned configuration, not baggage.
+
+## STRATEGY — width, not depth
+#6 took ~10 submissions to map exhaustively and yielded +11, ALL of it from one
+knob (dpost) that was found by the r185 MULTIPLEX, not by the depth-first grind.
+Nine of #6's ten components were already correct. Depth is expensive and mostly
+confirms existing settings; width finds the outliers.
+
+dpost is the only knob that has ever produced a LARGE per-test win:
+    #22  +36.2 at 0.90        #6  +11 at 0.25
+and ten tests still run the inherited 0.15 default with no gate at all:
+    #3 #5 #7 #9 #10 #14 #15 #16 #18 #19
+(#1 #2 #11 #20 excluded -- arrival-bound or dist_base underivable.)
+
+    r216 = those ten at dpost 0.25   (the value that won on #6)
+    r217 = those ten at dpost 0.05   (the low side; #21 sits happily at 0.005)
+Ten independent experiments per slot. Expect the totals to fall -- the product
+is the per-test rows, and losers are dropped next round. Exactly how #6 was
+found.
