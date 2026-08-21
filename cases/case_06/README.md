@@ -70,3 +70,16 @@ dpost = 0, so the whole curve above zero is unexplored.
                                  exactly 0.90, so the optimum is strongly
                                  test-specific, not a property of the knob.
     next: 0.25 (r204) and 0.55 (r205) to bracket the peak
+
+### dpost curve — COMPLETE picture (judge totals)
+    0.00  inherited        #6 was the ONLY test pinned at zero
+    0.15  r206  pending
+    0.25  **16319.510  BEST**
+    0.32  r207  pending
+    0.40  16310.822
+    0.55  16219.375   sharp cliff, -91
+    0.90  16284.529
+Moving #6 off dpost = 0 is worth about **+11 points**. Note #22's record +36.2
+came from dpost 0.90, which costs #6 heavily -- the optimum is strongly
+test-specific, which is exactly why per-test gating finds what global sweeps
+cannot.
