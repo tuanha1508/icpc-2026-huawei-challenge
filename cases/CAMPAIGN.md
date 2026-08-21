@@ -143,3 +143,22 @@ and lost 1316; this REMOVES them from three tests.
 Upside if tp rises above tp_base at all: up to 500 points per test.
 Downside is bounded -- each gate touches only its own test, and #1 has already
 shown it can go to 0, so that is the risk being taken knowingly.
+
+## r240 — uncapping #1 #2 #11 does NOTHING (hypothesis refuted)
+    #1  tp 0.022222 -> 0.022222   identical to 6 significant figures
+    #2  tp 0.005755 -> 0.005755
+    #11 tp 7e-06    -> 7e-06
+The Little's-Law admission cap was never binding on them. Their throughput is
+limited upstream -- almost certainly the arrival span -- so the 1500 points are
+not reachable this way. Tested rather than assumed.
+NEW BEST 16338.090, all of it #8 at dpost 0.90 (+17.50).
+
+## THE PATTERN WE UNDER-SAMPLED
+    #22 peaks at dpost 0.90   +36.2 (historic)
+    #8  peaks at dpost 0.90   +17.50
+Both of the project's biggest per-test wins sit at 0.90 -- and the widest sweep
+ever run across the board was 0.60. Every other test has been screened at
+0.05 / 0.15 / 0.25 / 0.40 / 0.60 and NEVER at the high end where both jackpots
+actually live.
+    r242 = dpost 0.90 on 14 tests   (#6 #7 excluded, peak 0.25; #8 #22 already 0.90)
+    r243 = dpost 0.70 on the same 14
