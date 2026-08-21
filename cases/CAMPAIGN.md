@@ -46,3 +46,18 @@ almost everywhere it matters.
     r223  rporder 'S' on 8 tests -- only #7 and #13 carry it. It binds 2/60
           globally because most tests never queue more than one prefill, so
           per-test gating is the only way to find where it can matter.
+
+## COVERAGE — what "all 22" actually means
+    GATEABLE (18): #3 #4 #5 #6 #7 #8 #9 #10 #12 #13 #14 #15 #16 #17 #18 #19 #21 #22
+    NOT GATEABLE (4): #1 #2 #11 #20
+      Their norm_c is exactly 1.000000, so dist = 0 and dist_base cannot be
+      derived from the judge output. A w_tp-only gate would fire on any frozen
+      test sharing that weight, so they are unreachable by SAFE gating.
+      #1 #2 #11 are arrival-bound and closed regardless; #20 sits at
+      998.18/1000 with 1.8 points left. Nothing material is lost.
+
+Earlier probes were NOT full coverage -- r222 hit 10 tests, r223 hit 8.
+r224/r225 correct that: every one of the 18 gateable tests, 18 independent
+experiments per submission.
+    r224  maxg 64    on all 18
+    r225  rporder 'S' on all 18
