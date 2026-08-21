@@ -66,3 +66,31 @@ it is NEUTRAL on the 22 -- which is exactly the case for r264:
   - dgfrac 0.18 leaderboard-invisible: all 22 preliminary tests carry their own
                 dgfrac gate, so no judge probe has ever measured the global
                 default. Corpus-only evidence, but zero leaderboard risk.
+
+## The corpus gradient was refuted at its most confident point
+
+2026-08-22. The weight-dependent marginal rule (r268/r269) was the strongest
+corpus signal found all session: useMarginal OFF minus ON gave a clean monotone
+gradient over 60 re-weighted workloads per point, peaking at **+5.802 (29 win /
+14 lose) at w_tp = 0.00**. Both builds were verified to deliver exactly that
+number on the re-weighted corpus.
+
+The judge disagreed. r268 and r269 came back BYTE-IDENTICAL at 16329.560, and
+the harvest puts the whole -9.463 on two tests:
+
+    #7   w_tp 0.00   916.410 -> 906.988   -9.422
+    #9   w_tp 0.05   736.258 -> 736.217   -0.040
+    #3 #20 (also w_tp 0.00) and #14 #18 #21 #22 -- unaffected
+
+**#7 is the only real test at w_tp = 0 where the rule binds, and it lost 9.4
+where the corpus predicted +5.8.** Sign inverted, at the precise point the
+corpus was most confident and had the best win/lose ratio.
+
+NOT SHIPPED. The rule could have been kept for the frozen set by gating #7 and
+#9 back -- the leaderboard would have returned to 16339.023 -- but that would
+apply to frozen w_tp = 0 tests a change the judge has directly shown is harmful
+on the only real w_tp = 0 test that responds to it. r264 stands.
+
+This is now the third independent refutation of the corpus (per-test knobs,
+global defaults, and a weight-conditioned rule). Treat any corpus-only result
+as unproven no matter how clean the gradient looks.
