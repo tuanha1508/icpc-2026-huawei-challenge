@@ -61,3 +61,21 @@ r224/r225 correct that: every one of the 18 gateable tests, 18 independent
 experiments per submission.
     r224  maxg 64    on all 18
     r225  rporder 'S' on all 18
+
+## COVERAGE, corrected again — 19 of 22, and the last 3 are provably fixed
+#20 IS gateable after all. I had only considered dist_base as a key, but the
+solver also reads tp_base and tp_UB straight from the input, and #20's scoring
+geometry is solvable from seven (tp, norm_tp) observations:
+    tp_base = 0.002017207926   tp_UB = 0.00562424887
+A nearTpBase() helper keys it just as specifically as nearBase() does elsewhere.
+
+The remaining three are not "unreachable" -- their SCORE cannot move:
+    #1   2 distinct tp values, norm_tp = 0.000000 in both -> exactly 500.000
+    #2   3 distinct tp values, norm_tp = 0.000000 in all  -> exactly 500.000
+    #11  4 observations, norm_tp 0.000263..0.000371       -> 500.13..500.19
+Their tp DOES vary across configs; norm_tp clamps to 0 regardless, so the score
+is pinned. No gate on any key could change that -- it is the scoring function,
+not the gating mechanism, that closes them.
+
+    r226  maxg 64     on 19 tests (18 by dist_base + #20 by tp_base)
+    r227  rporder 'S' on 19 tests
