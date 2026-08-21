@@ -57,3 +57,27 @@ no matter what the scheduler does.
   never binds. Structurally inert.
 - **Oracle over all 56 harvested configs**: +0.27 remaining. Everything ever
   measured is already gated.
+
+## Standing build: r264 (2026-08-21)
+
+r264 = 16339.023 on the leaderboard, EXACTLY equal to r252's best, with a
+frozen-path mean of 739.029 against r252's 735.853 (+3.176 on 80 ungated
+corpus tests). Strictly better: same feedback score, better ranking score.
+Contents: global nfactor 0 + global dgfrac 0.18, with nfactor gated back to
+1.0 on #15 and #10.
+
+## Axes closed by measurement, 2026-08-21
+
+| axis | verdict |
+|---|---|
+| admission cap (dpostMin/Ntarget) | #9/#18/#21 never exceed 16 in flight; #15 monotone worse |
+| dpost fraction | curves mapped on #4 #6 #13 #17; all at peak |
+| dgfrac | curves mapped; #6 bracketed 0.05..0.60, peak 0.25 |
+| absolute D POST minimum | new control, +96.1 on corpus, loses on all 4 judge tests |
+| admission order 'F' | loses on all 9 tests where it binds, inert on 8 |
+| rporder / pfair / chunk / dsplit | move 0 of 16 gate-keyed probes -- DEAD |
+| prefillBoost | dead outside `!busyE && useMarginal` |
+| global knobs (19 swept) | only nfactor 0 and dgfrac 0.18 positive |
+
+#10 is inert under seven settings across three mechanisms (dgfrac 0.25/0.40/
+0.60, dpost 0.25/0.40, dpostMin 4/16) -- all exactly 684.481.
