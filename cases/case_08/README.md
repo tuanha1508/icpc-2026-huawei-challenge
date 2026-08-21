@@ -86,3 +86,13 @@ have set a record. Rebased for the rest.
     dpost 0.25 -> 0.08       -> exact no-op (r196)
 Five of seven components tested individually; every one confirms the inherited
 setting. #8's 188 points are closed barring legacyDecodeRemote (r195).
+
+## REOPENED — dpost 0.60 is worth +9.26, and I had closed #8 prematurely
+r228 (dpost 0.60 across fifteen tests) scored -52 overall but contained:
+    #8  812.23 -> 821.49  **+9.261**
+#8 inherits dpost 0.25 from legacyQuarter. Earlier I tested it DOWNWARD only
+(0.08, r196: exact no-op) and concluded the bundle was validated. That was
+wrong -- the inherited value is roughly nine points too LOW. Testing one
+direction and generalising is the specific mistake.
+    r230 = #8 dpost 0.60  -> expect ~16329.9
+    r231 = #8 dpost 0.80  (direction is up; peak unknown)
