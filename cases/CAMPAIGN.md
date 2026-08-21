@@ -219,3 +219,18 @@ r246 (#6 dpost 0.22) = -1.855, so #6's peak is confirmed at 0.20.
     nfactor  dead        order    dead      pieces dead (and zeroes #1)
     NEVER swept per-test: rprio, radapt, marginal, eprio
     r248 = rprio 'D' on 13 tests    r249 = radapt OFF on 13 tests
+
+## r248 / r249 — rprio and radapt are dead per-test
+    r248 rprio 'D' on 13   16312.117  -26.4   (only #6 moved, and that is the
+                                               dpost gain already in r245)
+    r249 radapt OFF on 13  16338.516  exact no-op
+Losers: #4 -15.6, #9 -6.0, #16 -3.6, #21 -1.2.
+
+## Final two knobs
+    r250 = useMarginal OFF on 11 tests. Only #6 (-19.7), #8, #9, #10, #13, #15
+           have ever been tried without the greedy rate-maximiser -- and #9's
+           exclusion going the OTHER way was worth +0.041, so the axis has signal.
+    r251 = eprio forced "CDBA" on 11 tests. Only #5 #8 #10 #13 carry a forced
+           string today; on #13 the decode-order axis alone was worth 23.89, so
+           a fixed order is not a neutral choice.
+After these, every knob in the solver has been swept per-test.
