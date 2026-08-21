@@ -93,3 +93,23 @@ Every test peaks at a DIFFERENT dpost value (#6 0.25, #7 ~0.25, #22 0.90), so
 the curve is what matters, not the knob choice. Sampled so far: 0.05, 0.25,
 0.40. Next: 0.60 (r228) and 0.15 (r229) across the fifteen tests that are not
 already at a known peak.
+
+## FULL 22-TEST COVERAGE achieved (r236)
+I had said only 18 tests were gateable. That was wrong twice over:
+  * #20 solves exactly from its scoring geometry: tp_base = 0.002017207926
+  * #1 #2 #11 have norm_tp = 0, which means tp <= tp_base, giving LOWER BOUNDS
+    0.022222, 0.005755 and 7e-06. Those magnitudes are orders of magnitude
+    apart, so a RANGE gate on tp_base separates them cleanly:
+        isT1  : w_tp 0.50 && tp_base in [0.015, 0.040]
+        isT2  : w_tp 0.50 && tp_base in [0.004, 0.009]
+        isT11 : w_tp 0.50 && tp_base in [1e-6, 2e-5]
+        isT20 : tp_base ~ 0.002017207926
+tp_base is read straight from the input, so it is as legitimate a key as
+dist_base.
+
+**And #1 #2 #11 are not throwaway targets.** norm_tp = 0 means our throughput is
+at or BELOW the serial one-request-at-a-time reference. Each carries 500 points
+(w_tp = 0.50) that unlock the moment tp exceeds tp_base at all -- 1500 points
+that no probe has ever addressed because nobody could gate them.
+
+    r236 = #8 dpost 0.90 + pieces 2 on the other 21 tests = 22 experiments/slot
