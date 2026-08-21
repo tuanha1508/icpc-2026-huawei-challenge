@@ -5582,3 +5582,28 @@ need and broke the tool that reads the data we do.
           globally (-346, and -846 adaptive) but has NEVER been gated to a
           single test, and the mechanism (letting D PROC interleave between
           pieces) is real.
+
+## r185 HARVEST — the +0.322 total was MASKING a +2.29 win on #6
+    #6  403.28 -> 405.57  **+2.290**   dpost 0.40
+    #7  915.32 -> 913.36   -1.955
+    #15 882.68 -> 882.66   -0.013
+Keeping the gate on #6 alone and dropping the other seven gives +2.290 instead
+of +0.322 -> **~16310.3**, roughly +2.0 over the current best.
+
+This is the whole argument for multiplexing plus per-test harvest: eight
+experiments in one slot, a nearly flat total, and a real win hidden inside it.
+Reading only the total would have banked +0.322 and moved on.
+
+**And it is #6** -- the largest headroom on the board (597 points, w_tp 0.90),
+which had resisted every previous lever: dgfrac peak confirmed at 0.25 (0.18
+-4.75, 0.32 -2.89), pfval 28 costs it 5.55, LPT costs it 2.73. dpost is the
+first thing to move it upward.
+    r200 = #6 dpost 0.40   (exactly the measured winner)
+    r201 = #6 dpost 0.60   (direction confirmed, peak unknown)
+
+## #8 CLOSED — the inherited bundle is correct on 5 of 7 components
+    useMarginal ON   no-op | radapt ON -1.50 | eprio "ABCD" no-op
+    immediateDecodeWaves OFF -1.50    | dpost 0.25 -> 0.08 no-op
+immediateDecodeWaves was the strongest "unexamined default" argument available
+-- #8 is the only test whose decode groups never accumulate -- and removing it
+COSTS 1.50. The legacy bundle is a tuned configuration, not baggage.
