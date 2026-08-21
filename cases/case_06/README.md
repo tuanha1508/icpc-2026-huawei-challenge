@@ -95,3 +95,13 @@ under a point, so the knob is done.
                              measured -53.6 globally
     r209  balw -1 -> 4       the work-weighted branch; only #17 and #13 have
                              ever been gated to it
+
+### Components settled (judge-measured, one at a time)
+    dpost   peak 0.25   **+11**       dgfrac  peak 0.25 (confirmed both sides)
+    pfval   14 (28 costs 5.55)        rprio   'D' correct ('P' -2.44)
+    balw    -1 correct (4 -0.10)
+### Still untested on #6
+    r210  useMarginal OFF  -- #6 is NOT in the exclusion list, so it runs the
+          greedy rate-maximiser, and that has never been switched off for it
+    r211  eprio forced "CDBA" -- #6 has no forced string; it takes whatever the
+          marginal model picks each frame
