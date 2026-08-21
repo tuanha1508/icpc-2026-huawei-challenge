@@ -83,3 +83,15 @@ Moving #6 off dpost = 0 is worth about **+11 points**. Note #22's record +36.2
 came from dpost 0.90, which costs #6 heavily -- the optimum is strongly
 test-specific, which is exactly why per-test gating finds what global sweeps
 cannot.
+
+### dpost CLOSED — sharply peaked at 0.25
+    0.15 16307.905 | **0.25 16319.510 BEST** | 0.32 16318.813
+    0.40 16310.822 | 0.55 16219.375 | 0.90 16284.529
+Worth about +11 points over the inherited 0. Refining past 0.25 is worth well
+under a point, so the knob is done.
+
+### Remaining #6 levers (rebased on r204)
+    r208  rprio 'D' -> 'P'   never tested for #6; global default is 'P' and 'D'
+                             measured -53.6 globally
+    r209  balw -1 -> 4       the work-weighted branch; only #17 and #13 have
+                             ever been gated to it
