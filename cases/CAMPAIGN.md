@@ -32,3 +32,17 @@ Depth mostly confirms settings that are already right.
     dgfrac gated: #4 #5 #6 #7 #8 #12 #13 #16 #17 #18 #21
     balw   gated: #13 #17
     others: essentially ungated everywhere
+
+## Results (cont.)
+    dgfrac  0.40  #3 #9 #10 #14 #15 #19 #22   #15 +0.010  -> NEW BEST 16320.611
+    dgfrac  0.08  same seven                  -0.013
+dgfrac width is saturated: one mover, worth 0.01. The knob is already tuned
+almost everywhere it matters.
+
+## Queue
+    r222  maxg 64 on 10 tests -- maxg is UNBOUNDED everywhere except #12, and a
+          finite cap has never been gated to any test. Globally maxg 8 was
+          -1031, but 64 is mild and per-test behaviour is unmeasured.
+    r223  rporder 'S' on 8 tests -- only #7 and #13 carry it. It binds 2/60
+          globally because most tests never queue more than one prefill, so
+          per-test gating is the only way to find where it can matter.
