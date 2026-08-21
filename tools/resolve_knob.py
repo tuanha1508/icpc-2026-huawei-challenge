@@ -24,8 +24,18 @@ def resolve(path, knob):
         if 'getenv' in line and '=' not in line.split('getenv')[0]: pass
         for m in pat.finditer(line):
             k = m.group(1)
-            if k in KEY:
-                try: final[KEY[k]] = float(m.group(2))
+            # match numerically, not as a string: the same dist_base is
+            # written 41341.873 in one build and 41341.8730 in another, and a
+            # string lookup silently DROPS that cell from the audit.
+            t = KEY.get(k)
+            if t is None:
+                try:
+                    kv = float(k)
+                    for kk, tt in KEY.items():
+                        if abs(float(kk) / kv - 1.0) < 1e-6: t = tt; break
+                except ValueError: pass
+            if t is not None:
+                try: final[t] = float(m.group(2))
                 except ValueError: pass
     return final
 
