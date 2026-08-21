@@ -96,3 +96,13 @@ wrong -- the inherited value is roughly nine points too LOW. Testing one
 direction and generalising is the specific mistake.
     r230 = #8 dpost 0.60  -> expect ~16329.9
     r231 = #8 dpost 0.80  (direction is up; peak unknown)
+
+### dpost curve — the single biggest gain of the project after #22's +36.2
+    0.25 (inherited)  16320.611   the legacyQuarter value
+    0.60              16329.849   +9.24   (predicted +9.26 from the r228 harvest)
+    0.80              16336.864   **+16.25**  NEW BEST, still climbing
+    0.90 / 0.97       r232 / r233 pending
+#8 was declared CLOSED after five bundle components were validated -- but dpost
+had only ever been tested DOWNWARD (0.25 -> 0.08, no-op). The inherited value
+was ~16 points too low. Testing one direction and generalising to "validated"
+is the specific error.
