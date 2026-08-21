@@ -181,3 +181,14 @@ r244 assignment (22 of 22 covered):
             #11 -> 3  (no binder known; probing for one)
 Every test should now show a different score, which is what makes a single
 submission informative about the whole board instead of one corner of it.
+
+## r244 harvest — 11 of 22 moved, one win, one hard safety rule
+    #6  414.25 -> 414.68  **+0.43**  at dpost 0.20  -> its peak is 0.20, not 0.25
+    #1  500.00 ->   0.00  -500.00    at pieces 0
+    #8  unchanged at dpost 0.95 -> 0.90 and 0.95 are equivalent (plateau)
+    losers: #3 -116 (pieces), #4 -20.7 (dpost .45), #9 -6.5, #14 -3.2
+
+**HARD RULE: never gate `pieces` on #1.** It returns a ZERO VERDICT under
+pieces 0 AND pieces 2 -- not a low score, a failure. That is -500 every time.
+#6 dpost curve, complete: 0.15 -11.6 | **0.20 +0.43** | 0.25 | 0.32 -0.70 |
+0.40 -8.7 | 0.55 -100 | 0.90 -35.
