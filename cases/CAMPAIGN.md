@@ -192,3 +192,17 @@ submission informative about the whole board instead of one corner of it.
 pieces 0 AND pieces 2 -- not a low score, a failure. That is -500 every time.
 #6 dpost curve, complete: 0.15 -11.6 | **0.20 +0.43** | 0.25 | 0.32 -0.70 |
 0.40 -8.7 | 0.55 -100 | 0.90 -35.
+
+## r245 = 16338.516 NEW BEST (+0.426, predicted +0.43)
+#6's dpost peak corrected from 0.25 to 0.20.
+
+## r247 — every-test probe #2, built from what r244 taught
+r244 showed dpost is an exact NO-OP on #7 #13 #15 #18 #19 #21 #22, so those
+switch to dgfrac -- never varied on most of them:
+    dgfrac  #3 .60  #7 .30  #9 .50  #10 .50 #12 .45 #13 .40 #14 .40
+            #15 .60 #16 .60 #17 .40 #18 .50 #19 .50 #21 .30 #22 .50
+    maxg 8  #2 #11 #20   (no binder known; maxg is unbounded everywhere but #12,
+                          so a hard cap is the likeliest thing to move them)
+    #6 and #8 keep their measured peaks (dpost 0.20 and 0.90)
+    #1 gets NOTHING -- it returns a zero verdict under any pieces value (-500),
+       so it is left strictly alone from here.
