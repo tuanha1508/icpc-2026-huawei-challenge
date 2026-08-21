@@ -62,3 +62,11 @@ dpost = 0, so the whole curve above zero is unexplored.
     r201  dpost 0.60   push past it
     r202  dpost 0.90   the same extreme that gave #22 its record +36.2
     r203  rprio 'D' -> 'P'
+
+### dpost curve — judge-measured
+    0.00  403.28   inherited; #6 was the ONLY test pinned at zero
+    0.40  405.57   **+2.29**  -> total 16310.822, NEW BEST
+    0.90  -26.3 vs 0.40       -> far too high. Note #22's record +36.2 came from
+                                 exactly 0.90, so the optimum is strongly
+                                 test-specific, not a property of the knob.
+    next: 0.25 (r204) and 0.55 (r205) to bracket the peak
