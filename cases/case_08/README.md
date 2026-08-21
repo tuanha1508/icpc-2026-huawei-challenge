@@ -80,3 +80,9 @@ Remaining, rebased on r185 (16308.867, current best):
 NOTE r191-r194 were built on r180, not on the r185 best -- the component
 comparisons are still valid against that fixed baseline, but they could never
 have set a record. Rebased for the rest.
+
+### FINAL: the bundle is CORRECT, not legacy baggage
+    immediateDecodeWaves OFF -> **-1.50** (r197). #8 genuinely wants dgfrac = 0.
+    dpost 0.25 -> 0.08       -> exact no-op (r196)
+Five of seven components tested individually; every one confirms the inherited
+setting. #8's 188 points are closed barring legacyDecodeRemote (r195).
