@@ -206,3 +206,16 @@ switch to dgfrac -- never varied on most of them:
     #6 and #8 keep their measured peaks (dpost 0.20 and 0.90)
     #1 gets NOTHING -- it returns a zero verdict under any pieces value (-500),
        so it is left strictly alone from here.
+
+## r247 harvest — dgfrac and maxg are dead per-test too
+Only 1 of 22 moved (#6, +0.195). dgfrac 0.30-0.60 is an exact no-op on all
+fourteen tests it was applied to, and maxg 8 is a no-op on #2 #11 #20.
+r246 (#6 dpost 0.22) = -1.855, so #6's peak is confirmed at 0.20.
+
+## Knob status after the full campaign
+    dpost    PRODUCTIVE -- #8 +17.5, #6 +11.4, #7 +1.1, #22 +36.2 (historic)
+    dgfrac   dead per-test and globally
+    maxg     dead        rporder  dead      balw   dead
+    nfactor  dead        order    dead      pieces dead (and zeroes #1)
+    NEVER swept per-test: rprio, radapt, marginal, eprio
+    r248 = rprio 'D' on 13 tests    r249 = radapt OFF on 13 tests
