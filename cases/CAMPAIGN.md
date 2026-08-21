@@ -79,3 +79,17 @@ not the gating mechanism, that closes them.
 
     r226  maxg 64     on 19 tests (18 by dist_base + #20 by tp_base)
     r227  rporder 'S' on 19 tests
+
+## Results (cont.)
+    maxg    64    19 tests   -0.023   dead
+    rporder 'S'   19 tests   -0.023   dead
+Identical totals -- both touch the same single test and undo r220's #15 gain.
+
+## CONCLUSION SO FAR: dpost is the only productive knob
+    dpost   #6 +11 | #7 +1.09 | #22 +36.2 (historic)
+    dgfrac  #15 +0.01
+    balw / nfactor / order / maxg / rporder   nothing at full width
+Every test peaks at a DIFFERENT dpost value (#6 0.25, #7 ~0.25, #22 0.90), so
+the curve is what matters, not the knob choice. Sampled so far: 0.05, 0.25,
+0.40. Next: 0.60 (r228) and 0.15 (r229) across the fifteen tests that are not
+already at a known peak.
