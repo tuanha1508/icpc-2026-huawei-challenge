@@ -113,3 +113,12 @@ at or BELOW the serial one-request-at-a-time reference. Each carries 500 points
 that no probe has ever addressed because nobody could gate them.
 
     r236 = #8 dpost 0.90 + pieces 2 on the other 21 tests = 22 experiments/slot
+
+## r236 (full 22) — the tp_base gates WORK, and #1 is fragile
+    #8  +17.50 at dpost 0.90   <- the win
+    #1  500.00 -> **0.00**     pieces=2 drove it to a zero verdict, not a low
+                                score. The gate fired (tp moved 0.022222 ->
+                                0.021739), so #1 IS reachable -- and breakable.
+    #2 #11 gates fired, scores unchanged (norm_tp still clamped at 0)
+Everything else lost: #3 -116, #4 -33, #9 -6.5, #14 -3.2.
+pieces=2 is dead per-test as well as globally -- except it exposed #8's peak.

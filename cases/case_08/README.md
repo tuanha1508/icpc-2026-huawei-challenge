@@ -106,3 +106,11 @@ direction and generalising is the specific mistake.
 had only ever been tested DOWNWARD (0.25 -> 0.08, no-op). The inherited value
 was ~16 points too low. Testing one direction and generalising to "validated"
 is the specific error.
+
+### dpost curve — #8 is the single largest gain of the session
+    0.25 inherited   16320.611
+    0.60             +9.24
+    0.80             +16.25
+    0.90             **+17.50**   (harvested from r236, a config that lost 664)
+    0.95 / 0.99      r238 / r239 pending
+r232 (#8 at 0.90, alone) was built but never submitted -- it should land ~16338.
