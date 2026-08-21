@@ -118,3 +118,8 @@ under a point, so the knob is done.
     r212  order 'S' -> 'F'   SJF minimises MEAN flow time, but #6 is 90%
                              throughput-weighted and tp depends on the MAKESPAN
     r213  radapt OFF         the loop steers on dist, worth 10% of #6's score
+
+## #6 EXHAUSTIVELY MAPPED — +11 points, from one knob
+    order 'F'  -4.80  -> 'S' correct        radapt OFF  no-op
+Every lever tested individually. dpost was the ONLY one that ever moved #6
+upward, and it had been pinned at 0 since the Codex base. Final: dpost 0.25.
