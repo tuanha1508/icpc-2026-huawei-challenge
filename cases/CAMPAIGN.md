@@ -122,3 +122,24 @@ that no probe has ever addressed because nobody could gate them.
     #2 #11 gates fired, scores unchanged (norm_tp still clamped at 0)
 Everything else lost: #3 -116, #4 -33, #9 -6.5, #14 -3.2.
 pieces=2 is dead per-test as well as globally -- except it exposed #8's peak.
+
+## THE BIG SWING — uncapping #1 #2 #11 (1500 points)
+These three are the largest untouched prize on the board and they are stuck for
+a specific, mechanical reason:
+    norm_tp = 0.000   our tp is at or BELOW the serial one-at-a-time reference
+    norm_c  = 1.000   dist = 0, with enormous SLO slack unused
+    w_tp = w_c = 0.50
+Because w_c >= w_tp holds at 0.50/0.50, they receive the Little's-Law ADMISSION
+CAP -- concurrency throttled to protect a TPOT budget they already satisfy with
+room to spare. Throughput is being strangled to defend latency that is maxed.
+
+Setting nfactor = 0 disables the cap entirely for them (the guard is
+`w_c >= w_tp && nfactor > 0.0`), leaving admission unbounded exactly as it is on
+every throughput-weighted test. NEVER tried per-test: r101 ADDED caps everywhere
+and lost 1316; this REMOVES them from three tests.
+
+    r240 = nfactor 0  on #1 #2 #11   (no cap at all)
+    r241 = nfactor 20 on #1 #2 #11   (very loose cap instead)
+Upside if tp rises above tp_base at all: up to 500 points per test.
+Downside is bounded -- each gate touches only its own test, and #1 has already
+shown it can go to 0, so that is the risk being taken knowingly.
