@@ -31,3 +31,12 @@ STATUS: at measured max; spread 277 across configs but current is the peak.
 ## Untried
 
 See ../../submit/rounds/README.md for the full round-by-round ledger.
+
+## RESPONDS TO dpost — found by the r216 ten-test multiplex
+    dpost 0.15 (inherited)  915.32
+    dpost 0.25              916.41   **+1.09**   -> total 16320.601, NEW BEST
+    dpost 0.40              913.36   -1.96
+#7 is w_tp = 0.00, i.e. pure latency, 84.7 points of headroom, dist 65% TDR.
+It was the ONLY one of ten ungated tests to respond -- the other nine were
+exact no-ops, so r216 was already a winners-only build.
+Peak lies between 0.15 and 0.40; r218 (0.20) and r219 (0.30) close on it.
