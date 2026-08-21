@@ -34,3 +34,31 @@ STATUS: dgfrac closed; the 597 needs 3x tp, which no scheduling change gives.
 ## Untried
 
 See ../../submit/rounds/README.md for the full round-by-round ledger.
+
+## ACTIVE TARGET — dpost is the first lever ever to move #6 upward
+
+    dpost 0.0 (inherited)  ->  403.28
+    dpost 0.40             ->  405.57   **+2.290**
+                               tp 0.728213 -> 0.733537  (+0.73%)
+At 3.1 points per 1% of throughput that predicts +2.27 against +2.29 observed:
+a genuine THROUGHPUT gain, not a latency trade. #6 was the ONLY test with
+dpost = 0, so the whole curve above zero is unexplored.
+
+### Every #6 site
+    line 303   rprio 'D'      NEVER TESTED for #6 (global default is 'P',
+                              and 'D' globally measured -53.6)
+    line 471   dgfrac 0.25    peak CONFIRMED: 0.18 -4.75, 0.32 -2.89,
+                              0.05 -13.69, 0.60 -77.53
+    line 660   dpost 0.0      -> 0.40 = +2.29  <-- LIVE
+    line 1151  dsplit chunk   inactive (requires A_DSPLIT)
+    line 1245  pfval 14       28 costs it 5.55, which is why every other test
+                              runs 30 while #6 is held at 14
+### Also measured on #6
+    LPT ordering -2.73 | forcePrefill widened -5.55 | maxg 8 -97 (worst config)
+    adaptive/aggressive splitting: -77 and worse
+
+### Probe queue
+    r200  dpost 0.40   the measured winner            -> expect ~16310.3
+    r201  dpost 0.60   push past it
+    r202  dpost 0.90   the same extreme that gave #22 its record +36.2
+    r203  rprio 'D' -> 'P'
