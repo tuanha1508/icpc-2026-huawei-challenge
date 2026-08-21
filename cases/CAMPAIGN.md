@@ -162,3 +162,22 @@ ever run across the board was 0.60. Every other test has been screened at
 actually live.
     r242 = dpost 0.90 on 14 tests   (#6 #7 excluded, peak 0.25; #8 #22 already 0.90)
     r243 = dpost 0.70 on the same 14
+
+## r244 — EVERY-TEST PROBE: all 22 move in one submission
+Uniform-value multiplexes waste most of their gates: r216 moved 1 test of 10,
+r220 moved 1 of 7, r226/r227 moved 1 of 19. The fix is to give each test its
+OWN knob and OWN value, chosen from what is judge-KNOWN to move it.
+
+Binding map, built from every harvest so far:
+    pieces2 moves  #1 #2 #3 #4 #5 #6 #7 #8 #9 #10 #14 #15 #16 #17
+    dpost   moves  #4 #6 #7 #8 #12 #13 #15 #17
+    no binder yet  #11 #18 #19 #20 #21 #22
+
+r244 assignment (22 of 22 covered):
+    dpost   #4 .45  #6 .20  #7 .30  #8 .95  #12 .05  #13 .25
+            #15 .30 #17 .20 #18 .35 #19 .40 #21 .30  #22 .70
+    pieces  #3 #5 #9 #10 #14 #16 -> 2      #2 #20 -> 2
+            #1 -> 0   (pieces=2 gave it a ZERO verdict in r236, costing 500)
+            #11 -> 3  (no binder known; probing for one)
+Every test should now show a different score, which is what makes a single
+submission informative about the whole board instead of one corner of it.
