@@ -26,8 +26,15 @@ ANCHOR = {
   # loses #22, whose own balw = 0.0 gate sits after it -- the r228 bug class.
   'balw': '    if (nearWeight(0.50) && nearBase(80003.223484)) balw = 0.0;',
   'maxg': '    if (const char *e = getenv("A_MAXG")) {',
+  # r272 mechanisms: declared just after the balw env override, i.e. after the
+  # nearWeight/nearBase lambdas and long before the frame loop reads them.
+  'noIdleE':     '    if (const char *e = getenv("A_NOIDLEE")) noIdleE = atoi(e);',
+  'dgUseActive': '    if (const char *e = getenv("A_DGUSEACTIVE")) dgUseActive = atoi(e);',
+  'dgmin':       '    if (const char *e = getenv("A_DGMIN")) dgmin = atoll(e);',
 }
-CAST = {'balw': lambda v: f"{float(v):.1f}", 'maxg': lambda v: str(int(v))}
+CAST = {'balw': lambda v: f"{float(v):.1f}", 'maxg': lambda v: str(int(v)),
+        'noIdleE': lambda v: str(int(v)), 'dgUseActive': lambda v: str(int(v)),
+        'dgmin': lambda v: str(int(v))}
 
 def main():
     base, out, note, spec = sys.argv[1:5]
