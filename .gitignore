@@ -15,3 +15,23 @@ data/corpus/
 .cf_creds
 .cf_creds.sh
 data/corpus2/
+
+# Local editor and tooling scratch, not part of the solution.
+.cursor/
+.cursorrules
+.claude/
+CLAUDE.md
+AGENTS.md
+Codex/
+.aider*
+.continue/
+.windsurf/
+.codeium/
+.roo/
+.roomodes
+.cline/
+.clinerules
+.gemini/
+.opencode/
+.github/copilot-instructions.md
+MEMORY.md
