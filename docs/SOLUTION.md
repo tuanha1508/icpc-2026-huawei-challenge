@@ -1,4 +1,4 @@
-# Solution v2 — reactive batching scheduler, weight-aware
+# Solution v2, reactive batching scheduler, weight-aware
 
 **Submit `src/main.cpp`** as a single file, language **GNU G++23 14.2 (64 bit)**.
 Frozen snapshot: `artifacts/submissions/20260814T154312Z-batching-v2-weightaware`
@@ -7,8 +7,8 @@ Frozen snapshot: `artifacts/submissions/20260814T154312Z-batching-v2-weightaware
 ## v1 judge result and what it changed
 
 v1 scored **11772.334** across the 22 preliminary tests (rank ~622; leader
-16164.872). **All 22 tests returned OK** — no protocol violation, no TLE, worst
-case 2156 ms against a 15 s limit — so the contract work held up on the real
+16164.872). **All 22 tests returned OK**, no protocol violation, no TLE, worst
+case 2156 ms against a 15 s limit, so the contract work held up on the real
 judge. Recovering `w_tp` from each test's reported `norm_tp`/`norm_c` and points
 (`score = w_tp*norm_tp + w_c*norm_c`) localised the loss:
 
@@ -43,7 +43,7 @@ in both normal and overloaded regimes.
 ## What it does
 
 A purely reactive scheduler: read a frame, update state, assign every free
-resource, flush. It never predicts event times — the interactor announces every
+resource, flush. It never predicts event times, the interactor announces every
 completion, so no arithmetic on future times is needed for correctness.
 
 **Local computer `E`**, one task per frame, priority `P POST → P PRE → D POST →
@@ -52,7 +52,7 @@ D PRE`:
 - `D PRE` and `D POST` always take **every** currently-eligible request in one
   group. A group spanning `r` remotes queues exactly the same `r` uplink
   transfers as `r` separate groups would, but pays `S + dpre(m)` once instead of
-  `r` times — strictly better on `E`, neutral on the link.
+  `r` times, strictly better on `E`, neutral on the link.
 
 **Each free remote `Ck`**: `D PROC` with all its ready members, else the next
 prefill piece.
@@ -61,7 +61,7 @@ prefill piece.
 the remote with the least *estimated queued work* (pending `prefill_proc` ms plus
 active decode requests), not the least request count.
 
-**Prefill chunking is off** (one full `[0, num_layers)` piece) — see the measured
+**Prefill chunking is off** (one full `[0, num_layers)` piece), see the measured
 reason below.
 
 ### Adaptive concurrency control
@@ -92,7 +92,7 @@ a static formula does not.
 | Builds | clean under `-std=c++20` and `-std=c++23`, `-Wall -Wextra` |
 
 `tools/interactor.py` is a full offline replica of the interactor and doubles as a
-strict validator — it enforces every rule in `docs/statement/CONTRACT.md` and
+strict validator, it enforces every rule in `docs/statement/CONTRACT.md` and
 raises on the first violation, so local runs fail loudly rather than silently
 scoring 0 on the judge.
 
@@ -105,7 +105,7 @@ maximal batching, static N cap      563.63
 ```
 
 The local mean barely moves because the corpus happens to contain few tests with
-both a high `w_tp` and an active cap — which is exactly the case the judge is
+both a high `w_tp` and an active cap, which is exactly the case the judge is
 full of. The v2 change is justified by the judge's own per-test weights, not by
 the local mean.
 
@@ -116,7 +116,7 @@ computes resource-utilization lower bounds on makespan:
 |---|---|---|
 | `spread_3` | 0.00 | tp ceiling **= tp_base**; comp_tp ceiling 0.000, `w_tp=1` → 0 is the max |
 | `large_3` | 0.02 | at **100.0%** of the tp ceiling; comp_tp ceiling 0.000 |
-| `decode_3` | 49.46 | at **98.2%** of the tp ceiling (max ≈ 51) — makespan bound by arrival span |
+| `decode_3` | 49.46 | at **98.2%** of the tp ceiling (max ≈ 51), makespan bound by arrival span |
 | `large_1` | 750.00 | was 0; the controller found `N=1`, hitting `tpot = 89.623` = the exact computed floor |
 
 ## Two findings worth keeping
@@ -129,7 +129,7 @@ splitting a wave adds S-charges to the very resource that binds.
 **Prefill chunking is a trap by default.** Each extra piece pays another `S`, and
 that `S` lands directly on TDR while the only benefit is unblocking decode on the
 remote. Adaptive chunking gained ~1 point of corpus mean, cost `burst_1` ~70
-points, and **scored 0 on official Example 1** — one extra `S` pushed TDR from
+points, and **scored 0 on official Example 1**, one extra `S` pushed TDR from
 30.0 to 31.0, missing `SLO1 = 30` exactly, and with `dist_base = 0` the waiting
 component is all-or-nothing, so 1 ms cost the whole 500. The code path is kept
 behind `A_PIECES` for prefill-bound tests where TDR has slack.
@@ -163,7 +163,7 @@ statement's definition for `tp_base`/`dist_base` (a one-request-at-a-time
 reference, confirmed exact against Example 1), but `SLO1`/`SLO2`/`tp_UB` are
 guesses. Local means are therefore useful for **ranking policies against each
 other**, not for predicting the real score. Policy choices here were kept
-regime-adaptive rather than tuned to constants for that reason — and the finals
+regime-adaptive rather than tuned to constants for that reason, and the finals
 use a separate frozen test set regardless.
 
 ## Next levers, in expected-value order

@@ -24,7 +24,7 @@ at its measured maximum  : no
 
 998.19 of 1000. Effectively perfect; 1.8 points remain.
 norm_c is exactly 1.000000, so dist_base cannot be derived and #20 can never
-be gated -- its +0.01 from the dgfrac .45/dpost .35 corner is unreachable.
+be gated, its +0.01 from the dgfrac .45/dpost .35 corner is unreachable.
 
 ## Untried
 

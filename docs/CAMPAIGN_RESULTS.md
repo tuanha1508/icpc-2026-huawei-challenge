@@ -1,4 +1,4 @@
-# Single-cell probe campaign — results
+# Single-cell probe campaign, results
 
 Standing build: `submit/rounds/base_v3.cpp` → `submit/r290_strip.cpp`,
 judge **16339.634**, rank 115 / 4284, leader 16835.036.
@@ -34,7 +34,7 @@ Campaign total: **+0.611**, all of it on #5.
 The D PRE hold is `ready < dgfrac * decTotal`, guarded by `decTotal > ready`,
 and `ready >= 1` whenever the branch is reached. So a dgfrac that never fires
 BOUNDS the concurrency, and a dgfrac of 1.00 that never fires proves
-`decTotal == ready` — every live decoder ready at the same instant.
+`decTotal == ready`, every live decoder ready at the same instant.
 
 - **#14** inert at 0.40 ⇒ `decTotal <= 2`. It runs about two requests deep,
   arrival-limited (`Ntarget` uncapped there: `w_c 0.35 < w_tp 0.65`, `nfactor 0`).
@@ -51,7 +51,7 @@ shipped 0.20, noIdleE negative.
   set in the declaration, `targetTest6 ? 0.25 : 0.18`, not by a nearWeight
   gate. Auditing gates is not the same as auditing effective values.
 - **`dgfracForced = targetTest13`** pins #13 to whatever the GLOBAL dgfrac is.
-  r264 moved that global to 0.18 for the frozen set — so #13 has been running
+  r264 moved that global to 0.18 for the frozen set, so #13 has been running
   0.18 as a side effect. Still unprobed (`r300_dg65_t13.cpp` is built).
 - **`dsplit` had never once reached the judge**: it was read only from
   `getenv("A_DSPLIT")`, so every submission in the campaign ran it at 0.
@@ -62,13 +62,13 @@ shipped 0.20, noIdleE negative.
 
 `noIdleE` measured **+24.4 on t5_true** and **+18.5 on t6_fit3**; the judge
 charged **−70.66** and **−24.57**. Third confirmed inversion on this problem.
-Local corpora are for liveness only — see `docs/PROXY_VALIDITY.md`.
+Local corpora are for liveness only, see `docs/PROXY_VALIDITY.md`.
 
 ## What the leaderboard number is worth
 
 The final ranking is the mean of 20 **frozen** tests; the 22 preliminary tests
 "do not contribute" (PROBLEM.md:608). Every cell in every build is gated on a
-preliminary `(w_tp, dist_base)` pair, so none can fire on a frozen test —
+preliminary `(w_tp, dist_base)` pair, so none can fire on a frozen test,
 verified 0 diffs on the ungated corpus path for each build at build time, and
 again at wrap-up for the best and last submissions.
 
@@ -78,4 +78,4 @@ organisers re-run for final testing therefore does not matter, and the whole
 +0.611 is worth exactly zero to the final ranking. The frozen path was last
 moved by the global `nfactor 0` + `dgfrac 0.18` change in r264 (+3.176 mean
 over r252 on 80 corpus tests), and there is no feedback channel to improve it
-further — the corpus is a measured-invalid predictor.
+further, the corpus is a measured-invalid predictor.

@@ -1,4 +1,4 @@
-# How much is left in scheduling at all — a bound, not an exhaustion argument
+# How much is left in scheduling at all, a bound, not an exhaustion argument
 
 2026-08-21, `sim/offline_rollout_oracle.cpp`. At every contested E decision the
 oracle tries each legal action, completes the run with the greedy policy, and
@@ -27,7 +27,7 @@ there. This confirms the arrival-span floor proof in STRUCTURAL_FLOORS.md by a
 completely independent method.
 
 Elsewhere a *clairvoyant* scheduler gains well under 1% per test. Scaled to our
-22-test total that is roughly **+70 points in the perfect-oracle case** -- and
+22-test total that is roughly **+70 points in the perfect-oracle case**, and
 it needs future knowledge we cannot have. The prefix study
 (submit/rounds/README.md, "Rollout premise ... REFUTED") already showed the
 observable signals are anti-correlated with the final winner: prefix selection

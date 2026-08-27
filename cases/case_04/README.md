@@ -24,7 +24,7 @@ at its measured maximum  : YES
 
 ## What we know
 
-Gated to nfactor 0.9 + dpost 0.30, worth +0.28 -- harvested from r139, a
+Gated to nfactor 0.9 + dpost 0.30, worth +0.28, harvested from r139, a
 config that LOST 169 points overall. Also carries dgfrac 0.60.
 Needs 1.92x tp for the remaining 155. STATUS: at its measured max.
 

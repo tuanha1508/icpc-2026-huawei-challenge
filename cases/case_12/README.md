@@ -24,7 +24,7 @@ at its measured maximum  : no
 
 ## What we know
 
-w_tp 0.99 -- essentially pure throughput. 189 points, and the BEST throughput
+w_tp 0.99, essentially pure throughput. 189 points, and the BEST throughput
 leverage on the board at 14.8 points per 1% tp (needs only +12.8%).
 ENGINE-BOUND, established by elimination on the judge:
   decode-group cap removed -> exact no-op (groups never even reach 8)

@@ -1,4 +1,4 @@
-# Structural floors — which headroom is real and which is arithmetic fiction
+# Structural floors, which headroom is real and which is arithmetic fiction
 
 Established 2026-08-21. Method: `tools/floor_analysis.py`.
 
@@ -33,7 +33,7 @@ Worked example, #14: `tdr = 197.489 = 25+42+63.489+42+25` and
 request lives 1672 ms, so the system is idle 25% of the time by construction.
 
 Worked example, #12: arrival span is 87,204,447 of the 88,354,484 floor
-(98.7%). `tp_UB` would need a makespan of 80.1 M -- **less than the arrival
+(98.7%). `tp_UB` would need a makespan of 80.1 M, **less than the arrival
 span alone**. Unreachable by arithmetic, not by scheduling.
 
 ## Consequence
@@ -75,9 +75,9 @@ Contents: global nfactor 0 + global dgfrac 0.18, with nfactor gated back to
 | dgfrac | curves mapped; #6 bracketed 0.05..0.60, peak 0.25 |
 | absolute D POST minimum | new control, +96.1 on corpus, loses on all 4 judge tests |
 | admission order 'F' | loses on all 9 tests where it binds, inert on 8 |
-| rporder / pfair / chunk / dsplit | move 0 of 16 gate-keyed probes -- DEAD |
+| rporder / pfair / chunk / dsplit | move 0 of 16 gate-keyed probes, DEAD |
 | prefillBoost | dead outside `!busyE && useMarginal` |
 | global knobs (19 swept) | only nfactor 0 and dgfrac 0.18 positive |
 
 #10 is inert under seven settings across three mechanisms (dgfrac 0.25/0.40/
-0.60, dpost 0.25/0.40, dpostMin 4/16) -- all exactly 684.481.
+0.60, dpost 0.25/0.40, dpostMin 4/16), all exactly 684.481.

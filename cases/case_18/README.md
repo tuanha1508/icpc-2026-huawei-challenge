@@ -22,7 +22,7 @@ at its measured maximum  : YES
 
 ## What we know
 
-84 points. Carries dgfrac 0.32 and a ruse-3 gate (+0.01) -- ruse 3 is worth
+84 points. Carries dgfrac 0.32 and a ruse-3 gate (+0.01), ruse 3 is worth
 -1081 globally yet wins on this one test.
 
 ## Untried

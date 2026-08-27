@@ -1,4 +1,4 @@
-# Breaking the 16265 plateau — deep research findings
+# Breaking the 16265 plateau, deep research findings
 
 Research date: 2026-08-17. Contest ends 2026-08-28 10:59 UTC (~11 days left).
 Method: 5-angle fan-out web search → 20 sources fetched → 97 claims extracted →
@@ -19,7 +19,7 @@ thing that two independent lines of evidence say does.
   evaluation speed > **parameter tuning last**. "Never start from parameter
   tuning." ([ozy4dm annotation of Psyho's tips](https://ozy4dm.hateblo.jp/entry/2022/12/22/162046))
 - **Psyho on our exact failure mode**: when local results fail to transfer, the
-  prescribed remedy is *more test cases* — on the order of **2,000–5,000 tests
+  prescribed remedy is *more test cases*, on the order of **2,000–5,000 tests
   per iteration** before drawing a conclusion. We are drawing conclusions from 9.
 
 The five proxy-positive/judge-zero submissions are not a mystery. They are the
@@ -33,12 +33,12 @@ expected outcome of a statistically underpowered, hand-fitted local corpus.
 contest family):
 
 - Top-12 finishers describe their winning solutions as **randomized greedy re-run
-  repeatedly until the time limit** — *not* beam search, *not* tree search, *not*
+  repeatedly until the time limit**, *not* beam search, *not* tree search, *not*
   metaheuristics. In this contest family the breakthrough lever is randomized
   restarts on top of greedy, not replacing greedy.
 - **jiangshibiao** used an explicit **portfolio**: 10+ distinct parameter sets,
   each run as a separate policy, keep the best result. This is exactly the
-  actionable use of an idle CPU budget when single-knob tuning has plateaued —
+  actionable use of an idle CPU budget when single-knob tuning has plateaued,
   and it directly recycles our 80 swept knob settings instead of discarding them.
 - **ashmelev** deliberately **under-used the time limit** (4s of an allowed
   5–5.5s) and *removed* optimizations, because only 30 of 50 tests were visible.
@@ -48,8 +48,8 @@ contest family):
   for the plateau in this contest family; the gap is real but small.
 
 **Sanity check on "I've hit a wall"**: measured score trajectories across a full
-two-week AHC (AHC014) show competitors at *every* rank tier — including 1st place
-— improving monotonically for the entire contest and continuing to beat their
+two-week AHC (AHC014) show competitors at *every* rank tier, including 1st place
+improving monotonically for the entire contest and continuing to beat their
 in-contest best afterwards. A hard wall on day ~4 of 14 is not the normal
 top-competitor experience.
 
@@ -66,7 +66,7 @@ forward simulation and spend the idle 14.2s" is.
 
 ### The empirical precedent (this is the convincing one)
 
-**terry-u16 on AHC007** — an online problem where each edge must be irrevocably
+**terry-u16 on AHC007**, an online problem where each edge must be irrevocably
 accepted/rejected on arrival, i.e. structurally the same shape as ours (online,
 irrevocable, unknown future).
 ([blog](http://blog.terry-u16.net/entry/ahc007-explanation))
@@ -91,7 +91,7 @@ Three details from that writeup that matter for us:
    futures. S was set empirically to fill the time budget (S=14 in the reference
    impl; the author's Rust solution ran an estimated S=50–80 per decision).
 3. **Deterministic point estimates are systematically biased** in the direction
-   of the objective's min/selection operator — substituting the mean overestimates
+   of the objective's min/selection operator, substituting the mean overestimates
    cost, because it ignores that the downstream optimizer will select the cheap
    realizations. *This is why sampling the true distribution beats any single
    tuned constant, and it is a mechanism, not a coincidence.* Our adaptive-N
@@ -100,8 +100,8 @@ Three details from that writeup that matter for us:
 ### The theory (why it's safe)
 
 Bertsekas & Castañon, *Rollout Algorithms for Stochastic Scheduling Problems*,
-J. Heuristics 5:89–108 (1999) — [PDF](https://www.mit.edu/~dimitrib/quiz.pdf);
-Bertsekas, *Rollout Algorithms for Discrete Optimization: A Survey* (2010) —
+J. Heuristics 5:89–108 (1999), [PDF](https://www.mit.edu/~dimitrib/quiz.pdf);
+Bertsekas, *Rollout Algorithms for Discrete Optimization: A Survey* (2010),
 [PDF](https://web.mit.edu/dimitrib/www/Rollouts_Survey.pdf).
 
 **Proposition 1** (verbatim): *"Let the base heuristic H be sequentially
@@ -116,17 +116,17 @@ greedy type are by nature sequentially consistent."*
 
 1. **Sequential consistency requires decisions to be a function of the simulated
    STATE only.** Our adaptive Little's-law concurrency cap `N` and the measured
-   TDR/TPOT accumulators are history-dependent — they **must be carried inside
+   TDR/TPOT accumulators are history-dependent, they **must be carried inside
    the simulated node state**, or consistency breaks silently.
 2. **The rollout must break ties in favour of the base heuristic's own next
    choice**, or termination fails (Bertsekas gives a non-terminating cycle
    counterexample).
-3. The guarantee is on **final cost vs the base run from the start state** — not
+3. The guarantee is on **final cost vs the base run from the start state**, not
    per-decision optimality, and never near-optimality: *"this does not guarantee
    that the path generated by R_H will be a near-optimal path, because the
    collection of paths generated by H may be poor."*
 
-### Fortified rollout — ship this form, not plain rollout
+### Fortified rollout, ship this form, not plain rollout
 
 *"A variant … called the fortified rollout algorithm … implicitly uses a
 sequentially improving base heuristic, so that it has the cost improvement
@@ -135,7 +135,7 @@ property of Prop. 2."*
 Mechanism: **store the best complete simulated schedule found so far, keep
 following it, and deviate only when the current lookahead STRICTLY beats its
 cost. Ties keep the cached path.** When the base is already sequentially
-consistent, fortified and plain rollout coincide — so fortifying is free
+consistent, fortified and plain rollout coincide, so fortifying is free
 insurance, never harmful.
 
 **Critical detail**: the simple comparison form is for terminal-cost-only
@@ -166,7 +166,7 @@ expensive and substitute a small fixed set of certainty-equivalent scenarios.
 Note O(MN) is for **one-step** lookahead only; deeper lookahead grows
 exponentially in depth. Do not go past one step.
 
-### Expected magnitude — do not over-budget on this
+### Expected magnitude, do not over-budget on this
 
 One-step rollout recovered ≥50% of the base heuristic's optimality gap in every
 case tested (41%→75% and 43%→77% of exact-DP optimal at the hardest setting).
@@ -174,7 +174,7 @@ case tested (41%→75% and 43%→77% of exact-DP optimal at the hardest setting)
 easiest setting. Our base is tuned across 80+ knobs, so **expect the small-lift
 regime.** The 41→75 headline is not our number.
 
-### Parallel rollout — how to recycle the 80 swept knobs
+### Parallel rollout, how to recycle the 80 swept knobs
 
 *"use all of these heuristics in parallel within the rollout framework,
 essentially by combining them into a single superheuristic"*, `H(i) = min_k H_k(i)`,
@@ -182,17 +182,17 @@ and *"if all the algorithms H_1,…,H_K are sequentially improving, the same is
 true for H."* The improvement guarantee is then against **the best of the K
 policies at the root**, not the average.
 (Stochastic analogue proved independently: Chang, Givan & Chong, *Parallel
-Rollout for Online Solution of POMDPs*, DEDS 14(3), 2004 —
+Rollout for Online Solution of POMDPs*, DEDS 14(3), 2004,
 [PDF](https://engineering.purdue.edu/~givan/papers/deds01.pdf))
 
 This is the principled version of jiangshibiao's 10-parameter-set portfolio, and
-it is the right home for 3–5 of our distinct knob configurations — **one per
-bottleneck family** — evaluated per-frame instead of frozen offline.
+it is the right home for 3–5 of our distinct knob configurations, **one per
+bottleneck family**, evaluated per-frame instead of frozen offline.
 
 Two framing nits: (a) parallel rollout scores candidate **next actions** by
 `min_k H_k(action)`; it is *not* "pick whichever whole policy scores best and
 follow it to the end", which is weaker. (b) The survey offers a weighted blend
-`H(i) = Σ_k r_k H_k(i)` for which **no preservation property is claimed** — do
+`H(i) = Σ_k r_k H_k(i)` for which **no preservation property is claimed**, do
 not use weighted blending if we want the guarantee.
 
 ---
@@ -205,7 +205,7 @@ Rollout needs an assumed future. Ours is genuinely unknown: `R` unannounced,
 ### 3a. A two-class long/short predictor is the right first move
 
 Mitzenmacher & Shahout, *Queueing, Predictions, and LLMs*, INFORMS Stochastic
-Systems 2025 — [arXiv:2503.07545](https://arxiv.org/abs/2503.07545).
+Systems 2025, [arXiv:2503.07545](https://arxiv.org/abs/2503.07545).
 
 > *"1-bit predictions obtain a large fraction of the benefit of full predictions
 > (which corresponds to SPRPT) in the cases studied"*
@@ -223,18 +223,18 @@ Weibull λ=0.98 → **94%** of the full-size-prediction benefit.
 
 Two qualifiers: (1) "large fraction of the FIFO gap" still leaves 1-bit **31%
 worse** than SPRPT in absolute mean response time at λ=0.98, and 2.7× worse than
-clairvoyant SRPT in the Weibull case. (2) Scope is M/G/1, mean response time —
+clairvoyant SRPT in the Weibull case. (2) Scope is M/G/1, mean response time,
 no batching, no flow shop, no SLO metric. The head-of-line-blocking mechanism is
 **weaker** for us because maximal decode batching serves all ready requests
 together anyway. Go past 1 bit where cheap: SkipPredict
 ([arXiv:2402.03564](https://arxiv.org/abs/2402.03564), NeurIPS 2024) pays for
 full predictions only on predicted-long jobs and beats pure 1-bit when prediction
-is cheap — which for us it is.
+is cheap, which for us it is.
 
-### 3b. M-SERPT — the index to rank requests by estimated remaining decode
+### 3b. M-SERPT, the index to rank requests by estimated remaining decode
 
 Scully, Harchol-Balter & Scheller-Wolf, *Simple Near-Optimal Scheduling for the
-M/G/1*, SIGMETRICS/POMACS 2020 — [arXiv:1907.10792](https://arxiv.org/pdf/1907.10792).
+M/G/1*, SIGMETRICS/POMACS 2020, [arXiv:1907.10792](https://arxiv.org/pdf/1907.10792).
 
 ```
 rank(a) = max over b ≤ a of  E[X − b | X > b]
@@ -249,7 +249,7 @@ the empirical `L_out` histogram we accumulate from `FIN` events.**
 > non-Gittins scheduling policy known to have a constant-factor approximation
 > ratio for mean response time."*
 
-Use it as a **principled priority key, not a score guarantee** — the bound is
+Use it as a **principled priority key, not a score guarantee**, the bound is
 M/G/1, single server, free preemption, mean response time only, and does not
 transfer to our clamped throughput+SLO-distance objective.
 
@@ -260,7 +260,7 @@ transfer to our clamped throughput+SLO-distance objective.
 This problem is a thin disguise of LLM inference serving, and the dilemma is
 named and well-mapped.
 
-Sarathi-Serve, OSDI'24 — [PDF](https://www.usenix.org/system/files/osdi24-agrawal.pdf)
+Sarathi-Serve, OSDI'24, [PDF](https://www.usenix.org/system/files/osdi24-agrawal.pdf)
 / [arXiv:2403.02310](https://arxiv.org/abs/2403.02310). Fig. 2 caption verbatim:
 
 > *"Prioritizing prefills optimizes throughput but sacrifices TBT tail latency
@@ -275,13 +275,13 @@ inserting it delays the first token for new arrivals."*
 **Transfer caveat**: their mechanism is single-GPU co-batching interference,
 whereas in 2251A prefill is *always* single-request and never co-batched with
 decode. The dichotomy transfers as **resource/link serialization contention
-across E, UP, remote and DOWN** — it gives us the correct policy *axis*, not
+across E, UP, remote and DOWN**, it gives us the correct policy *axis*, not
 drop-in numbers.
 
 ### Two implementable rules, and they compose
 
 **(A) Sarathi-Serve stall-free batching** (Algorithm 3, structure verified):
-compute a per-iteration budget from the latency SLO, then in strict order —
+compute a per-iteration budget from the latency SLO, then in strict order,
 
 1. pack **all running decodes**;
 2. then any **partially-completed prefill**;
@@ -289,17 +289,17 @@ compute a per-iteration budget from the latency SLO, then in strict order —
 
 *"stall-free batching ensures that decodes never experience a generation stall
 due to a co-running prefill chunk."* Note this maps directly onto our existing
-`P PROC` layer-range splitting — **that IS chunked prefill**. We measured
+`P PROC` layer-range splitting, **that IS chunked prefill**. We measured
 chunking as a trap because of the extra `S` per piece; the literature's claim is
 about the **ordering rule**, which we can adopt without chunking.
 
-Caveat: the token budget is **not** a closed-form SLO formula — §4.3 admits it
+Caveat: the token budget is **not** a closed-form SLO formula, §4.3 admits it
 *"is a complex decision which depends on the desired TBT SLO, parallelism
 configuration, and specific hardware properties"* and they tune it offline. For
 us it is a per-batch duration cap implied by SLO2 plus the fixed `S`.
 
 **(B) SLAI last-schedulable-time index** (Bari, Hegde, de Veciana, POMACS 9(3)
-Art.59, Dec 2025 — [arXiv:2508.01002](https://arxiv.org/abs/2508.01002), code at
+Art.59, Dec 2025, [arXiv:2508.01002](https://arxiv.org/abs/2508.01002), code at
 [github.com/agrimUT/SLAI](https://github.com/agrimUT/SLAI)), Eq. (8):
 
 ```
@@ -322,7 +322,7 @@ them critical sooner."*
 1. "Never displaces" is *bounded delay*, not zero impact.
 2. SLAI documents an **over-deferral failure mode**: with Θ too small, deferred
    decodes accumulate, block new prefill admission, and *"TTFT blows up"*. There
-   is an interior optimum — hence their dynamic Θ.
+   is an interior optimum, hence their dynamic Θ.
 3. **This interacts destructively with our existing adaptive-N cap**: both are
    controllers acting on the same variable. Do not run both unmodified.
 4. SLAI targets a **per-request TBT deadline**; our SLO2 is a **mean TPOT**. A
@@ -330,13 +330,13 @@ them critical sooner."*
    the batch-construction loop (one shared token budget, one GPU) does not.
 
 Reported SLAI gains (53% median TTFT reduction, 26% capacity increase over
-Sarathi-Serve) are single-model/single-GPU — **do not assume the magnitude
+Sarathi-Serve) are single-model/single-GPU, **do not assume the magnitude
 transfers.**
 
 ### Our "maximal decode batching is always correct" is an untested assumption
 
 Shen, Gupta & Buscher, *Flow shop batching and scheduling with sequence-dependent
-setup times*, J. Scheduling 17(4):353–370 (2014) —
+setup times*, J. Scheduling 17(4):353–370 (2014),
 [Springer](https://link.springer.com/article/10.1007/s10951-014-0369-x):
 
 > *"We consider violating the group technology assumption by dividing product
@@ -354,7 +354,7 @@ entailment.
 **But the actionable reading stands**: batch composition should differ across
 stages, and under-full batches can beat maximal ones once per-batch overhead and
 downstream serialization are priced in. **This is one of the few structural
-choices our knob sweeps could not explore — and a rollout over our exact cost
+choices our knob sweeps could not explore, and a rollout over our exact cost
 model can answer it directly rather than by rule.**
 
 ---
@@ -368,7 +368,7 @@ This is the highest-value finding in the whole report, and it is a
 judge's hidden tests, for both the public and private evaluation sets.** In AHC,
 the local proxy is **faithful by construction**. That is the structural
 precondition our hand-fitted proxies lack. Our failure mode is a
-**test-distribution mismatch**, not a policy problem — which is exactly why every
+**test-distribution mismatch**, not a policy problem, which is exactly why every
 policy-level fix has failed to move the judge.
 
 Corrective practices, all from top-competitor tooling:
@@ -377,19 +377,19 @@ Corrective practices, all from top-competitor tooling:
   a conclusion. We use 9 fitted proxies. Even a perfectly faithful generator at
   n=9 cannot resolve a 0.22% effect.
 - **Relative, paired scoring**: [psytester](https://github.com/FakePsyho/psytester)
-  (Psyho's own harness) defaults to **relative** scoring — each test normalized
+  (Psyho's own harness) defaults to **relative** scoring, each test normalized
   as `YOUR_SCORE / BEST_SCORE` against the best across all stored results files.
   That is the paired-per-test comparison needed to detect small real gains,
   instead of a raw mean that a few tests dominate. Directly applicable to a
   20-test frozen judge with clamped per-test scores.
 - **Persist every run**: every run saved as a per-test JSON results file, multiple
-  results files compared side by side on one scoreboard. Historical persistence —
-  not just the latest aggregate — is what makes relative scoring and regression
+  results files compared side by side on one scoreboard. Historical persistence,
+  not just the latest aggregate, is what makes relative scoring and regression
   detection possible.
 - **⚠ Parallel-harness timing warning**: psytester's README explicitly warns that
   running tests concurrently across threads **changes execution speed**, so
   locally measured timings under a parallel harness do not match single-run
-  timings. **This becomes critical the moment we start using the time budget** —
+  timings. **This becomes critical the moment we start using the time budget**,
   our `tools/sweep_policy.py` runs parallel. Any timing-sensitive verdict needs a
   serial re-run.
 - **Validate the harness itself** with a deliberately tiny run before trusting
@@ -404,7 +404,7 @@ deeper.** The one genuine mitigation in the corpus is fortified rollout.
 
 ---
 
-## 6. Contest metagame — act on this immediately
+## 6. Contest metagame, act on this immediately
 
 Two confirmed rule facts that should govern submission strategy *before* any
 rewrite.
@@ -419,7 +419,7 @@ aggregation" section (verified against our own archived PDF and
 
 **Our 16265 is a noisy proxy for what actually counts, and tuning to it is an
 explicit overfitting hazard.** A rollout rewrite showing *flat* preliminary
-results is not necessarily worse on the frozen set — but we have no way to
+results is not necessarily worse on the frozen set, but we have no way to
 distinguish that from a genuine no-op, which is again why the fortified form
 (degrades to greedy, never below) is the risk-correct thing to ship.
 
@@ -444,7 +444,7 @@ us nothing; 16263.193 remains banked.
 
 ## 7. Proposed plan (~11 days)
 
-**Day 1 — instrumentation before any policy change.**
+**Day 1, instrumentation before any policy change.**
 - Fix the test corpus first. Build a generator sweeping the *declared constraint
   space* (K, S, latency, bandwidth, num_layers, SLO1/SLO2, w_tp, tp_base/tp_UB,
   arrival processes) rather than fitting 9 judge tests. Target 500–2000 cases.
@@ -453,14 +453,14 @@ us nothing; 16263.193 remains banked.
   timing-sensitive verdict.
 - Run the "is compute worth anything" diagnostic before building anything.
 
-**Days 2–4 — port the simulator into the solver.**
+**Days 2–4, port the simulator into the solver.**
 - `tools/interactor.py` (706 lines) already is an exact event-driven replica:
   event heap, FIFO UP/DOWN queues, piecewise-linear `Curve`, exact scorer. Port
   its core to C++ inside `main.cpp`. This is a mechanical port, not research.
 - Validate: replaying our own decisions through the internal simulator must
   reproduce the interactor's timestamps to the digit on Example 1.
 
-**Days 4–7 — fortified one-step rollout.**
+**Days 4–7, fortified one-step rollout.**
 - Refactor the reactive policy into `base_policy(SimState) -> action` with **all**
   controller state (N cap, TDR/TPOT accumulators) inside `SimState`.
 - At each frame: enumerate candidate actions for E and each free remote; for
@@ -472,28 +472,28 @@ us nothing; 16263.193 remains banked.
 - Time-budget the sample count `S` to fill ~10s, leaving headroom (ashmelev's
   defensive under-use).
 
-**Days 7–9 — the future model + index layer.**
+**Days 7–9, the future model + index layer.**
 - Learn the `L_out` histogram online from `FIN` events → M-SERPT rank
   (suffix-sum + running-max).
 - Two-class long/short predictor, tuned for **long-job recall**.
-- Sample futures from the learned distributions — **do not use the mean**
+- Sample futures from the learned distributions, **do not use the mean**
   (systematic selection bias).
 - Fold 3–5 existing knob configs in as a **parallel-rollout portfolio**,
   `min_k H_k(action)`, one per bottleneck family. Never weighted blending.
 
-**Days 9–10 — admission layer, only if rollout lands.**
+**Days 9–10, admission layer, only if rollout lands.**
 - SLAI-style deferral index with synthetic per-request `TBT_r` from SLO2.
-- **Disable or merge the existing adaptive-N cap** — two controllers, one
+- **Disable or merge the existing adaptive-N cap**, two controllers, one
   variable.
 - Watch for the documented over-deferral blowup.
 
-**Day 11 — no fallback needed.**
+**Day 11, no fallback needed.**
 - Best-of-all-submissions scoring: keep shipping candidates to the last minute.
   Nothing to restore, nothing to protect.
 
 ---
 
-## 8. Refuted — do NOT act on these
+## 8. Refuted, do NOT act on these
 
 Five claims were adversarially refuted during verification:
 
@@ -507,7 +507,7 @@ Five claims were adversarially refuted during verification:
    **Do not deploy a badly-calibrated predictor on this basis.**
 5. ✗ *"Decode throughput grows linearly with batch size while prefill saturates
    at one request"* (1-2). **Do not use this asymmetry to justify maximal decode
-   batching** — that assumption is exactly what §4 says to re-test.
+   batching**, that assumption is exactly what §4 says to re-test.
 
 ---
 
@@ -516,7 +516,7 @@ Five claims were adversarially refuted during verification:
 - **Score-clamp exploitation and hidden-weight recovery were not answered.** No
   verified source addresses detecting which clamped component is pinned, or
   recovering hidden per-test weights from reported scores. Our own `w_tp`
-  recovery work remains the best available method — treat this as *unresearched*,
+  recovery work remains the best available method, treat this as *unresearched*,
   not answered-in-the-negative.
 - **Model mismatch is pervasive and cumulative.** Every scheduling-theory result
   cited assumes identical parallel machines with objective `Σ w_j C_j`; every
@@ -525,8 +525,8 @@ Five claims were adversarially refuted during verification:
   permanently-assigned remotes, fixed per-task `S`, arbitrary decode batching,
   and a **clamped** throughput+SLO-distance score. **No cited bound transfers to
   that objective.** What transfers is mechanism and index *shape*. This is
-  exactly why the rollout wrapper — which evaluates *our* exact cost model rather
-  than importing someone else's bound — is the recommendation with the least
+  exactly why the rollout wrapper, which evaluates *our* exact cost model rather
+  than importing someone else's bound, is the recommendation with the least
   mismatch risk, and why importing M-SERPT or SLAI as raw formulas without
   simulator validation would repeat our current failure mode at a new level.
 - Three verifier sessions exhausted their web-search budget (affecting the
@@ -538,7 +538,7 @@ Five claims were adversarially refuted during verification:
 
 Can the online-computable WSEPT/LP lower bound (Goemans, Queyranne, Schulz,
 Skutella & Wang, SIAM J. Discrete Math. 15:165–192; Schulz, *Stochastic Online
-Scheduling Revisited*, COCOA 2008 —
+Scheduling Revisited*, COCOA 2008,
 [PDF](https://web.mit.edu/schulz/www/epapers/s-cocoa-2008.pdf)) be adapted to our
 3-stage flow shop as an **independent per-test ceiling estimate**? Run a
 preemptive WSPT rule on a virtual single machine of speed `m` (using
@@ -552,11 +552,11 @@ physical ceiling versus merely at a ceiling our proxies can see.
 
 ---
 
-# Appendix A — algorithm index (implementable specs)
+# Appendix A, algorithm index (implementable specs)
 
 Tier 1 evaluates **our own** cost model, so it carries the least model-mismatch
 risk. Tier 2 are index *shapes* imported from models that do not match ours
-(M/G/1, single-GPU, identical parallel machines) — validate each in the simulator
+(M/G/1, single-GPU, identical parallel machines), validate each in the simulator
 before shipping, or we repeat the current failure mode one level up.
 
 | # | Algorithm | Role | Tier |
@@ -597,20 +597,20 @@ on each frame:
 ```
 
 Guarantee: cost ≤ base policy's cost. Cost: O(M·N) base-heuristic calls ×
-S futures. **One step only** — depth grows exponentially.
+S futures. **One step only**, depth grows exponentially.
 
 ## A2. Parallel rollout
 
 `H(i) = min_k H_k(i)` over K policy variants. Score candidate **actions**, not
 whole policies. If every `H_k` is sequentially improving, so is `H`, and the
 guarantee is against the **best** of the K at the root. **Never** the weighted
-form `Σ r_k H_k(i)` — no preservation property is claimed for it.
+form `Σ r_k H_k(i)`, no preservation property is claimed for it.
 
 ## A3. Monte-Carlo future sampling (AHC007 recipe)
 
 Draw S independent futures from the online-learned arrival process and `L_out`
 distribution; average the completed-trajectory score. S=14 was enough to move
-rank 140→54 there; 50–80 if the budget allows. **Never substitute the mean** —
+rank 140→54 there; 50–80 if the budget allows. **Never substitute the mean**,
 point estimates are systematically biased in the direction of the objective's
 selection operator, which is the whole reason sampling beats a tuned constant.
 
@@ -630,7 +630,7 @@ Serve minimum rank. ≤3-approx to Gittins for ρ ≤ 8/9, ≤5 at any load.
 ## A5. Two-class `L_out` predictor
 
 Binary long/short from features known at `ARR` (chiefly `L_in`). **Tune for
-long-job recall, not accuracy** — a mispredicted long job blocks several short
+long-job recall, not accuracy**, a mispredicted long job blocks several short
 ones; a mispredicted short job only hurts itself. Captures 84–94% of full
 size-prediction benefit. Escalate to full prediction on predicted-long jobs only
 (SkipPredict).
@@ -653,11 +653,11 @@ give the budget to prefill. Batch order: critical decodes by increasing `L` →
 active prefills → new prefills → non-critical decodes. Θ is the direct
 TDR-vs-TPOT knob. **Two traps**: documented over-deferral blowup (deferred
 decodes accumulate, block admission, TTFT explodes), and it collides with our
-existing adaptive-N cap — two controllers, one variable.
+existing adaptive-N cap, two controllers, one variable.
 
-## A8. DSOS — deterministic α-point dispatch
+## A8. DSOS, deterministic α-point dispatch
 
-*(Schulz, COCOA 2008, §4 — omitted from the main text above.)*
+*(Schulz, COCOA 2008, §4, omitted from the main text above.)*
 
 ```
 alpha_j = phi - 1 ~= 0.618          # golden ratio minus one, same for all jobs
@@ -671,13 +671,13 @@ whenever a real machine frees:
 
 `max{φ+1, ((φ+1)/2)·Δ + (φ+3)/2}`-competitive: **2.618** at Δ=0, **3.618** at
 Δ=1 (NBUE). Still the best known deterministic bound for identical machines as
-of 2022. Note how structurally close this is to A7 — both say *do not dispatch
+of 2022. Note how structurally close this is to A7, both say *do not dispatch
 at the earliest possible moment; dispatch at a tuned fraction of the way to the
 deadline.* The randomized variant RSOS is (2+Δ)-competitive but requires
 dispatch to a **uniformly random** machine (replacing that with our
 least-queued-work rule voids the analysis).
 
-## A9. WSEPT/LP online lower bound — run this first
+## A9. WSEPT/LP online lower bound, run this first
 
 The mean busy-time vector of preemptive WSPT on the virtual speed-`m` machine is
 an **exact optimal solution to the LP relaxation** of the stochastic
@@ -687,6 +687,6 @@ an event-driven priority queue.
 Value to us: an **independent per-test ceiling estimate** that does not come from
 the proxies. It is the only tool in the corpus that can tell us whether
 #10/#21/#4/#5 are genuinely at a physical ceiling or merely at a ceiling our
-proxies can see — i.e. whether the "every test is walled" conclusion is real.
+proxies can see, i.e. whether the "every test is walled" conclusion is real.
 Cheap to build, and it decides whether the rest of this appendix is worth
 implementing at all.

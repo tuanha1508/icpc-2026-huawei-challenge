@@ -1,4 +1,4 @@
-# Proxies reproduce STATE, not RESPONSE — validate before sweeping
+# Proxies reproduce STATE, not RESPONSE, validate before sweeping
 
 A proxy that matches the judge's `tp`/`tdr`/`tpot` at the current
 configuration can still get the **sign** of a knob's effect wrong, because it
@@ -14,7 +14,7 @@ was fitted to one operating point rather than reconstructed.
 | 0 | **466.09  (-21.1)** | **491.26  (+2.1)** |
 | 8 | 467.61  (-19.6) | 487.56  (-1.6) |
 
-`t13_fit` matches judge #13 to 0.03% on tp -- and still inverts dgfrac:
+`t13_fit` matches judge #13 to 0.03% on tp, and still inverts dgfrac:
 
 | knob | judge #13 | t13_fit |
 |---|---|---|
@@ -28,7 +28,7 @@ was fitted to one operating point rather than reconstructed.
 ## The one proxy class that IS trustworthy
 
 Reconstructions whose computed structural floor equals our measured makespan
-exactly (`t3_judge`, `cal_t14_u`, `t12_fit` -- see STRUCTURAL_FLOORS.md). There
+exactly (`t3_judge`, `cal_t14_u`, `t12_fit`, see STRUCTURAL_FLOORS.md). There
 the arithmetic depends only on the test parameters, not on response fidelity.
 
 ## Rule
@@ -51,7 +51,7 @@ already been refuted by the judge on ~20 real ungated tests:
 | balw 8     | +0.175 mean | r103 = 16281.164  (-22.6) |
 | marginal 0 | +0.085 mean | r250 = 16329.044  (-9.4) |
 
-maxg is gated only on #12, balw only on #13/#17, marginal on a handful -- so
+maxg is gated only on #12, balw only on #13/#17, marginal on a handful, so
 each of those builds measured the GLOBAL setting on about twenty real ungated
 tests. The corpus systematically rewards settings the real tests punish.
 
@@ -59,7 +59,7 @@ tests. The corpus systematically rewards settings the real tests punish.
 harvests.** Every global probe already measured its setting on ~20 real
 ungated tests, and the oracle over all of them says the current defaults are
 best. A corpus-derived global change may only be shipped when the judge shows
-it is NEUTRAL on the 22 -- which is exactly the case for r264:
+it is NEUTRAL on the 22, which is exactly the case for r264:
 
   - nfactor 0   judge-validated: neutral on 8 of the 9 capped tests, and the
                 only breakage (#15, -167.9) is gated back
@@ -80,14 +80,14 @@ the harvest puts the whole -9.463 on two tests:
 
     #7   w_tp 0.00   916.410 -> 906.988   -9.422
     #9   w_tp 0.05   736.258 -> 736.217   -0.040
-    #3 #20 (also w_tp 0.00) and #14 #18 #21 #22 -- unaffected
+    #3 #20 (also w_tp 0.00) and #14 #18 #21 #22, unaffected
 
 **#7 is the only real test at w_tp = 0 where the rule binds, and it lost 9.4
 where the corpus predicted +5.8.** Sign inverted, at the precise point the
 corpus was most confident and had the best win/lose ratio.
 
 NOT SHIPPED. The rule could have been kept for the frozen set by gating #7 and
-#9 back -- the leaderboard would have returned to 16339.023 -- but that would
+#9 back, the leaderboard would have returned to 16339.023, but that would
 apply to frozen w_tp = 0 tests a change the judge has directly shown is harmful
 on the only real w_tp = 0 test that responds to it. r264 stands.
 

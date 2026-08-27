@@ -24,7 +24,7 @@ at its measured maximum  : YES
 
 ## What we know
 
-w_tp 0.80. Needs 2.74x throughput to reach tp_UB -- implausible.
+w_tp 0.80. Needs 2.74x throughput to reach tp_UB, implausible.
 norm_c is already 0.998, so latency is nearly exhausted.
 Carries dgfrac 0.10 and a forced eprio ABDC. dgfrac 0.60/0.05 both inert.
 STATUS: effectively closed (2.9 pts per 1% tp, needs +174%).

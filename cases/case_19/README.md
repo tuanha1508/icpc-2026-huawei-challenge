@@ -25,7 +25,7 @@ at its measured maximum  : YES
 ## What we know
 
 w_tp = 1.00, so w_c = 0 and dist is unscored. 80 points, all throughput.
-The ONLY test whose dist is TPOT-dominated -- irrelevant since it is unscored.
+The ONLY test whose dist is TPOT-dominated, irrelevant since it is unscored.
 
 ## Untried
 

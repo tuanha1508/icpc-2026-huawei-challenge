@@ -24,11 +24,11 @@ at its measured maximum  : YES
 
 ## What we know
 
-585 points and the NARROWEST scoring window on the board -- tp_UB/tp_base =
+585 points and the NARROWEST scoring window on the board, tp_UB/tp_base =
 1.0053, so +0.42% throughput would be worth 513 points.
 BUT tp is IDENTICAL (0.003564) across all 45 configs, including catastrophic
 ones. Only the latency metrics ever move. Makespan is fixed by the workload.
-STATUS: closed -- the 513 points are not collectable by anyone.
+STATUS: closed, the 513 points are not collectable by anyone.
 
 ## Untried
 

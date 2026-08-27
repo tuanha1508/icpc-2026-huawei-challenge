@@ -1,4 +1,4 @@
-# Optimization research — 2026-08-15
+# Optimization research, 2026-08-15
 
 This note translates public scheduling research into changes that fit the exact
 contest model. It deliberately avoids competitor solutions and test-ID-specific
@@ -280,15 +280,15 @@ not a leading opportunity.
 
 ## Ranked experiment plan
 
-1. **Startup `(n,r)` fluid enumeration** — low implementation risk, uses only
+1. **Startup `(n,r)` fluid enumeration**, low implementation risk, uses only
    published data, directly exploits `tp_UB` and transfer latency.
-2. **Dynamic `E` action index** — highest expected score gain; ablate first on
+2. **Dynamic `E` action index**, highest expected score gain; ablate first on
    #3-like, narrow-clamp, burst, and prefill-heavy held-out sets.
-3. **Dispatch-time chunk endpoint** — enable only when the action index predicts
+3. **Dispatch-time chunk endpoint**, enable only when the action index predicts
    positive marginal score.
-4. **Depth-2 rollout** — compare against the action-index result; retain only if
+4. **Depth-2 rollout**, compare against the action-index result; retain only if
    it adds material value over the simpler controller.
-5. **Survival-based remote load** — modest expected gain and higher overfitting
+5. **Survival-based remote load**, modest expected gain and higher overfitting
    risk; keep behind a feature flag until held-out results are stable.
 
 Promotion criteria:

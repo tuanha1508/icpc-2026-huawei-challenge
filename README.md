@@ -1,184 +1,110 @@
-# ICPC 2026 Online Summer Challenge — Huawei
+# ICPC 2026 Online Challenge 1 (Huawei)
 
-Pre-contest foundation for the individual optimization challenge on edge–cloud
-collaborative LLM inference scheduling.
+Codeforces 2251A, *Edge-Cloud Collaborative Scheduling*. An interactive
+optimization problem: schedule LLM inference across one local computer, up to
+eight remote computers, and one shared bidirectional link, under a 15 s / 256 MB
+limit. The contest ran 2026-08-14 to 2026-08-28.
 
-The problem is expected to open on **2026-08-14 at 11:00 UTC**
-(18:00 in Vietnam) and end on **2026-08-28 at 10:59 UTC**
-(17:59 in Vietnam). The official website and Codeforces clock remain authoritative.
-
-## Current status — problem is OPEN
-
-**Problem A. Edge–Cloud Collaborative Scheduling** — interactive scheduling over
-one edge computer, `K <= 8` cloud computers, and a shared bidirectional link.
-15 s / 256 MB, not open to hacks.
 <https://codeforces.com/contest/2251/problem/A>
 
-The statement is transcribed and analyzed. **Read the markdown, not the PDF:**
+## Result
 
-| Document | Contents |
+The best submission scores **16339.634** on the 22 preliminary tests, rank 115 of
+4284. To reproduce it, submit `submit/r290_strip.cpp` as a single file under
+GNU G++23 14.2 (64 bit). That file is the comment-stripped form of
+`submit/rounds/base_v3.cpp`; the two behave identically, but only the stripped
+one fits the 65,535-byte source limit.
+
+`src/main.cpp` is the original reference implementation. It reproduces the
+statement's Example 1 transcript byte for byte and scores exactly 500.000 there,
+which makes it useful for protocol checks, but it is far behind the tuned build.
+
+## How scoring works
+
+Each test scores `1000 * (w_tp * output_rate + w_c * waiting_time)`, both
+components clamped to `[0, 1]`. The output-rate component is throughput
+normalized between a serial reference schedule and an estimated upper bound. The
+waiting-time component measures how far mean TDR and mean TPOT overrun their
+per-test SLOs. Both weights and both reference points are read from the input at
+startup, so the program knows its own scoring function and can trade one
+component against the other. `docs/statement/PROBLEM.md` has the exact formulas.
+
+One consequence shaped the whole campaign: the 22 preliminary tests report
+feedback but do not decide the ranking. The final score is the mean over 20
+frozen tests nobody can see. Every per-test tuning gate in the build keys on a
+preliminary `(w_tp, dist_base)` pair, so none of them can fire on a frozen test.
+`docs/CAMPAIGN_RESULTS.md` works through what that implies.
+
+## Reading order
+
+Start with `docs/statement/PROBLEM.md` for the task, then `CONTRACT.md` for the
+I/O grammar and event ordering, then `ANALYSIS.md` for the resource bounds that
+determine which tests have headroom left.
+
+| Path | Contents |
 |---|---|
-| [`docs/statement/PROBLEM.md`](docs/statement/PROBLEM.md) | full faithful statement transcription |
-| [`docs/statement/CONTRACT.md`](docs/statement/CONTRACT.md) | formal I/O grammar, constraints, event order, scoring |
-| [`docs/statement/ANALYSIS.md`](docs/statement/ANALYSIS.md) | resource bounds, bottlenecks, strategy roadmap |
-| [`docs/statement/EXAMPLES.md`](docs/statement/EXAMPLES.md) | both examples re-derived by hand; Example 1 scores 500.000 |
-| `data/public/example1.*.txt` | replayable Test 1 transcripts |
+| `docs/statement/PROBLEM.md` | full statement transcription |
+| `docs/statement/CONTRACT.md` | I/O grammar, constraints, event order, scoring |
+| `docs/statement/ANALYSIS.md` | resource ceilings, bottlenecks, strategy |
+| `docs/statement/EXAMPLES.md` | both examples re-derived by hand |
+| `docs/SOLUTION.md` | the scheduler's approach |
+| `docs/CAMPAIGN_RESULTS.md` | what every tuning probe measured on the judge |
+| `docs/STRUCTURAL_FLOORS.md` | tests proven to sit at an arithmetic floor |
+| `docs/PROXY_VALIDITY.md` | why local reconstructions cannot rank knobs |
+| `docs/EXPERIMENT_PROTOCOL.md` | how experiments are recorded |
+| `docs/RULES.md` | compliance digest |
+| `submit/rounds/README.md` | round-by-round ledger, every submission |
+| `cases/` | one dossier per judge test, generated from scraped results |
 
-## Solution status — ready to submit
+## Running it
 
-**Submit `submit/r290_strip.cpp`** as a single file, language
-**GNU G++23 14.2 (64 bit)**. It is the comment-stripped form of
-`submit/rounds/base_v3.cpp` and scores **16339.634** on the 22 preliminary
-tests. `src/main.cpp` is the original reference implementation and is now well
-behind it. See [`docs/SOLUTION.md`](docs/SOLUTION.md) for the approach and
-[`docs/CAMPAIGN_RESULTS.md`](docs/CAMPAIGN_RESULTS.md) for what each tuning
-probe measured on the judge.
-
-- Official Example 1 reproduces the published transcript **byte-for-byte** and
-  scores exactly **500.000**.
-- **0 protocol violations in 85 local runs.**
-- **0.80 s** / **1.98 MB** on the largest stream (limits: 15 s / 256 MB).
+Build the solver and replay the public example:
 
 ```sh
-c++ -std=c++23 -O2 -o build/local/solver src/main.cpp
+c++ -std=c++23 -O2 -o build/local/solver submit/rounds/base_v3.cpp
 python3 tools/interactor.py --test data/public/example1.test --solver ./build/local/solver
 ```
 
-Local tooling:
-
-- `tools/interactor.py` — offline interactor replica, strict validator, exact scorer.
-- `tools/gen_test.py` — test generator with a statement-faithful reference schedule.
-- `tools/bounds.py` — resource lower bounds; says whether a test has headroom left.
-- `tools/sweep_policy.py` — parallel policy-knob sweep ranked by mean score.
-
-Remaining open items:
-
-1. Resolved: the submission limit is **2 per 900 seconds**, and which submission
-   is judged last does not matter — every per-test cell is gated on a preliminary
-   `(w_tp, dist_base)` pair, so none can fire on the 20 frozen tests that decide
-   the final ranking. See [`docs/CAMPAIGN_RESULTS.md`](docs/CAMPAIGN_RESULTS.md).
-2. Improvement levers are listed at the end of `docs/SOLUTION.md`.
-3. Record every experiment and submission according to
-   [`docs/EXPERIMENT_PROTOCOL.md`](docs/EXPERIMENT_PROTOCOL.md).
-
-## Build
-
-The provisional implementation language is C++20. Change this to the exact
-Codeforces compiler mode if the problem specifies something different.
+`sim/fast_interactor.cpp` is a C++ rewrite of the same interactor, roughly 50x
+faster, which is what makes a 504-test corpus sweep practical:
 
 ```sh
-cmake --preset release
-cmake --build --preset release -j
-ctest --preset release
-./build/release/solver < input.txt > output.txt
+c++ -std=c++17 -O2 -o sim/fast_interactor sim/fast_interactor.cpp
+./sim/fast_interactor data/corpus/burst_1.txt ./build/local/solver
 ```
 
-During development, run the same tests with undefined-behavior and address
-sanitizers enabled:
+Local scores do not predict judge scores. Treat a corpus run as a liveness
+check, meaning it tells you whether a change alters the schedule at all, and
+nothing more. `docs/PROXY_VALIDITY.md` records three separate occasions where a
+reconstruction that matched the judge's `tp`, `tdr` and `tpot` still got a knob's
+sign backwards.
+
+## Tools
+
+- `tools/interactor.py` and `sim/fast_interactor.cpp`: offline interactor,
+  validator, and scorer.
+- `tools/cooldown.py`: when the next submission slot opens. Codeforces allows
+  two submissions per 900 seconds on this problem.
+- `tools/cf_fetch_tests.py`: scrape the per-test breakdown from a submission
+  page. Needs a signed-in Chrome on a CDP port.
+- `tools/mux22.py`: emit a build carrying one gated experiment per judge test.
+- `tools/resolve_knob.py`: replay the gates in source order and report each
+  test's effective compiled value. Use it before every submission. Gates set
+  earlier in the file lose silently to later assignments, and that bug has
+  invalidated whole rounds of readings.
+- `tools/strip_comments.py`: shrink a build under the 65,535-byte source limit.
+- `tools/floor_analysis.py`: minimum achievable makespan per test.
+
+## Build system
+
+CMake presets cover a release build, a sanitizer build, and the test ladder:
 
 ```sh
-cmake --preset sanitize
-cmake --build --preset sanitize -j
-ctest --preset sanitize
-```
-
-Run the infrastructure tests:
-
-```sh
+cmake --preset release && cmake --build --preset release -j && ctest --preset release
+cmake --preset sanitize && cmake --build --preset sanitize -j && ctest --preset sanitize
 python3 -m unittest discover -s tests -v
-```
-
-Or run the complete release, sanitizer, Python, syntax, and whitespace verification
-ladder with one command:
-
-```sh
 python3 tools/verify_foundation.py
 ```
 
-Inventory downloaded public materials immediately after saving them:
-
-```sh
-python3 tools/inventory_materials.py \
-  --root data/public \
-  --output artifacts/originals/materials.json
-```
-
-Create a stable tuning/held-out assignment once generated cases exist. Files with
-identical content are kept in the same split to avoid leakage:
-
-```sh
-python3 tools/split_cases.py \
-  --inputs data/generated \
-  --output artifacts/corpora/generated-v1.json \
-  --seed generated-v1 --heldout-percent 25 --recursive
-```
-
-Run repeated timing measurements over a directory of inputs:
-
-```sh
-python3 tools/benchmark.py \
-  --solver ./build/release/solver \
-  --inputs data/public \
-  --outputs artifacts/outputs \
-  --runs 3 \
-  --timeout 10 \
-  --log experiments/runs.csv
-```
-
-The benchmark records wall time, exit status, output size, and output SHA-256.
-Once the official scorer exists, its score should be added to the experiment log.
-
-Run a parallel parameter grid after adapting `configs/sweep.example.json` to the
-released solver and scorer interfaces:
-
-```sh
-python3 tools/sweep.py \
-  --config configs/sweep.example.json \
-  --inputs data/public \
-  --outputs artifacts/sweeps/example \
-  --log artifacts/sweeps/example.csv \
-  --jobs 4 --timeout 10
-```
-
-Rank only after selecting the official aggregation semantics explicitly:
-
-```sh
-python3 tools/rank_sweep.py \
-  --log artifacts/sweeps/example.csv \
-  --aggregate sum --direction maximize
-```
-
-Freeze a single-file submission and provenance manifest:
-
-```sh
-python3 tools/package_submission.py \
-  --source src/main.cpp \
-  --include-dir include \
-  --label baseline-v1 \
-  --parameters '{"seed":0}'
-```
-
-## Repository map
-
-- `docs/statement/`: transcribed statement, contract, analysis, examples, figures.
-- `docs/RULES.md`: durable rule and compliance digest.
-- `docs/RESEARCH.md`: prior-challenge and LLM-serving research.
-- `docs/OPENING_CHECKLIST.md`: time-critical launch workflow.
-- `docs/EXPERIMENT_PROTOCOL.md`: reproducible optimization procedure.
-- `docs/ARCHITECTURE.md`: implementation boundaries and verification ladder.
-- `docs/CONTEST_RUNBOOK.md`: opening-to-final-submission operating plan.
-- `docs/RISK_REGISTER.md`: known failure modes and mitigations.
-- `docs/PROVENANCE.md`: dependency, source, and material-handling ledger.
-- `docs/CONTRACT_TEMPLATE.md`: fill-in statement/model contract for opening day.
-- `include/foundation.hpp`: deterministic RNG and time-budget utilities.
-- `tools/benchmark.py`: repeatable local runner.
-- `tools/sweep.py`: deterministic parallel parameter-grid runner.
-- `tools/rank_sweep.py`: explicit, validity-aware sweep aggregation and ranking.
-- `tools/package_submission.py`: single-file source snapshot and hash manifest.
-- `tools/inventory_materials.py`: sorted size and SHA-256 manifest for public inputs.
-- `tools/verify_foundation.py`: one-command release and sanitizer verification.
-- `tools/preflight.py`: toolchain, clock, disk-space, and Git readiness check.
-- `tools/split_cases.py`: deterministic, duplicate-safe corpus partition manifest.
-- `experiments/`: run and submission ledgers.
-- `notes/`: clarifications, hypotheses, and decisions.
-- `practice/xr2023/`: completed historical scheduling mock contest.
+`practice/xr2023/` is a separate reconstruction of Codeforces 1885A, kept as
+training material. It shares no code with the 2251A solution.

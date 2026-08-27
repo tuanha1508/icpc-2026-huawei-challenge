@@ -24,7 +24,7 @@ at its measured maximum  : YES
 
 ## What we know
 
-Only 20 points of headroom -- essentially maxed at 979.91.
+Only 20 points of headroom, essentially maxed at 979.91.
 Carries the dgfrac 0.95 flat-curve whitelist (worth +3.84, and +2.32 more
 from forcing it to persist since #16 also has useMarginal false).
 

@@ -6,29 +6,29 @@ and dist_base = dist/(1-norm_c) from any single one. **These are measured, not g
 
 | # | loss | w_tp | tp_UB/tp_now | tdr/SLO1 | tpot/SLO2 | verdict |
 |---|---|---|---|---|---|---|
-| 3 | 1000 | 0.00 | 1.19x | 1.5 | 2.1 | **w_tp = 0 — throughput scores NOTHING here** |
-| 6 | 642 | 0.90 | 3.40x | 6.3 | 0.7 | **tp UNREACHABLE — do not work on this** |
-| 14 | 585 | 0.65 | 1.00x | 1.1 | 1.1 | **tp is close — cheap points** |
-| 5 | 560 | 0.80 | 3.34x | 7.9 | 1.8 | **tp UNREACHABLE — do not work on this** |
+| 3 | 1000 | 0.00 | 1.19x | 1.5 | 2.1 | **w_tp = 0, throughput scores NOTHING here** |
+| 6 | 642 | 0.90 | 3.40x | 6.3 | 0.7 | **tp UNREACHABLE, do not work on this** |
+| 14 | 585 | 0.65 | 1.00x | 1.1 | 1.1 | **tp is close, cheap points** |
+| 5 | 560 | 0.80 | 3.34x | 7.9 | 1.8 | **tp UNREACHABLE, do not work on this** |
 | 13 | 347 | 0.75 | 1.47x | 4.0 | 3.5 | mixed |
-| 10 | 322 | 0.15 | 1.00x | 147.3 | 9.9 | **tp is close — cheap points** |
+| 10 | 322 | 0.15 | 1.00x | 147.3 | 9.9 | **tp is close, cheap points** |
 | 8 | 283 | 0.25 | 1.37x | 2.7 | 3.4 | mixed |
-| 9 | 264 | 0.05 | 1.03x | 10.3 | - | **tp is close — cheap points** |
+| 9 | 264 | 0.05 | 1.03x | 10.3 | - | **tp is close, cheap points** |
 | 4 | 199 | 0.30 | 1.96x | 2.5 | 1.1 | mixed |
-| 12 | 198 | 0.99 | 1.11x | 3.2 | 4.3 | **tp is close — cheap points** |
-| 15 | 133 | 0.45 | 1.02x | 38.1 | - | **tp is close — cheap points** |
-| 17 | 110 | 0.67 | 1.03x | 1008.4 | 155.3 | **tp is close — cheap points** |
-| 7 | 99 | 0.00 | 2.09x | 1.2 | 1.3 | **tp UNREACHABLE — do not work on this** |
-| 18 | 84 | 0.58 | 1.00x | 140.6 | - | **tp is close — cheap points** |
-| 19 | 81 | 1.00 | 1.09x | 1.0 | 3.6 | **tp is close — cheap points** |
-| 16 | 75 | 0.98 | 1.06x | 37.9 | 20.3 | **tp is close — cheap points** |
-| 21 | 54 | 0.50 | 1.02x | 242.3 | - | **tp is close — cheap points** |
+| 12 | 198 | 0.99 | 1.11x | 3.2 | 4.3 | **tp is close, cheap points** |
+| 15 | 133 | 0.45 | 1.02x | 38.1 | - | **tp is close, cheap points** |
+| 17 | 110 | 0.67 | 1.03x | 1008.4 | 155.3 | **tp is close, cheap points** |
+| 7 | 99 | 0.00 | 2.09x | 1.2 | 1.3 | **tp UNREACHABLE, do not work on this** |
+| 18 | 84 | 0.58 | 1.00x | 140.6 | - | **tp is close, cheap points** |
+| 19 | 81 | 1.00 | 1.09x | 1.0 | 3.6 | **tp is close, cheap points** |
+| 16 | 75 | 0.98 | 1.06x | 37.9 | 20.3 | **tp is close, cheap points** |
+| 21 | 54 | 0.50 | 1.02x | 242.3 | - | **tp is close, cheap points** |
 
 ## Conclusions
 
-- **Stop working on [6, 5, 7]** — they need 2-3.4x throughput. That is 1301 points that were never winnable, and where most effort went.
+- **Stop working on [6, 5, 7]**, they need 2-3.4x throughput. That is 1301 points that were never winnable, and where most effort went.
 - **#14 is the single best target: its whole scoring window is 0.5% wide** (tp_base=0.003560, tp_UB=0.003578, we sit at 0.003563). +0.028% throughput = +36 pts; +0.42% = +551 pts.
-- TDR-dominated: [] — TPOT work cannot help these.
+- TDR-dominated: [], TPOT work cannot help these.
 - Structural zeros confirmed: #1/#2/#11 capped at 500, #3 capped near 0 (sparse: the
   one-request-at-a-time reference IS our schedule, so dist == dist_base).
 
@@ -38,7 +38,7 @@ and dist_base = dist/(1-norm_c) from any single one. **These are measured, not g
 After every submission, append the new per-test line and re-run: each new submission
 tightens the estimates and re-ranks the targets.
 
-## Test 3 — why it read exactly 0.000000 for 15 submissions
+## Test 3, why it read exactly 0.000000 for 15 submissions
 
 `w_tp = 0.00` sits in the table above from the very first recovery, but the
 verdict column said "mixed" and the whole campaign chased throughput there.
@@ -68,14 +68,14 @@ Consequences, all measured rather than assumed:
 - **Marginal rate.** `d(dist)/d(tdr) = 0.000438 /ms`, `d(dist)/d(tpot) =
   0.014530 /ms`. **1 ms of TPOT is worth 33 ms of TDR**, about 12 points per ms
   of TPOT. Anything that trades TDR for TPOT here is right.
-- **Concurrency.** Little's law gives `N = tp * tpot = 0.59` — average decode
+- **Concurrency.** Little's law gives `N = tp * tpot = 0.59`, average decode
   concurrency is *below one*. Test 3 was never an over-batching problem, and
   v18's offered-load floor (which raises N) moved it not at all on the judge.
 - **We are at the reference.** `points = 0` means `dist >= dist_base`, so
   `dist_base <= 1.2081`; the one-request-at-a-time reference nearly meets its
   own SLOs. With `ex_tpot_ref <= 1.1067` that forces `ex_tdr_ref <= 0.4869`,
   i.e. `tdr_ref <= 1357.8` against our 1355.5. Our schedule lands within 0.2%
-  of the reference on both axes while running 1.413x its throughput — we are
+  of the reference on both axes while running 1.413x its throughput, we are
   buying throughput that scores zero with contention that costs TPOT.
 - **Ceiling.** `dist >= ex_tpot` always, and TPOT can never beat the
   single-request floor the reference measures, so the most test 3 can pay is
@@ -97,7 +97,7 @@ Two things were tried and rejected by measurement on the way:
   both links are shared, so it is not free: `large_1` (`dist_base = 0`, binary)
   went `tpot` 89.6 -> 108.5, past `SLO2 = 101.89`, losing all 750 points. It
   bought nothing on the test 3 reproductions either.
-- **Gating the offered-load floor on `w_tp > 0`.** Wrong gate — the floor
+- **Gating the offered-load floor on `w_tp > 0`.** Wrong gate, the floor
   bounds TDR, which pays through `w_c` at any throughput weight. `burst_2` has
   `w_tp = 0` and the floor is worth +25 there. Gate on budget domination.
 
@@ -105,8 +105,8 @@ Two things were tried and rejected by measurement on the way:
 
 `tools/fit_t3c.py` fits the reference (which sets the ceiling);
 `tools/fit_t3d.py` additionally fits our achieved triple. `t3_tight`/`t3_loose`
-reproduce the failure exactly — the solver emits the reference schedule to six
-decimals and scores 0 — but have no overlap to exploit (`gapf = 1.0`).
+reproduce the failure exactly, the solver emits the reference schedule to six
+decimals and scores 0, but have no overlap to exploit (`gapf = 1.0`).
 Candidates matching the judge's `tp/tp_base = 1.413` all score 650+ with
 `tdr = 466`. The generator cannot yet produce #3's actual corner: 1.41x
 reference throughput with *no* latency benefit. Real #3 likely has
@@ -135,7 +135,7 @@ Both observations then reproduce the judge's `dist` to six decimals.
 |---|---|---|
 | `SLO1` | 0.003% | solved from `dist`, printed to 6 decimals |
 | `SLO2` | 0.001% | same |
-| `tp_base` | **1.2%** | from `tp` differences of 1.7e-5 — two significant figures |
+| `tp_base` | **1.2%** | from `tp` differences of 1.7e-5, two significant figures |
 | `tp_UB` | **0.5%** | same |
 
 `tp_base`/`tp_UB` reproduce `norm_tp` to six decimals, which makes them *look*
@@ -150,14 +150,14 @@ and test 3 would pay roughly **497 points** at `dist_base = 1.21`.
 
 Also established: `dist_base = 0` is **impossible** for test 3. It would require
 the reference not to queue (arrival gap >= request lifetime), and then there is
-nothing for us to overlap either. Confirmed empirically -- of 240 generated
+nothing for us to overlap either. Confirmed empirically, of 240 generated
 tests whose reference meets both SLOs, we meet both on 240. So
 `dist_base` lies in `(1.046, 1.210]` and test 3 is worth real points.
 
 **Every `data/judgecal/t3_*.txt` built before this correction used the wrong
 SLOs and is miscalibrated.**
 
-## Test 3 SOLVED — first non-zero, and the ceiling is now exact
+## Test 3 SOLVED, first non-zero, and the ceiling is now exact
 
 2026-08-15, submission with the decode-pool cap:
 
@@ -199,6 +199,6 @@ TPOT. `ex_tdr` is rigid, so the ceiling is `1000*(1 - ex_tdr/dist_base) = 474.2`
 and nothing can exceed it.
 
 Trade rule for further work: deferring a prefill by `dt` adds `dt/R` to mean TDR
-and saves `m*dt/G` of mean TPOT, so it pays iff `G/(R*m) < 20.8` — with the
+and saves `m*dt/G` of mean TPOT, so it pays iff `G/(R*m) < 20.8`, with the
 decode pool capped at 1, iff `L_out < 22`. There is 462 ms of TDR headroom
 (`tdr` may reach 1818 before `ex_tdr` alone reaches `dist_base`).

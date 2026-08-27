@@ -26,12 +26,12 @@ at its measured maximum  : YES
 
 w_tp = 0.00, so the score IS 1000 * norm_c. dist is 100% TDR-driven
 (mean_tpot sits exactly at SLO2). LEVERAGE: 13.73 points per 1% of mean_tdr,
-the best latency leverage on the board -- -7.3% tdr would be +100.
+the best latency leverage on the board, -7.3% tdr would be +100.
 TRIED: dgfrac 0.05/0.60 both exactly inert; balw>0 (+71 on proxies) a judge
 no-op; rporder 'S' no-op; forcePrefill widened to fire on TDR-dominant (r167)
 left mean_tdr identical to 3 decimals.
 WHY: forcePrefill also needs prefill work AVAILABLE when E is free, and on #3
-that never coincides -- prefill is starved upstream at the link/remotes.
+that never coincides, prefill is starved upstream at the link/remotes.
 STATUS: closed at the mechanism level. Only 3 distinct values in 45 configs.
 
 ## Untried
