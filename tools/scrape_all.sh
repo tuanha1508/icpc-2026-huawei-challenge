@@ -2,7 +2,7 @@
 # Slowly scrape per-test judge output for every distinct-scoring submission.
 # Codeforces throttles submission pages hard, so this paces at ~3.5 min each
 # and retries rather than hammering. Runs for hours by design.
-cd /Users/tuna/Desktop/ICPC-2026-Huawei-Challenge
+cd "$(dirname "$0")/.." || exit 1
 python3 - <<'PY' > /tmp/scrape_queue.txt
 import json
 subs=json.load(open('data/allsubs/index.json'))
