@@ -7,8 +7,8 @@ judge's (tp, mean_tdr, mean_tpot) at #6's shipped dpost of 0.20.
 """
 import os, subprocess, sys, json, copy, random
 
-SOLVER = '/Users/tuna/.claude/jobs/24f36c4f/tmp/r252'
-OUT = '/Users/tuna/.claude/jobs/24f36c4f/tmp/fit6'
+SOLVER = 'tmp/work/r252'
+OUT = 'tmp/work/fit6'
 os.makedirs(OUT, exist_ok=True)
 SCORING = "505.046400000 64.410500000 2.112422000 0.021809000 646.920000000 0.900000000 0.100000000"
 TGT = dict(tp=0.754170, tdr=3216.445841, tpot=67.894593)

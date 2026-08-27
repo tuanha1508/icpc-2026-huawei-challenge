@@ -8,8 +8,8 @@ Starts from r264 (global nfactor 0 + dgfrac 0.18).
 """
 import os, subprocess, sys, json, glob
 
-SOLVER = '/Users/tuna/.claude/jobs/24f36c4f/tmp/chk_r264'
-TESTS  = sorted(glob.glob('/Users/tuna/.claude/jobs/24f36c4f/tmp/g3c/*.txt'))
+SOLVER = 'tmp/work/chk_r264'
+TESTS  = sorted(glob.glob('tmp/work/g3c/*.txt'))
 
 GRID = {
     'A_DGFRAC':   ['0.16','0.18','0.20','0.22'],
@@ -68,4 +68,4 @@ for k in sorted(cur):
     mark = "  <-- changed" if cur[k] != BASE[k] else ""
     print(f"  {k:<14} {cur[k]}{mark}")
 print(f"mean {best/n:.3f}   (r264 start was {score(BASE)/n:.3f})")
-json.dump(cur, open('/Users/tuna/.claude/jobs/24f36c4f/tmp/frozen_best.json','w'), indent=1)
+json.dump(cur, open('tmp/work/frozen_best.json','w'), indent=1)

@@ -4627,7 +4627,7 @@ r120 minus r119 is exactly #7's contribution.
 The Codeforces API is READ-ONLY (no submit method), so submission has to go
 through a browser. Playwright driving an already-signed-in Chrome over the
 DevTools protocol costs ~250 tokens per submission; doing the same through the
-Claude-in-Chrome MCP costs ~18-26k, because the 39KB source has to pass through
+Scraping through the browser costs ~18-26k, because the 39KB source has to pass through
 the model's context on every round (paste) plus a page read to locate the form.
 The script reads the file from disk instead, so the source never enters context.
 

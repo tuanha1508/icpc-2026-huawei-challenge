@@ -12,8 +12,8 @@ failed (see docs/PROXY_VALIDITY.md).
 """
 import os, random, subprocess, sys, math, json
 
-SOLVER = sys.argv[1] if len(sys.argv) > 1 else '/Users/tuna/.claude/jobs/24f36c4f/tmp/r252'
-OUT    = '/Users/tuna/.claude/jobs/24f36c4f/tmp/fit6'
+SOLVER = sys.argv[1] if len(sys.argv) > 1 else 'tmp/work/r252'
+OUT    = 'tmp/work/fit6'
 os.makedirs(OUT, exist_ok=True)
 
 SCORING = "505.046400000 64.410500000 2.112422000 0.021809000 646.920000000 0.900000000 0.100000000"
