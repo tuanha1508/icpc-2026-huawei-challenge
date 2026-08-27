@@ -26,8 +26,13 @@ The statement is transcribed and analyzed. **Read the markdown, not the PDF:**
 
 ## Solution status — ready to submit
 
-**Submit `src/main.cpp`** as a single file, language **GNU G++23 14.2 (64 bit)**.
-See [`docs/SOLUTION.md`](docs/SOLUTION.md) for the approach and measurements.
+**Submit `submit/r290_strip.cpp`** as a single file, language
+**GNU G++23 14.2 (64 bit)**. It is the comment-stripped form of
+`submit/rounds/base_v3.cpp` and scores **16339.634** on the 22 preliminary
+tests. `src/main.cpp` is the original reference implementation and is now well
+behind it. See [`docs/SOLUTION.md`](docs/SOLUTION.md) for the approach and
+[`docs/CAMPAIGN_RESULTS.md`](docs/CAMPAIGN_RESULTS.md) for what each tuning
+probe measured on the judge.
 
 - Official Example 1 reproduces the published transcript **byte-for-byte** and
   scores exactly **500.000**.
@@ -48,8 +53,10 @@ Local tooling:
 
 Remaining open items:
 
-1. Check the Codeforces announcements/clarifications tab and resolve the two open
-   items in `CONTRACT.md` (submission limit/cadence; which submission is final).
+1. Resolved: the submission limit is **2 per 900 seconds**, and which submission
+   is judged last does not matter — every per-test cell is gated on a preliminary
+   `(w_tp, dist_base)` pair, so none can fire on the 20 frozen tests that decide
+   the final ranking. See [`docs/CAMPAIGN_RESULTS.md`](docs/CAMPAIGN_RESULTS.md).
 2. Improvement levers are listed at the end of `docs/SOLUTION.md`.
 3. Record every experiment and submission according to
    [`docs/EXPERIMENT_PROTOCOL.md`](docs/EXPERIMENT_PROTOCOL.md).
