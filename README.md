@@ -37,9 +37,9 @@ preliminary `(w_tp, dist_base)` pair, so none of them can fire on a frozen test.
 
 ## Reading order
 
-Start with `docs/statement/PROBLEM.md` for the task, then `CONTRACT.md` for the
-I/O grammar and event ordering, then `ANALYSIS.md` for the resource bounds that
-determine which tests have headroom left.
+Start with `docs/statement/PROBLEM.md` for the task, then `docs/statement/CONTRACT.md`
+for the I/O grammar and event ordering, then `docs/statement/ANALYSIS.md` for
+the resource bounds that determine which tests have headroom left.
 
 | Path | Contents |
 |---|---|
