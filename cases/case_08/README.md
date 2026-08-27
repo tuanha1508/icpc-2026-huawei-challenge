@@ -38,7 +38,7 @@ See ../../submit/rounds/README.md for the full round-by-round ledger.
 ## THE BUNDLE, why #8 is the best remaining target
 
 `legacyQuarter` (w_tp 0.25, dist_base 10.8848) IS #8, and this file calls it
-"an eight-site compatibility bundle inherited from the Codex base". It is
+"an eight-site compatibility bundle inherited from the reference baseline". It is
 applied wholesale. Of its seven live settings, only ONE has ever been tested on
 its own:
 

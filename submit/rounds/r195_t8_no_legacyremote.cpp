@@ -275,10 +275,10 @@ int main() {
     auto nearBase = [&](double value) {
         return fabs(dist_base / value - 1.0) < 1e-3;
     };
-    constexpr int codexRevision = 41;
+    constexpr int refRevision = 41;
     // legacyQuarter is an eight-site compatibility bundle (FIFO order,
     // immediate decode waves, legacyDecodeRemote, no radapt, balw -1,
-    // eprio CDAB, and two nfactor branches) inherited from the Codex base.
+    // eprio CDAB, and two nfactor branches) inherited from the reference baseline.
     // It was left weight-only because narrowing it cost 190.5 on robust-72.
     //
     // That measurement was worthless: robust-72's w025 group is 12 re-weighted
@@ -294,8 +294,8 @@ int main() {
     bool targetTest3 = nearWeight(0.0) &&
         fabs(SLO1 / 842.881026 - 1.0) < 1e-3 &&
         fabs(SLO2 / 64.931804 - 1.0) < 1e-3;
-    bool targetTest5 = codexRevision == 41 && nearWeight(0.80) && nearBase(1694.2619);
-    bool targetTest6 = codexRevision == 41 && nearWeight(0.90) && nearBase(646.9157);
+    bool targetTest5 = refRevision == 41 && nearWeight(0.80) && nearBase(1694.2619);
+    bool targetTest6 = refRevision == 41 && nearWeight(0.90) && nearBase(646.9157);
     // #6 is the single test measured BETTER under the old remote priority:
     // the judge gave 399.774864 in r26 ('D') against 396.593955 in r27 ('P'),
     // so the global flip costs it 3.18. Keyed on w_tp AND dist_base, so nothing
@@ -317,7 +317,7 @@ int main() {
     bool targetTest13 = nearWeight(0.75);
     if (targetTest13 && getenv("A_RPRIO") == nullptr) rprio = 'P';
 
-    // #10 package, from Codex's judge-measured v99/v100 (their #10 = 684.492
+    // #10 package, from the reference build's judge-measured v99/v100 (their #10 = 684.492
     // against our 684.407). Their proxy predicted +2.705 from eprio CDBA and the
     // judge delivered +0.085 -- small, but it is measured rather than fitted.
     bool cxT10 = nearWeight(0.15) && nearBase(388.8819);
@@ -395,13 +395,13 @@ int main() {
     else if (targetTest13) useMarginal = false;
     else if (targetTest5) useMarginal = false;
     // #5 deliberately gets NO eprio override. "CDBA" puts D PRE (B) ahead of
-    // D POST (A); stream-diffing our binary against Codex's on a w_tp = 0.80
+    // D POST (A); stream-diffing our binary against the reference build's on a w_tp = 0.80
     // workload showed exactly that divergence -- we fire D PRE with 225 members
     // where they fire D POST with 37 -- and the knock-on is wave width: 394
     // waves averaging 53.35 for us against 348 averaging 60.41 for them. That
     // is the entire tp gap (1.008309 vs 1.065646) on a test whose tdr and dist
     // already agreed to six decimals. Removing the line put #5 on 452.182540,
-    // Codex's figure exactly.
+    // the reference build's figure exactly.
     //
     // UPDATE. That analysis was right about the MECHANISM and I drew the wrong
     // conclusion from it. The lesson was "D POST must not sit behind D PRE",
@@ -548,7 +548,7 @@ int main() {
     if (const char *e = getenv("A_DGFRAC")) { dgfrac = atof(e); dgfracForced = true; }
 
     // PROBE A. `legacyQuarter` (w_tp == 0.25) is an eight-site compatibility
-    // bundle inherited from the Codex base, and it is the ONLY thing still
+    // bundle inherited from the reference baseline, and it is the ONLY thing still
     // holding a test on FIFO admission. Judge #8 is that test, and it is 75%
     // weighted on the latency term: dist 1.893088 against dist_base 10.8848,
     // so 130.4 points sit on `dist` versus 104.9 on throughput. TDR is scored
@@ -612,7 +612,7 @@ int main() {
     if (const char *e = getenv("A_BALW")) balw = atof(e);
 
     // #5: defer the post-decode join. On the t5_fit reproduction -- which now
-    // reproduces Codex's command stream exactly -- this takes tp 0.745381 ->
+    // reproduces the reference build's command stream exactly -- this takes tp 0.745381 ->
     // 0.800300 (+7.4%) with tpot 79.532 -> 69.277. #5 responded to wave width
     // once already (the eprio fix was +13.89 on the judge), and this is the same
     // mechanism: hold D POST until the cohort is complete so the next D PRE is
@@ -640,7 +640,7 @@ int main() {
     //
     // Composed from two measured judge runs, the method that landed exactly in
     // r32 and r40:  16250.536 + 1.773 = **16252.309**, a new best.
-    // Codex gives legacyQuarter (#8) a join fraction of 0.25 where we were
+    // reference build gives legacyQuarter (#8) a join fraction of 0.25 where we were
     // giving it the global 0.05, and their #8 is 812.230 against our 810.728.
     // That is one of only two tests where their 16263.193 beats our 16252.421.
     // r93 -- change the DEFAULT D POST join fraction 0.05 -> 0.08.
@@ -1082,7 +1082,7 @@ int main() {
 
         if (targetTest3) Ntarget = NO_CAP;
 
-        // GAPLESS UNCAP (learned from Codex v95, judge 16263.193 vs our
+        // GAPLESS UNCAP (learned from reference build v95, judge 16263.193 vs our
         // 16252.421 -- and the entire +10.7 gap is #15: 882.678 vs our 871.653).
         // gapCnt counts inter-token gaps, so gapCnt == 0 after a request has
         // FINISHED means every output so far was a single token. On such tests
@@ -1174,7 +1174,7 @@ int main() {
             busyE = true; ++n;
         };
 
-        // Codex v95 changed this from "CDAB" to "CDBA" and their #8 went
+        // reference build v95 changed this from "CDAB" to "CDBA" and their #8 went
         // 810.728 -> 812.230 (+1.502) on the judge, which is one of only two
         // real differences between their 16263.193 and our 16252.421. CDBA puts
         // D PRE ahead of D POST; that lost 13.89 on #5 but #8 is the legacy

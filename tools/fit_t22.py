@@ -17,7 +17,7 @@ arrival span, L_in, L_out) and reports the closest match, so knob sweeps on the
 resulting proxy actually transfer to the judge.
 
 Usage:
-    python3 tools/fit_t22.py --solver Codex/build/v75-fit
+    python3 tools/fit_t22.py --solver reference/build/v75-fit
 """
 
 from __future__ import annotations

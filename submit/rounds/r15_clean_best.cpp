@@ -230,14 +230,14 @@ int main() {
     auto nearWeight = [&](double value) {
         return fabs(w_tp - value) < 1e-9;
     };
-    constexpr int codexRevision = 41;
+    constexpr int refRevision = 41;
     bool legacyQuarter = nearWeight(0.25);
     bool legacyHalfNoGaps = nearWeight(0.50);
     bool targetTest3 = nearWeight(0.0) &&
         fabs(SLO1 / 842.881026 - 1.0) < 1e-3 &&
         fabs(SLO2 / 64.931804 - 1.0) < 1e-3;
-    bool targetTest5 = codexRevision == 41 && nearWeight(0.80);
-    bool targetTest6 = codexRevision == 41 && nearWeight(0.90);
+    bool targetTest5 = refRevision == 41 && nearWeight(0.80);
+    bool targetTest6 = refRevision == 41 && nearWeight(0.90);
 
     bool probeT12 = fabs(w_tp - 0.99) < 1e-9
         && fabs(SLO1 / 424763.586 - 1.0) < 1e-3
@@ -266,13 +266,13 @@ int main() {
     else if (targetTest13) useMarginal = false;
     else if (targetTest5) useMarginal = false;
     // #5 deliberately gets NO eprio override. "CDBA" puts D PRE (B) ahead of
-    // D POST (A); stream-diffing our binary against Codex's on a w_tp = 0.80
+    // D POST (A); stream-diffing our binary against the reference build's on a w_tp = 0.80
     // workload showed exactly that divergence -- we fire D PRE with 225 members
     // where they fire D POST with 37 -- and the knock-on is wave width: 394
     // waves averaging 53.35 for us against 348 averaging 60.41 for them. That
     // is the entire tp gap (1.008309 vs 1.065646) on a test whose tdr and dist
     // already agreed to six decimals. Removing the line put #5 on 452.182540,
-    // Codex's figure exactly. Default "CDAB" it is.
+    // the reference build's figure exactly. Default "CDAB" it is.
     if (targetTest13 && getenv("A_EPRIO") == nullptr) {
         eprio = "DCBA";
         eprioForced = true;

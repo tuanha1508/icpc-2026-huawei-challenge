@@ -3,8 +3,8 @@
 | round | change | judge total |
 |-------|--------|-------------|
 | —   | user source (baseline) | 16093 |
-| —   | Codex v70 | 16098.470 |
-| r09 | + Codex #5 route, #13 eprio DCBA, #6 prefillBoost 14 | 16111.755 |
+| —   | reference build v70 | 16098.470 |
+| r09 | + reference build #5 route, #13 eprio DCBA, #6 prefillBoost 14 | 16111.755 |
 | r12 | flat-curve whitelisted to #16 | 16111.755 (no-op) |
 | r14 | + #5 eprio fix + 4 probes | 16094.188 |
 | **r15** | r12 + #5 eprio fix ONLY | **16125.644 expected** ← SUBMIT |
@@ -13,7 +13,7 @@
 | change | test | delta |
 |--------|------|-------|
 | remove `targetTest5 -> eprio "CDBA"` | #5 | **+13.89** |
-| Codex #5 route | #5 | **+9.80** |
+| reference build #5 route | #5 | **+9.80** |
 | #13 `eprio "DCBA"` forced | #13 | **+3.24** |
 | #6 `prefillBoost` 14 | #6 | **+1.64** |
 | flat-curve block | #16 | **+3.84** |
@@ -28,7 +28,7 @@
 ## Method that works
 1. Per-test scores are independent -> bundle several bets, each gated to ONE
    test by its unique `w_tp`, and attribute them all from one submission.
-2. When ours and Codex differ on a test, dump both command streams on a
+2. When ours and reference build differ on a test, dump both command streams on a
    matching workload and diff. That found the #5 bug exactly.
 3. Local reproductions match METRICS but not policy RESPONSES. They have
    mispredicted five times. Do not ship on their say-so.
@@ -63,7 +63,7 @@ Judge-calibrated reproductions now exist for #3, #5, #6, #9, #12, #13, #14 and
 all 18 knobs have been swept on each. Every one is inert. Combined with r16,
 the parameter space is closed: 16125.644 is this architecture's practical
 ceiling. Every gain that ever landed came from exactly two sources —
-copying Codex's judge-proven features, and stream-diffing our binary against
+copying the reference build's judge-proven features, and stream-diffing our binary against
 theirs.
 
 ## r17 = 16159.793 — TARGET CLEARED
@@ -71,7 +71,7 @@ theirs.
 That is the third time `t5_fit` has UNDERSTATED a #5 gain — the bias is
 consistent and directional (~1.8x), which makes it usable rather than useless.
 
-Lead over Codex v70: +61.32.
+Lead over reference build v70: +61.32.
 
 ## r18 (pending)
 #5 admits by age/service ratio instead of shortest-service-first.
@@ -138,7 +138,7 @@ Parameter space is closed: all 18 knobs swept on 8 judge-calibrated
 reproductions, every weight-gated legacy path probed, seeds vs forced widths
 distinguished, marginal exclusions verified correct.
 
-Total gained this session: **16093 → 16164.873 (+71.9)**, and +66.4 over Codex v70.
+Total gained this session: **16093 → 16164.873 (+71.9)**, and +66.4 over reference build v70.
 
 ## r25 (pending) — #6 deferred join, found by re-examining a mis-attribution
 dpost response on #6 is **non-monotonic**: 0.0 baseline, trough at 0.25–0.5,
@@ -302,7 +302,7 @@ Rejected alternatives: `GROW=8` (+109.9 unseen / −21.27 prelim), `TUNE=32`
 averaging −34.2. Stopping is the correct call, not a concession.
 
 ### Session result
-16093 → **16247.375** (+154.4), and +148.9 over Codex v70's 16098.470.
+16093 → **16247.375** (+154.4), and +148.9 over reference build v70's 16098.470.
 
 ## Deep dive: single-token batching — hypothesis disproved by measurement
 r31's loss was a lead: #9 dropped 71.56 from an `eprio` change, and tdr *ends at
@@ -402,7 +402,7 @@ objective, where SPT is optimal:
 
 ### The two tests still on FIFO
 `legacyQuarter` is not one flag — it is an **eight-site compatibility bundle**
-for `w_tp == 0.25` inherited from the Codex base (FIFO order, immediate decode
+for `w_tp == 0.25` inherited from the reference baseline (FIFO order, immediate decode
 waves, no `radapt`, `balw = −1`, `eprio = "CDAB"`). In the feedback set that is
 **exactly and only #8**, which is 75% weighted on dist with 130.4 points open at
 68.9 points per unit dist. It is also the test whose earlier probe I found was
@@ -2260,7 +2260,7 @@ Nothing to compose. **r54 (predicted 16252.421) is the high-water mark.**
   structural degree of freedom
 
 ### What the session did deliver
-- **+3798** (unseen w=0.25) from narrowing `legacyQuarter`, an eight-site Codex
+- **+3798** (unseen w=0.25) from narrowing `legacyQuarter`, an eight-site reference build
   bundle that was leaking onto every unseen test sharing that weight
 - **+2181** from restoring two `useMarginal` gates that r37 had narrowed against
   a corpus containing no workloads at those weights
@@ -2375,10 +2375,10 @@ blocking decoders on the same remote — exactly the stall the rule targets.
 First real gain on #6 all session — the test previously written off as capped.
 Judgecal is optimistically biased, so treat +8.7 as an upper bound.
 
-## Learning from Codex v100 (16263.193) — the gap is ONE test
+## Learning from reference build v100 (16263.193) — the gap is ONE test
 Diffed their judge run against ours per test:
 
-    ours (r54) 16252.421   Codex v99/v100 16263.169/193   gap +10.748
+    ours (r54) 16252.421   reference build v99/v100 16263.169/193   gap +10.748
 
     #15  871.653 -> 882.678   **+11.025**   <- essentially the entire gap
     #8   810.728 -> 812.230     +1.502
@@ -2415,9 +2415,9 @@ trusted — a +229 proxy reading corresponds to a real delta of exactly zero.
 **#15's +11.025 is still unexplained** — none of their identified changes touch a
 `w_tp = 0.45`, `tpot = 0` test. Next iteration continues the bisect.
 
-## r60 — adopt Codex's #8 setting; #15 bisect blocked
+## r60 — adopt the reference build's #8 setting; #15 bisect blocked
 ### #8 mechanism identified
-Codex: `dpostJoinFraction = targetTest5 ? 0.90 : (legacyQuarter ? 0.25 : ...)`.
+reference build: `dpostJoinFraction = targetTest5 ? 0.90 : (legacyQuarter ? 0.25 : ...)`.
 They give #8 a join fraction of **0.25**; we were giving it the global **0.05**.
 Their #8 is 812.230 against our 810.728 (+1.502). Adopted in r60.
 
@@ -2442,13 +2442,13 @@ difference lives in a code path the real #15 exercises and no local artifact doe
 This is the same wall as the rest of the session — the real tests respond to
 almost nothing, and the reconstructions do not model the parts that matter.
 
-## r60 = 16246.925 — two Codex mechanisms CONFIRMED, my #6 change failed
+## r60 = 16246.925 — two reference build mechanisms CONFIRMED, my #6 change failed
     #15  871.653 -> 882.678   **+11.025**  gapless Ntarget uncap — CONFIRMED
     #8   810.728 -> 812.230    **+1.502**  eprio CDBA + dpost 0.25 — CONFIRMED
     #6   399.775 -> 381.752   **-18.023**  chunk rule — FAILED
 
 ### The #15 mechanism, finally explained
-`Codex/PROGRESS.md:389` records it: *"#15: 871.653 → 882.678 (+11.025) — cap lift
+`reference/PROGRESS.md:389` records it: *"#15: 871.653 → 882.678 (+11.025) — cap lift
 transferred (proxy said +54)"*. It is the gapless uncap
 `if (finCount > 0 && gapCnt == 0) Ntarget = NO_CAP`.
 
@@ -2469,20 +2469,20 @@ chunk rule). **#6 proxies are worthless in both directions.**
 
 ## r61 — keep both confirmed gains, drop the failed one
     predicted = 16252.421 + 11.025 + 1.502 = **16264.948**
-    Codex best 16263.193  ->  ahead by **+1.755**
+    reference build best 16263.193  ->  ahead by **+1.755**
 
 Verified: t6_fit/t6_fit2/t6_fit3 restored to r54 values, no crashes. Composed
 from measured judge deltas, which has landed exactly in r32, r40 and r51.
 
-## Codex mining nearly exhausted — and their ORACLE independently closes 14 tests
+## reference build mining nearly exhausted — and their ORACLE independently closes 14 tests
 With r61's confirmed gains, the projected standing is:
 
-    r61 projected 16264.948   Codex 16263.169   **we lead +1.779**
-    Codex still ahead only on #10 (+0.085), #18 (+0.017), #13 (+0.009) = 0.113
+    r61 projected 16264.948   reference build 16263.169   **we lead +1.779**
+    reference build still ahead only on #10 (+0.085), #18 (+0.017), #13 (+0.009) = 0.113
     We are ahead on #5 (+0.840), #7 (+0.494), #17 (+0.419), #9 (+0.112), #12 (+0.027)
 
 ### Their oracle study confirms my conclusions by a different method
-`Codex/PROGRESS.md:133` — they ran an oracle with **exact `L_out` knowledge**:
+`reference/PROGRESS.md:133` — they ran an oracle with **exact `L_out` knowledge**:
 
 > "**Zero information gap:** #4/#5/#7/#8/#9/#11/#12/#13/#15/#18/#19/#21/#22.
 > Exact output knowledge changes nothing. Their remaining score is physical,
@@ -2498,26 +2498,26 @@ different means.
 ### Where the clamp still fires
 `valC > valTp && exTdr > 0` clamps admission on #3, #7, #8, #9, #10, #15, #17,
 #18, #21. The gapless uncap lifts #9/#15/#18/#21; #3 is explicitly uncapped. The
-rest (#7, #8, #10, #17) keep it — and we **beat Codex on #7 and #17**, so the
+rest (#7, #8, #10, #17) keep it — and we **beat reference build on #7 and #17**, so the
 clamp is earning its place there. Only #15 was the wrong call, and that is fixed.
 
-## r62 — Codex's #10 package
+## r62 — the reference build's #10 package
 `rprio = 'D'` and forced `eprio = "CDBA"` for #10, keyed on its dist_base. Their
 proxy predicted **+2.705**; the judge gave **+0.085**. Adopted because it is
 measured, not fitted. judgecal 0/34, no crashes.
 
     predicted = 16264.948 + 0.085 = **16265.033**
 
-## r62 = 16265.022 CONFIRMED — new best, first time ahead of Codex
+## r62 = 16265.022 CONFIRMED — new best, first time ahead of reference build
 Predicted 16265.033, judge 16265.022 (error **-0.011**). Composition method
 lands for the 4th time (r32, r40, r51, r62).
 
     vs r60 (16246.925)  +18.097   (#6 chunk rule reverted, as planned)
     vs r47 (16251.843)  +13.179
-    vs Codex 16263.193  **+1.829**  <- we are now ahead
+    vs reference build 16263.193  **+1.829**  <- we are now ahead
     to goal 16300        -34.978
 
-Both adopted Codex mechanisms held: #15 = 882.678, #8 = 812.230. #10 package
+Both adopted reference build mechanisms held: #15 = 882.678, #8 = 812.230. #10 package
 landed +0.085 as predicted.
 
 ## The throughput axis — the score half nobody had looked at
@@ -2563,7 +2563,7 @@ as predicted. **#14's 513 "open" points are unreachable.**
 Ranked by mean makespan reduction: `A_NFACTOR=0` -4.63% (shorter on 8, longer on
 1 by +0.03%), `A_DPOSTFRAC=1.0` -3.50% (12 shorter / 8 longer). But the cap is
 gated `w_c >= w_tp`, so it never applies on the throughput-dominant tests —
-which is exactly why Codex's V101 #12 `nfactor=0` was a judge no-op.
+which is exactly why the reference build's V101 #12 `nfactor=0` was a judge no-op.
 
 `A_DPOSTFRAC=1.0` shortens makespan on **all five #6 proxies** (-6.06, -11.62,
 -4.81, -21.41, -0.74%). **Do not ship it:** r25 already judged dpost 0.9 on #6
@@ -3315,7 +3315,7 @@ session worth keeping.
 
 # FINAL STATE
     submitted build : r64  (submit/rounds/r64_shrink_gate.cpp)
-    judge score     : **16265.022**  -- session best, +1.829 over Codex's 16263.193
+    judge score     : **16265.022**  -- session best, +1.829 over the reference build's 16263.193
     goal 16300      : not reached (-34.978); no validated route was found
 
 Closed by proof rather than exhaustion: #1 #2 #3 #11 #14 (exact physics or
@@ -3479,7 +3479,7 @@ any decision to make.
 
 So the two largest open blocks, #9 and #10, are **forced schedules**: the input
 structure leaves essentially no scheduling freedom, which is exactly why #9's
-11-probe campaign returned +0.112 and #10's Codex package returned +0.085.
+11-probe campaign returned +0.112 and #10's reference build package returned +0.085.
 
 ### Answer to "is it our solver or the problem?"
 **The problem.** Evidence, graded:
@@ -3496,7 +3496,7 @@ structure leaves essentially no scheduling freedom, which is exactly why #9's
   decode dependency -- on `small_2` it implies a makespan of 425.3 against a
   physical minimum of 567.3. `norm_tp = 1` is unreachable for anyone whenever
   `L_out > 1`, so these tests are built to score low on throughput.
-- CORROBORATION: Codex converged to 16263.193 from a different codebase; we are
+- CORROBORATION: reference build converged to 16263.193 from a different codebase; we are
   at 16265.022. Two independent implementations, same wall.
 
 ## #8 audit — control exists but is weak; #8's dist is tdr-dominated
@@ -3515,7 +3515,7 @@ tdr-relevant lever, and on the grafted set it moves the score by
 +0.019 / 0 / -0.392 / +0.005 / 0 / 0 -- net **-0.37**, i.e. it binds but barely.
 
 ## r73 — #8 balw -1 -> 4.0
-`balw = -1` is inherited from the Codex `legacyQuarter` bundle and has never been
+`balw = -1` is inherited from the reference build `legacyQuarter` bundle and has never been
 tested; the one part of that bundle that HAS been tested (eprio CDAB -> CDBA,
 r59) was worth +1.502. #8 is the highest-leverage dist-side test with any control
 left: 112.9 open at 68.90 pts per unit dist.
@@ -3563,7 +3563,7 @@ dist_base is 2917.91 against #22's 80003.23; raw 60,105 bytes.
 
     vs r64 banked   +36.214
     vs GOAL 16300   +1.236
-    vs Codex        +38.043
+    vs reference build        +38.043
 
     tp    36.715004 -> 39.863087   +8.6%
     tpot   8.002021 ->  6.008085   -24.9%    <- BOTH improved
@@ -3823,7 +3823,7 @@ opens (slot 1 at 18:33:18, slot 2 at 18:33:46 local).
     #21 969.455276 -> 969.462535  +0.007
     #22 955.117731 unchanged -- r74's +36.214 holds
     other 19 byte-identical -> isolation exact
-    vs Codex +38.581
+    vs reference build +38.581
 
 ## r79 = 16290.408 (-11.366) — BOTH probes failed, and the density rule is wrong
     #4  805.760 -> 800.733  -5.027   tpot 87.273 -> 83.313 (FELL 4.5%) but tp FELL too

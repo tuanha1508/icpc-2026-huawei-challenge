@@ -19,7 +19,7 @@ This tool reports, per test file:
     pts        points recoverable by closing the whole gap
 
 Usage:
-    python3 tools/floor_gap.py --solver Codex/build/v75-fit data/judgecal/*.txt
+    python3 tools/floor_gap.py --solver reference/build/v75-fit data/judgecal/*.txt
 """
 
 from __future__ import annotations

@@ -6,7 +6,7 @@ faithful *regime* proxy so a knob's physical effect (lower tdr/tpot) transfers."
 import subprocess, re, sys, os, math
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SOLVER = os.path.join(ROOT, "Codex/build/v77")
+SOLVER = os.path.join(ROOT, "reference/build/v77")
 GEN = os.path.join(ROOT, "tools/gen_test.py")
 INT = os.path.join(ROOT, "tools/interactor.py")
 TMP = "/tmp/fit8"

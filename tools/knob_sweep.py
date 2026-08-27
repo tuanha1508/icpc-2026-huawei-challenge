@@ -8,7 +8,7 @@ score window differs from the judge (see OPEN_TESTS.md trust rules).
 
 Usage:
   python3 tools/knob_sweep.py --test data/judgecal/cal_t14_u.txt \
-      --solver Codex/build/v74 [--objective tp|tpot|tdr|score] [--only A_DGFRAC,A_PFVAL]
+      --solver reference/build/v74 [--objective tp|tpot|tdr|score] [--only A_DGFRAC,A_PFVAL]
 """
 import argparse, os, re, subprocess, sys
 

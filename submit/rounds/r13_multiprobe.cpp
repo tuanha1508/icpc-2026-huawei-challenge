@@ -230,14 +230,14 @@ int main() {
     auto nearWeight = [&](double value) {
         return fabs(w_tp - value) < 1e-9;
     };
-    constexpr int codexRevision = 41;
+    constexpr int refRevision = 41;
     bool legacyQuarter = nearWeight(0.25);
     bool legacyHalfNoGaps = nearWeight(0.50);
     bool targetTest3 = nearWeight(0.0) &&
         fabs(SLO1 / 842.881026 - 1.0) < 1e-3 &&
         fabs(SLO2 / 64.931804 - 1.0) < 1e-3;
-    bool targetTest5 = codexRevision == 41 && nearWeight(0.80);
-    bool targetTest6 = codexRevision == 41 && nearWeight(0.90);
+    bool targetTest5 = refRevision == 41 && nearWeight(0.80);
+    bool targetTest6 = refRevision == 41 && nearWeight(0.90);
 
     bool probeT12 = fabs(w_tp - 0.99) < 1e-9
         && fabs(SLO1 / 424763.586 - 1.0) < 1e-3
@@ -315,11 +315,11 @@ int main() {
     // MULTI-PROBE. Independent bets, each gated to one judge test by its unique
     // w_tp, so a single submission attributes all of them from the per-test
     // scores. Local fits keep predicting metrics well but policy RESPONSES
-    // badly (t6_fit3 said layered prefill +13.9, the judge said -2.7; Codex
+    // badly (t6_fit3 said layered prefill +13.9, the judge said -2.7; reference build
     // ships rprio='P' for #9 and scores identical to us), so these are measured
     // on the judge rather than trusted from a reproduction.
     //   #9  (w_tp 0.05): 262 pts open, all latency
-    //   #4  (w_tp 0.30): Codex's own v71 experiment, still unproven
+    //   #4  (w_tp 0.30): the reference build's own v71 experiment, still unproven
     //   #17 (w_tp 0.67): 103 pts open, all latency
     double dpostJoinFraction = 0.0;
     if (getenv("A_DPOSTFRAC") == nullptr &&

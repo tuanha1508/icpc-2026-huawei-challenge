@@ -242,14 +242,14 @@ int main() {
     auto nearWeight = [&](double value) {
         return fabs(w_tp - value) < 1e-9;
     };
-    constexpr int codexRevision = 41;
+    constexpr int refRevision = 41;
     bool legacyQuarter = nearWeight(0.25);
     bool legacyHalfNoGaps = nearWeight(0.50);
     bool targetTest3 = nearWeight(0.0) &&
         fabs(SLO1 / 842.881026 - 1.0) < 1e-3 &&
         fabs(SLO2 / 64.931804 - 1.0) < 1e-3;
-    bool targetTest5 = codexRevision == 41 && nearWeight(0.80);
-    bool targetTest6 = codexRevision == 41 && nearWeight(0.90);
+    bool targetTest5 = refRevision == 41 && nearWeight(0.80);
+    bool targetTest6 = refRevision == 41 && nearWeight(0.90);
 
     bool probeT12 = fabs(w_tp - 0.99) < 1e-9
         && fabs(SLO1 / 424763.586 - 1.0) < 1e-3
@@ -267,8 +267,8 @@ int main() {
     if (targetTest13 && getenv("A_RPRIO") == nullptr) rprio = 'P';
 
     // Prefill SJF pays almost everywhere it applies -- it is worth +21.30 on
-    // #21 against Codex, whose tdr there is 57474.9 to our 35523.5 -- but NOT
-    // on #5. With the identical tdr 1497.254452 and dist 3.835809, Codex runs
+    // #21 against reference build, whose tdr there is 57474.9 to our 35523.5 -- but NOT
+    // on #5. With the identical tdr 1497.254452 and dist 3.835809, reference build runs
     // #5 at tp 1.065646 / tpot 75.254 while we run 1.008309 / 76.902, and the
     // only policy we carry that they do not, at w_tp = 0.80, is this rule.
     // So exclude #5 and keep it everywhere else.

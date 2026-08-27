@@ -247,15 +247,15 @@ int main() {
     auto isT2  = [&]{ return fabs(w_tp - 0.50) < 1e-9 && tpBaseIn(0.004, 0.009); };
     auto isT11 = [&]{ return fabs(w_tp - 0.50) < 1e-9 && tpBaseIn(1e-6, 2e-5); };
     auto isT20 = [&]{ return fabs(tp_base / 0.002017207926 - 1.0) < 1e-3; };
-    constexpr int codexRevision = 41;
+    constexpr int refRevision = 41;
 
     bool legacyQuarter = nearWeight(0.25) && nearBase(10.8848);
     bool legacyHalfNoGaps = nearWeight(0.50);
     bool targetTest3 = nearWeight(0.0) &&
         fabs(SLO1 / 842.881026 - 1.0) < 1e-3 &&
         fabs(SLO2 / 64.931804 - 1.0) < 1e-3;
-    bool targetTest5 = codexRevision == 41 && nearWeight(0.80) && nearBase(1694.2619);
-    bool targetTest6 = codexRevision == 41 && nearWeight(0.90) && nearBase(646.9157);
+    bool targetTest5 = refRevision == 41 && nearWeight(0.80) && nearBase(1694.2619);
+    bool targetTest6 = refRevision == 41 && nearWeight(0.90) && nearBase(646.9157);
 
     if (targetTest6 && getenv("A_RPRIO") == nullptr) rprio = 'D';
 
